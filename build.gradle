@@ -1,5 +1,5 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-apply from: 'upload.gradle'
+//apply from: 'upload.gradle'
 apply plugin: 'com.android.library'
 
 buildscript {
@@ -40,3 +40,26 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:26.1.0'
     compile 'com.android.support:multidex:1.0.1'
 }
+
+
+// 此处已github 作为maven 库 begin 如不需要注释 并打开 //apply from: 'upload.gradle' line 2
+apply plugin: 'maven'
+// ext is a gradle closure allowing the declaration of global properties
+ext {
+    PUBLISH_GROUP_ID = 'the-one-framework'
+    PUBLISH_ARTIFACT_ID = 'com.one.framework'
+    PUBLISH_VERSION = android.defaultConfig.versionName
+}
+
+uploadArchives {
+    repositories.mavenDeployer {
+        def deployPath = file(getProperty('aar.deployPath'))
+        repository(url: "file://${deployPath.absolutePath}")
+        pom.project {
+            groupId project.PUBLISH_GROUP_ID
+            artifactId project.PUBLISH_ARTIFACT_ID
+            version project.PUBLISH_VERSION
+        }
+    }
+}
+// 此处已github 作为maven 库 end
