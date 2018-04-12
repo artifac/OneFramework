@@ -1,0 +1,67 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:background="@android:color/white"
+  android:orientation="vertical">
+
+  <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="50dp">
+
+    <ImageView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="10dp"
+      android:layout_alignParentLeft="true"
+      android:layout_centerVertical="true"
+      android:src="@drawable/one_top_bar_right_alarm"/>
+
+    <ImageView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginRight="10dp"
+      android:layout_alignParentRight="true"
+      android:layout_centerVertical="true"
+      android:src="@drawable/one_top_bar_right_alarm"/>
+
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_centerVertical="true"
+      android:gravity="center"
+      android:text="title bar"/>
+  </RelativeLayout>
+
+  <FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <com.one.framework.app.widget.impl.TabIndicator
+      android:id="@+id/one_top_bar_tab_indicator"
+      android:layout_width="match_parent"
+      android:layout_height="32dp"
+      android:layout_marginLeft="20dp"
+      android:layout_marginRight="32dp">
+      <LinearLayout
+        android:id="@+id/one_tab_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"/>
+    </com.one.framework.app.widget.impl.TabIndicator>
+
+    <ImageView
+      android:id="@+id/one_top_bar_tab_menu"
+      android:layout_width="32dp"
+      android:layout_height="32dp"
+      android:clickable="true"
+      android:scaleType="center"
+      android:background="#fff"
+      android:layout_gravity="center | right"
+      android:src="@drawable/one_topbar_menu_more"/>
+  </FrameLayout>
+
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:background="#e3e3e3"/>
+
+</LinearLayout>

@@ -1,0 +1,118 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  package="com.one.framework">
+
+  <!-- Permissions the MQTT Requires -->
+  <uses-permission android:name="android.permission.WAKE_LOCK"/>
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
+  <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+  <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+
+  <uses-permission android:name="android.permission.VIBRATE"/>
+  <!-- Normal Protection -->
+  <!-- 访问网络-权限级别Protection/Normal-AndroidManifest.xml中声明 即可获取权限 -->
+  <uses-permission android:name="android.permission.INTERNET"/>
+  <!-- 这个权限用于获取wifi的获取权限，wifi信息会用来进行网络定位 -->
+  <!-- Normal Protection -->
+  <!-- 改变wifi状态-权限级别Protection/Normal-AndroidManifest.xml中声明 即可获取权限 -->
+  <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+  <!-- Normal Protection -->
+  <!-- 获取wifi状态-权限级别Protection/Normal-AndroidManifest.xml中声明 即可获取权限 -->
+  <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+  <!-- Normal Protection -->
+  <!-- 获取网络状态状态-权限级别Protection/Normal-AndroidManifest.xml中声明 即可获取权限 -->
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+  <!-- Normal Protection -->
+  <!-- 震动-权限级别Protection/Normal-AndroidManifest.xml中声明 即可获取权限 -->
+  <uses-permission android:name="android.permission.VIBRATE"/>
+
+  <!-- Dangerous permission group :LOCATION -->
+  <!-- 获取地理位置-权限级别Dangerous-AndroidManifest.xml中声明  还需要代码运行时动态检测和申请 -->
+  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
+  <!-- Dangerous permission group :PHONE -->
+  <!-- 读取手机信息/拨打电话-权限级别Dangerous-AndroidManifest.xml中声明  还需要代码运行时动态检测和申请 -->
+  <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+  <uses-permission android:name="android.permission.CALL_PHONE"/>
+
+  <!-- Dangerous permission group :SMS -->
+  <!-- 读取手机短信/拨打电话-权限级别Dangerous-AndroidManifest.xml中声明  还需要代码运行时动态检测和申请 -->
+  <uses-permission android:name="android.permission.READ_SMS"/>
+
+  <!-- Dangerous permission group :CONTACTS -->
+  <!-- 读取手机联系人-权限级别Dangerous-AndroidManifest.xml中声明  还需要代码运行时动态检测和申请 -->
+  <uses-permission android:name="android.permission.READ_CONTACTS"/>
+
+  <!-- Dangerous permission group :CAMERA -->
+  <!-- 访问手机相机-权限级别Dangerous-AndroidManifest.xml中声明  还需要代码运行时动态检测和申请 -->
+  <uses-permission android:name="android.permission.CAMERA"/>
+  <uses-permission android:name="android.hardware.camera"/>
+  <uses-permission android:name="android.permission.FLASHLIGHT"/>
+
+  <!-- Dangerous permission group :STORAGE -->
+  <!-- 访问存储卡-权限级别Dangerous-AndroidManifest.xml中声明  还需要代码运行时动态检测和申请 -->
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+  <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+  <!-- 创建文件权限 not use for third party -->
+
+
+  <!-- 语音 begin -->
+  <!--连接网络权限，用于执行云端语音能力 -->
+  <uses-permission android:name="android.permission.INTERNET"/>
+  <!--获取手机录音机使用权限，听写、识别、语义理解需要用到此权限 -->
+  <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+  <!--读取网络信息状态 -->
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+  <!--获取当前wifi状态 -->
+  <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+  <!--允许程序改变网络连接状态 -->
+  <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+  <!--读取手机信息权限 -->
+  <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+  <!--读取联系人权限，上传联系人需要用到此权限 -->
+  <uses-permission android:name="android.permission.READ_CONTACTS"/>
+  <!--外存储写权限，构建语法需要用到此权限 -->
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+  <!--外存储读权限，构建语法需要用到此权限 -->
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+  <!--配置权限，用来记录应用配置信息 -->
+  <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+  <!--手机定位信息，用来为语义等功能提供定位，提供更精准的服务-->
+  <!--定位信息是敏感信息，可通过Setting.setLocationEnable(false)关闭定位请求 -->
+  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+  <!--如需使用人脸识别，还要添加：摄相头权限，拍照需要用到 -->
+  <uses-permission android:name="android.permission.CAMERA"/>
+  <!-- 语音 end -->
+
+  <uses-permission android:name="android.permission.READ_LOGS"/>
+
+  <!-- 解决Android L上通知显示异常问题，targetSdkVersion需要设置成22 -->
+  <uses-sdk
+    android:minSdkVersion="15"
+    android:targetSdkVersion="22"/>
+
+  <application
+    android:allowBackup="false"
+    android:hardwareAccelerated="true"
+    android:label="@string/app_name"
+    android:largeHeap="true"
+    android:name="com.one.framework.app.base.OneApplication"
+    android:resizeableActivity="false"
+    android:supportsRtl="false"
+    tools:replace="android:allowBackup,android:supportsRtl">
+
+    <meta-data
+      android:name="android.max_aspect"
+      android:value="2.1"/>
+
+    <activity android:name="com.one.framework.MainActivity">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+      </intent-filter>
+    </activity>
+  </application>
+</manifest>

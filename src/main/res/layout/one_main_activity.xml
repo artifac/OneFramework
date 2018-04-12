@@ -1,0 +1,47 @@
+<android.support.v4.widget.DrawerLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@android:color/transparent">
+
+  <!-- main layout-->
+  <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <fragment
+      android:id="@+id/one_map_fragment"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:name="com.one.framework.app.map.MapFragment"/>
+
+    <fragment
+      android:id="@+id/one_top_bar_fragment"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentTop="true"
+      android:name="com.one.framework.app.page.impl.TopBarFragment"/>
+
+    <FrameLayout
+      android:id="@id/content_view_container"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_below="@id/one_top_bar_fragment"
+      android:background="@android:color/transparent"/>
+  </RelativeLayout>
+
+
+  <!--left menu-->
+  <RelativeLayout
+    android:layout_width="240dp"
+    android:layout_height="match_parent"
+    android:layout_gravity="start"
+    android:background="@android:color/white">
+
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:text="LEFT MENU"
+      android:gravity="center"/>
+  </RelativeLayout>
+</android.support.v4.widget.DrawerLayout>

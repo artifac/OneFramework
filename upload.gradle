@@ -1,0 +1,34 @@
+apply plugin: 'maven'
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            pom.project {
+                groupId project.GROUP_ID
+                artifactId project.ARTIFACT_ID
+                version project.VERSION
+            }
+
+            pom.withXml {
+                def node = it.asElement()
+                def nodeList = node.getElementsByTagName('dependency')
+                nodeList.each { dependency ->
+                    dependency?.each { config ->
+                        if (config?.textContent == 'one-framework') {
+                            config.parentNode.parentNode.removeChild(config.parentNode)
+                        }
+                    }
+                }
+            }
+
+            repository(url: project.RELEASE_REPOSITORY_URL) {
+                authentication(userName: project.USERNAME, password: project.PASSWORD)
+            }
+            snapshotRepository(url: project.SNAPSHOT_REPOSITORY_URL) {
+                authentication(userName: project.USERNAME, password: project.PASSWORD)
+            }
+
+
+        }
+    }
+}
