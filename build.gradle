@@ -1,12 +1,15 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 //apply from: 'upload.gradle'
 apply plugin: 'com.android.library'
+apply plugin: 'maven'
 
 buildscript {
 
     repositories {
         google()
         jcenter()
+        maven { url "https://maven.google.com" }
+        maven { url "https://github.com/artifac/onemap/tree/master"}
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.0'
@@ -19,35 +22,66 @@ buildscript {
 
 allprojects {
     repositories {
-        google()
+        maven { url "https://maven.google.com" }
+        maven { url "https://github.com/artifac/onemap/tree/master"}
+        mavenCentral()
         jcenter()
     }
 }
 
 android {
     compileSdkVersion 26
+    buildToolsVersion '26.0.2'
 
     defaultConfig {
+        buildConfigField 'String' , 'AAR_MODE' , "\"${project.VERSION.endsWith('-SNAPSHOT') ? 'debug' : 'release'}\""
         minSdkVersion 15
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
     }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    dexOptions {
+        javaMaxHeapSize "4g"
+        preDexLibraries = false
+    }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:26.1.0'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:multidex:1.0.1'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    implementation 'com.android.support:recyclerview-v7:26.1.0'
+
+    // 地图
+    implementation 'com.one.map:the-one-map:1.0.4'
 }
 
+
+//为支持aar动态更新，在build.gradle里添加如下代码
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
 
 // 此处已github 作为maven 库 begin 如不需要注释 并打开 //apply from: 'upload.gradle' line 2
 apply plugin: 'maven'
 // ext is a gradle closure allowing the declaration of global properties
 ext {
-    PUBLISH_GROUP_ID = 'the-one-framework'
-    PUBLISH_ARTIFACT_ID = 'com.one.framework'
+    PUBLISH_GROUP_ID = 'com.one.framework'
+    PUBLISH_ARTIFACT_ID = 'the-one-framework'
     PUBLISH_VERSION = '1.0.0'
 }
 
