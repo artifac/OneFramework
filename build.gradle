@@ -6,10 +6,10 @@ apply plugin: 'maven'
 buildscript {
 
     repositories {
-        google()
         jcenter()
-        maven { url "https://maven.google.com" }
-        maven { url "https://github.com/artifac/onemap/tree/master"}
+        mavenCentral()
+        maven { url 'https://maven.google.com' }
+        maven { url "https://github.com/artifac/onemap/raw/master" }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.0'
@@ -22,8 +22,8 @@ buildscript {
 
 allprojects {
     repositories {
-        maven { url "https://maven.google.com" }
-        maven { url "https://github.com/artifac/onemap/tree/master"}
+        maven { url 'https://maven.google.com' }
+        maven { url "https://github.com/artifac/onemap/raw/master"}
         mavenCentral()
         jcenter()
     }

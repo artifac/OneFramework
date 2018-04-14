@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import com.one.framework.R;
-import com.one.map.factory.MapFactory;
 import com.one.map.location.LocationProvider;
 import com.one.map.map.MarkerOption;
 import com.one.map.map.PolylineOption;
@@ -29,7 +28,7 @@ import com.one.map.view.IMapView;
 public class MapFragment extends Fragment implements IMapFragment  {
 
   private FrameLayout mMapViewContainer;
-  private MapPresenter mMapPresenter;
+//  private MapPresenter mMapPresenter;
   private IMapView mMapView;
 
   /**
@@ -52,7 +51,7 @@ public class MapFragment extends Fragment implements IMapFragment  {
     mMapViewContainer = (FrameLayout) view.findViewById(R.id.map_view_container);
     mLocPin = (ImageView) view.findViewById(R.id.map_fragment_loc_pin);
     mMapView.attachToRootView(mMapViewContainer);
-    mMapPresenter = new MapPresenter(getContext(), this, mMapPoi);
+//    mMapPresenter = new MapPresenter(getContext(), this, mMapPoi);
 
     initLocation();
     return view;
@@ -90,7 +89,7 @@ public class MapFragment extends Fragment implements IMapFragment  {
 
   @Override
   public void drivingRoutePlan(Address from, Address to) {
-    mMapPresenter.drivingRoutePlan(from, to);
+//    mMapPresenter.drivingRoutePlan(from, to);
   }
 
   @Override
