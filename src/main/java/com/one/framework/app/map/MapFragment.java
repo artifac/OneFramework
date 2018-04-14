@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import com.one.framework.R;
+import com.one.map.factory.MapFactory;
 import com.one.map.location.LocationProvider;
 import com.one.map.map.MarkerOption;
 import com.one.map.map.PolylineOption;
@@ -39,7 +40,7 @@ public class MapFragment extends Fragment implements IMapFragment  {
   @Override
   public void onAttach(Activity activity) {
     super.onAttach(activity);
-//    mMapView = MapFactory.newInstance().getMapView(activity, IMapView.TENCENT);
+    mMapView = MapFactory.newInstance().getMapView(activity, IMapView.TENCENT);
   }
 
   @Nullable
