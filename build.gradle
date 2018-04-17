@@ -23,7 +23,7 @@ buildscript {
 allprojects {
     repositories {
         maven { url 'https://maven.google.com' }
-        maven { url "https://github.com/artifac/onemap/raw/master"}
+        maven { url "https://github.com/artifac/onemap/raw/master" }
         mavenCentral()
         jcenter()
     }
@@ -34,11 +34,13 @@ android {
     buildToolsVersion '26.0.2'
 
     defaultConfig {
-        buildConfigField 'String' , 'AAR_MODE' , "\"${project.VERSION.endsWith('-SNAPSHOT') ? 'debug' : 'release'}\""
+        buildConfigField 'String', 'AAR_MODE', "\"${project.VERSION.endsWith('-SNAPSHOT') ? 'debug' : 'release'}\""
         minSdkVersion 15
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
+
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -60,16 +62,16 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:multidex:1.0.1'
+    compile 'com.android.support:multidex:1.0.2'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    compile 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support:recyclerview-v7:26.1.0'
 
     // 地图
-    implementation 'com.one.map:the-one-map:1.0.4'
+    compile project(':onemap')
+//    implementation 'com.one.map:the-one-map:1.0.4'
 }
-
 
 //为支持aar动态更新，在build.gradle里添加如下代码
 configurations.all {

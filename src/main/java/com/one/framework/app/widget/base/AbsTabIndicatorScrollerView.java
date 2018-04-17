@@ -6,7 +6,6 @@ import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.HorizontalScrollView;
@@ -58,7 +57,9 @@ public abstract class AbsTabIndicatorScrollerView extends HorizontalScrollView {
         float curX = ev.getX() + 0.5f;
         if (isScroll()) {
           int scrollX = getScrollX();
-          isMove = (scrollX == 0 && curX > mDownX) || (scrollX == getScrollXOffset() && curX < mDownX);
+          isMove = (scrollX == 0 && curX > mDownX) || (
+              (scrollX == getScrollXOffset() || mChildView.getMeasuredWidth() <= getWidth())
+                  && curX < mDownX);
         } else {
           isMove = false;
         }
@@ -81,8 +82,7 @@ public abstract class AbsTabIndicatorScrollerView extends HorizontalScrollView {
 
   private void handleMove(float moveX) {
     int x = (int) (getTranslationX() + moveX + 0.5f);
-    float scale = Math.abs(x * 1f / getWidth());
-//    Log.e("ldx", "scale >>>> " + scale + " getTranslateX >>> " + x);
+    float scale = Math.abs(x * 1f / getMeasuredWidth());
     onScale(scale);
     setTranslationX(x);
   }

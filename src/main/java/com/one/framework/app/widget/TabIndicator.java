@@ -1,11 +1,13 @@
-package com.one.framework.app.widget.impl;
+package com.one.framework.app.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import com.one.framework.R;
 import com.one.framework.app.model.TabItem;
@@ -48,7 +50,6 @@ public class TabIndicator extends AbsTabIndicatorScrollerView implements ITabInd
 
   @Override
   public void setTabItems(List<TabItem> items) {
-    mTabContainer.setGravity(Gravity.NO_GRAVITY);
     setChildViewGravity(items.size());
     for (int i = 0; i < items.size(); i++) {
       TabItem tab = items.get(i);
@@ -87,13 +88,20 @@ public class TabIndicator extends AbsTabIndicatorScrollerView implements ITabInd
   @Override
   protected void onScale(float scale) {
     if (mScaleListener != null) {
-      mScaleListener.onScale(scale);
+      mScaleListener.onScaleMove(scale);
     }
+  }
+
+  @Override
+  public int getViewHeight() {
+    return getMeasuredHeight();
   }
 
   private void setChildViewGravity(int size) {
     int width = getWidth();
-
+    FrameLayout.LayoutParams params = (ScrollView.LayoutParams)mTabContainer.getLayoutParams();
+    params.gravity = size <= 5 ? Gravity.CENTER : Gravity.NO_GRAVITY;
+    mTabContainer.setLayoutParams(params);
   }
 
   @Override

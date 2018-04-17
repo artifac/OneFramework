@@ -1,0 +1,24 @@
+<resources>
+  <declare-styleable name="TripButton">
+    <attr format="dimension" name="radius"/>
+    <attr format="color" name="enable_color"/>
+    <attr format="color" name="disable_color"/>
+    <attr format="color" name="text_color"/>
+    <attr format="string" name="text"/>
+    <attr format="dimension" name="text_size"/>
+    <attr name="text_style">
+      <enum name="normal" value="0"/>
+      <enum name="body" value="1"/>
+    </attr>
+    <attr format="color" name="stroke_color"/>
+    <attr format="dimension" name="stroke_width"/>
+  </declare-styleable>
+
+  <declare-styleable name="PullView">
+    <attr name="scroll_view">
+      <enum name="header" value="0"/>
+      <enum name="self" value="1"/>
+    </attr>
+    <attr format="dimension" name="scroll_max_height"/>
+  </declare-styleable>
+</resources>

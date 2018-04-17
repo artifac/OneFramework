@@ -15,11 +15,14 @@ public interface ITabIndicatorListener {
 
   void setScaleListener(IScaleListener listener);
 
+  int getViewHeight();
+
   interface ITabItemListener {
     void onItemClick(TabItem item);
   }
 
   interface IScaleListener {
-    void onScale(float scale);
+    void onScaleMove(float scale);
+    void onScaleUp();
   }
 }

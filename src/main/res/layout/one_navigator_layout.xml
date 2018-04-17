@@ -1,0 +1,18 @@
+<com.one.framework.app.widget.PullScrollRelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <com.one.framework.app.widget.PullScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_gravity="center"
+      android:orientation="vertical">
+
+    </LinearLayout>
+  </com.one.framework.app.widget.PullScrollView>
+
+</com.one.framework.app.widget.PullScrollRelativeLayout>

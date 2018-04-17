@@ -1,3 +1,5 @@
-com.one.OneFragment
+com.one.FlashFragment
 com.one.PremiumFragment
 com.one.CalendarFragment
+com.one.TaxiFragment
+com.one.MobikeFragment

@@ -5,8 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
-//import com.one.framework.app.map.IMapFragment;
-//import com.one.framework.app.map.MapFragment;
 import com.one.framework.app.model.BusinessContext;
 import com.one.framework.app.model.IBusinessContext;
 import com.one.framework.app.model.TabItem;
@@ -16,6 +14,8 @@ import com.one.framework.app.page.ITopbarFragment;
 import com.one.framework.app.page.impl.TopBarFragment;
 import com.one.framework.app.widget.base.ITabIndicatorListener.ITabItemListener;
 import com.one.framework.manager.ActivityDelegateManager;
+import com.one.map.IMap;
+import com.one.map.MapFragment;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +26,7 @@ import java.util.List;
 public class MainActivity extends FragmentActivity implements ITabItemListener {
 
   private ActivityDelegateManager mDelegateManager;
-//  private IMapFragment mMapFragment;
+  private IMap mMapFragment;
   private ITopbarFragment mTopbarFragment;
   private INavigator mNavigator;
   private IBusinessContext mBusinessContext;
@@ -39,17 +39,16 @@ public class MainActivity extends FragmentActivity implements ITabItemListener {
 
     addNavigator();
 
-//    mMapFragment = (MapFragment) getSupportFragmentManager()
-//        .findFragmentById(R.id.one_map_fragment);
-    mTopbarFragment = (TopBarFragment) getSupportFragmentManager()
-        .findFragmentById(R.id.one_top_bar_fragment);
+    mMapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.one_map_fragment);
+    mTopbarFragment = (TopBarFragment) getSupportFragmentManager().findFragmentById(R.id.one_top_bar_fragment);
     mTopbarFragment.setTabItemListener(this);
 
     mDelegateManager = new ActivityDelegateManager(this);
     mDelegateManager.notifyOnCreate();
 
+    mBusinessContext = new BusinessContext(this, mMapFragment, mTopbarFragment);
+
     mTopbarFragment.setTabItems(testTabItems());
-    mBusinessContext = new BusinessContext();
   }
 
   @Override
@@ -132,9 +131,41 @@ public class MainActivity extends FragmentActivity implements ITabItemListener {
     tab3.isRedPoint = false;
     tab3.isSelected = false;
 
+    TabItem tab4 = new TabItem();
+    tab4.tab = "出租车";
+    tab4.position = 3;
+    tab4.tabBiz = "taxi";
+    tab4.isRedPoint = true;
+    tab4.isSelected = false;
+
+    TabItem tab5 = new TabItem();
+    tab5.tab = "摩拜单车";
+    tab5.position = 4;
+    tab5.tabBiz = "mobike";
+    tab5.isRedPoint = true;
+    tab5.isSelected = false;
+
+//    TabItem tab6 = new TabItem();
+//    tab6.tab = "专车";
+//    tab6.position = 5;
+//    tab6.tabBiz = "premium";
+//    tab6.isRedPoint = false;
+//    tab6.isSelected = false;
+//
+//    TabItem tab7 = new TabItem();
+//    tab7.tab = "香港专车";
+//    tab7.position = 6;
+//    tab7.tabBiz = "premium";
+//    tab7.isRedPoint = false;
+//    tab7.isSelected = false;
+
     items.add(tab1);
     items.add(tab2);
     items.add(tab3);
+    items.add(tab4);
+    items.add(tab5);
+//    items.add(tab6);
+//    items.add(tab7);
 
     return items;
   }

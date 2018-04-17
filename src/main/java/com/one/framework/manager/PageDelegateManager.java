@@ -92,7 +92,8 @@ public class PageDelegateManager extends AbstractDelegateManager<Fragment> {
     return cls2Page(target, intent, businessContext);
   }
 
-  private void fullMatch(Context context, Intent intent, ArrayList<Class<? extends Fragment>> pageLists) {
+  private void fullMatch(Context context, Intent intent,
+      ArrayList<Class<? extends Fragment>> pageLists) {
     // 全方位匹配
     String action = intent.getAction();
     String type = intent.resolveTypeIfNeeded(context.getApplicationContext().getContentResolver());
@@ -102,7 +103,7 @@ public class PageDelegateManager extends AbstractDelegateManager<Fragment> {
 
     synchronized (fragments) {
       Set<IntentFilter> filterSet = fragments.keySet();
-      for (IntentFilter filter: filterSet) {
+      for (IntentFilter filter : filterSet) {
         int result = filter.match(action, type, scheme, data, categories, "");
         if (result <= 0) {
           continue;
@@ -117,7 +118,8 @@ public class PageDelegateManager extends AbstractDelegateManager<Fragment> {
    * @param intent
    * @return
    */
-  private Fragment cls2Page(Class<? extends Fragment> pageClass, Intent intent, IBusinessContext businessContext) {
+  private Fragment cls2Page(Class<? extends Fragment> pageClass, Intent intent,
+      IBusinessContext businessContext) {
     Fragment page = null;
 
     if (page == null) {
@@ -140,6 +142,7 @@ public class PageDelegateManager extends AbstractDelegateManager<Fragment> {
         IComponent component = (IComponent) page;
         component.setBusinessContext(businessContext);
       }
+      bundle.putSerializable("BusinessContext", businessContext);
       Bundle arguments = page.getArguments();
       // 如果设置过arguments了 则append上intent的bundle
       if (arguments != null) {
