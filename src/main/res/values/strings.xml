@@ -1,3 +1,4 @@
 <resources>
   <string name="app_name">OneFramework</string>
+  <string name="one_list_footer_view_info">Loading...</string>
 </resources>

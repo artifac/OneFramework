@@ -82,8 +82,8 @@ public abstract class AbsTabIndicatorScrollerView extends HorizontalScrollView {
 
   private void handleMove(float moveX) {
     int x = (int) (getTranslationX() + moveX + 0.5f);
-    float scale = Math.abs(x * 1f / getMeasuredWidth());
-    onScale(scale);
+    float scale = x * 1f / getMeasuredWidth();
+    onScaleMove(scale);
     setTranslationX(x);
   }
 
@@ -96,7 +96,6 @@ public abstract class AbsTabIndicatorScrollerView extends HorizontalScrollView {
 
   private void goonTranslate(long duration) {
     float moveTranslateX = getTranslationX();
-
     ValueAnimator translate = ValueAnimator.ofFloat(moveTranslateX, 0);
     translate.setDuration(duration);
     translate.addUpdateListener(new AnimatorUpdateListener() {
@@ -111,6 +110,12 @@ public abstract class AbsTabIndicatorScrollerView extends HorizontalScrollView {
       public void onAnimationEnd(Animator animation) {
         super.onAnimationEnd(animation);
         isMove = false;
+      }
+
+      @Override
+      public void onAnimationStart(Animator animation) {
+        super.onAnimationStart(animation);
+        onScaleUp();
       }
     });
     translate.start();
@@ -132,5 +137,6 @@ public abstract class AbsTabIndicatorScrollerView extends HorizontalScrollView {
     return childWidth - width;
   }
 
-  protected abstract void onScale(float scale);
+  protected abstract void onScaleMove(float scale);
+  protected abstract void onScaleUp();
 }

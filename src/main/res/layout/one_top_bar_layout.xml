@@ -8,7 +8,7 @@
   <com.one.framework.app.widget.TopTitleLayout
     android:id="@+id/one_top_title_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"/>
+    android:layout_height="50dp"/>
 
   <FrameLayout
     android:id="@+id/one_tab_container_parent"
@@ -27,15 +27,19 @@
         android:orientation="horizontal"/>
     </com.one.framework.app.widget.TabIndicator>
 
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="32dp"
+      android:background="@drawable/one_top_bar_liner"/>
+
     <ImageView
       android:id="@+id/one_top_bar_tab_menu"
       android:layout_width="32dp"
       android:layout_height="32dp"
       android:clickable="true"
       android:scaleType="center"
-      android:background="#fff"
       android:layout_gravity="center | right"
-      android:src="@drawable/one_topbar_menu_more"/>
+      android:src="@drawable/one_top_bar_menu"/>
   </FrameLayout>
 
   <View

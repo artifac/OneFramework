@@ -1,8 +1,6 @@
 package com.one.framework.app.navigation;
 
-import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
 import com.one.framework.app.model.IBusinessContext;
 
 /**
@@ -10,6 +8,11 @@ import com.one.framework.app.model.IBusinessContext;
  */
 
 public interface INavigator {
-  Fragment getFragment(Context context, Intent intent, IBusinessContext businessContext);
-  void fillPage(Fragment fragment, int contentId);
+  String BUNDLE_COMPONENT_NAME_FRAGMENT = "bundle_component_name_fragment";
+  String BUNDLE_ADD_TO_BACK_STACK = "bundle_add_to_back_stack";
+  String BUNDLE_FORWARD_FRAGMENT_STYLE = "bundle_froward_fragment_style";
+  String BUNDLE_EXTRA_INFO = "bundle_extra_info";
+
+  void startFragment(Intent intent, IBusinessContext businessContext);
+  void backToRoot();
 }

@@ -1,6 +1,7 @@
 package com.one.framework.app.model;
 
 import android.content.Context;
+import com.one.framework.app.navigation.INavigator;
 import com.one.framework.app.page.ITopbarFragment;
 import com.one.map.IMap;
 
@@ -15,11 +16,13 @@ public class BusinessContext implements IBusinessContext {
   private Context mContext;
   private IMap mMap;
   private ITopbarFragment mTopbar;
+  private INavigator mNavigator;
 
-  public BusinessContext(Context context, IMap map, ITopbarFragment topbar) {
+  public BusinessContext(Context context, IMap map, ITopbarFragment topbar, INavigator navigator) {
     mContext = context;
     mMap = map;
     mTopbar = topbar;
+    mNavigator = navigator;
   }
 
   @Override
@@ -35,5 +38,10 @@ public class BusinessContext implements IBusinessContext {
   @Override
   public ITopbarFragment getTopbar() {
     return mTopbar;
+  }
+
+  @Override
+  public INavigator getNavigator() {
+    return mNavigator;
   }
 }

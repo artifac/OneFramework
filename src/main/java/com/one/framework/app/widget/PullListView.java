@@ -2,10 +2,8 @@ package com.one.framework.app.widget;
 
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.os.Build.VERSION_CODES;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.View;
@@ -21,9 +19,7 @@ import com.one.framework.app.widget.base.IPullView;
  * Created by ludexiang on 2018/4/3.
  */
 
-@TargetApi(VERSION_CODES.M)
-public class PullListView extends ListView implements IMovePublishListener, IPullView,
-    OnScrollListener {
+public class PullListView extends ListView implements IMovePublishListener, IPullView, OnScrollListener {
 
   private SparseArray<ItemRecord> recordSp = new SparseArray(0);
   private int mCurrentFirstVisibleItem = 0;
@@ -31,6 +27,10 @@ public class PullListView extends ListView implements IMovePublishListener, IPul
   private IHeaderView mHeaderView;
   private int mScroller; // 0 scroll Header 1 scroll self
   private int mMaxHeight;
+
+  private boolean isHaveFooterView;
+  private boolean isHaveHeaderView;
+  private boolean isResolveConflict;
 
   public PullListView(Context context) {
     this(context, null);
@@ -46,6 +46,11 @@ public class PullListView extends ListView implements IMovePublishListener, IPul
     TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PullView);
     mScroller = a.getInt(R.styleable.PullView_scroll_view, 1);
     mMaxHeight = a.getDimensionPixelSize(R.styleable.PullView_scroll_max_height, 0);
+
+    isHaveFooterView = a.getBoolean(R.styleable.PullView_have_footer_view, true);
+    isHaveHeaderView = a.getBoolean(R.styleable.PullView_have_header_view, true);
+    isResolveConflict = a.getBoolean(R.styleable.PullView_resolve_conflict, false);
+
     if (mScroller == 0 && mMaxHeight == 0) {
       throw new IllegalArgumentException("ScrollMaxHeight is 0");
     }
@@ -54,6 +59,21 @@ public class PullListView extends ListView implements IMovePublishListener, IPul
     mHeaderView = new HeaderView(context, mMaxHeight);
     addHeaderView(mHeaderView.getView());
     setOnScrollListener(this);
+  }
+
+  @Override
+  public void addHeaderView(View v) {
+    if (isHaveHeaderView) {
+      super.addHeaderView(v);
+    }
+  }
+
+
+  @Override
+  public void addFooterView(View v) {
+    if (isHaveFooterView) {
+      super.addFooterView(v);
+    }
   }
 
   @Override
@@ -77,11 +97,9 @@ public class PullListView extends ListView implements IMovePublishListener, IPul
       itemRecord.top = firstView.getTop();
       recordSp.append(firstVisibleItem, itemRecord);
     }
-
   }
 
   class ItemRecord {
-
     int height = 0;
     int top = 0;
   }
@@ -94,7 +112,9 @@ public class PullListView extends ListView implements IMovePublishListener, IPul
     int height = 0;
     for (int i = 0; i < mCurrentFirstVisibleItem; i++) {
       ItemRecord itemRecord = recordSp.get(i);
-      height += itemRecord.height;
+      if (itemRecord != null) {
+        height += itemRecord.height;
+      }
     }
     ItemRecord itemRecord = recordSp.get(mCurrentFirstVisibleItem);
     if (null == itemRecord) {
@@ -124,8 +144,8 @@ public class PullListView extends ListView implements IMovePublishListener, IPul
 
   @Override
   public void onMove(float offsetX, float offsetY) {
-//    Log.e("ldx", "offsetX " + offsetX + " offsetY " + offsetY);
-    if (mScroller == 0 && !isScrollBottom()) {
+    boolean flag = offsetY > 0 || isHeaderNeedScroll();
+    if (mScroller == 0 && flag && !isScrollBottom()) {
       mHeaderView.onMove(offsetX, offsetY);
     } else {
       selfScrollerMove(offsetY);
@@ -134,7 +154,7 @@ public class PullListView extends ListView implements IMovePublishListener, IPul
 
   @Override
   public void onUp(boolean bottom2Up, boolean isFling) {
-    if (mScroller == 0 && !isScrollBottom()) { // 如果是滚到到底部了则滚动listview
+    if (mScroller == 0 && isHeaderNeedScroll()) { // 如果是滚到到底部了则滚动listview
       mHeaderView.onUp(bottom2Up, isFling);
     } else {
       selfScrollerUp(bottom2Up, isFling);
@@ -163,6 +183,11 @@ public class PullListView extends ListView implements IMovePublishListener, IPul
       }
     });
     translate.start();
+  }
+
+  @Override
+  public int getHeaderHeight() {
+    return mHeaderView.getHeaderHeight();
   }
 
   @Override

@@ -1,5 +1,8 @@
 package com.one.framework.app.page.impl;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,6 +21,7 @@ import com.one.framework.app.widget.base.ITabIndicatorListener.IScaleListener;
 import com.one.framework.app.widget.base.ITabIndicatorListener.ITabItemListener;
 import com.one.framework.app.widget.TabIndicator;
 import com.one.framework.app.widget.base.ITopTitleView;
+import com.one.framework.app.widget.base.ITopTitleView.ITopTitleListener;
 import com.one.framework.log.Logger;
 import java.util.List;
 
@@ -26,11 +30,11 @@ import java.util.List;
  */
 
 public class TopBarFragment extends Fragment implements ITopbarFragment, IScaleListener {
+
   private FrameLayout mTabParentView;
   private ITabIndicatorListener mTabIndicator;
   private ITopTitleView mTopTitleView;
   private ImageView mMenuView;
-  private float mRotation;
 
   @Nullable
   @Override
@@ -62,18 +66,24 @@ public class TopBarFragment extends Fragment implements ITopbarFragment, IScaleL
 
   @Override
   public void onScaleMove(float scale) {
-    mRotation += scale;
-    mMenuView.setRotation(mRotation * 360);
+    mMenuView.setRotation(scale * 360);
   }
 
   @Override
   public void onScaleUp() {
-
+    ObjectAnimator rotate = ObjectAnimator.ofFloat(mMenuView, "rotation", mMenuView.getRotation(), 0f);
+    rotate.addUpdateListener(new AnimatorUpdateListener() {
+      @Override
+      public void onAnimationUpdate(ValueAnimator animation) {
+        mMenuView.setRotation((Float) animation.getAnimatedValue());
+      }
+    });
+    rotate.setDuration(200);
+    rotate.start();
   }
 
   @Override
   public int getTopbarHeight() {
-    Logger.e("ldx", "titleHeight " + mTopTitleView.getViewHeight() + " tabHeight " + mTabIndicator.getViewHeight());
     return mTopTitleView.getViewHeight() + mTabIndicator.getViewHeight();
   }
 
@@ -90,5 +100,10 @@ public class TopBarFragment extends Fragment implements ITopbarFragment, IScaleL
   @Override
   public void setTitle(int titleResId) {
     mTopTitleView.setTitle(titleResId);
+  }
+
+  @Override
+  public void setTitleClickListener(ITopTitleListener listener) {
+    mTopTitleView.setTopTitleListener(listener);
   }
 }

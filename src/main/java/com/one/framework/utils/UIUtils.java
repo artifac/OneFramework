@@ -67,8 +67,7 @@ public class UIUtils {
     Drawable rectDrawable = color == 0 ? null : new ColorDrawable(color);
     if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
       Drawable maskDrawable = new ColorDrawable(Color.WHITE);
-      return new RippleDrawable(new ColorStateList(new int[][]{}, new int[]{maskColor}),
-          rectDrawable, maskDrawable);
+      return new RippleDrawable(ColorStateList.valueOf(maskColor), rectDrawable, maskDrawable);
     } else {
       StateListDrawable maskDrawable = new StateListDrawable();
       maskDrawable.addState(new int[]{android.R.attr.state_pressed}, new ColorDrawable(maskColor));
@@ -85,8 +84,7 @@ public class UIUtils {
     Drawable rectDrawable = color == 0 ? null : colorDrawableRounded(color, roundedCorners);
     if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
       Drawable maskDrawable = colorDrawableRounded(Color.WHITE, roundedCorners);
-      return new RippleDrawable(new ColorStateList(new int[][]{}, new int[]{maskColor}),
-          rectDrawable, maskDrawable);
+      return new RippleDrawable(ColorStateList.valueOf(maskColor), rectDrawable, maskDrawable);
     } else {
       StateListDrawable maskDrawable = new StateListDrawable();
       maskDrawable.addState(new int[]{android.R.attr.state_pressed}, colorDrawableRounded(maskColor, roundedCorners));

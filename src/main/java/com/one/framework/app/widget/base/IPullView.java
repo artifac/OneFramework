@@ -10,11 +10,25 @@ public interface IPullView {
 
   /**
    * 获取滚动的高度
-   * @return
    */
   int getScrollingY();
+
+  /**
+   * 获取header 滚动的高度
+   */
   int getHeaderScrollHeight();
+
+  /**
+   * 是否滚动到底部
+   */
   boolean isScrollBottom();
+
+  /**
+   * header 是否继续滚动
+   */
   boolean isHeaderNeedScroll();
+
+  int getHeaderHeight();
+
   View getView();
 }

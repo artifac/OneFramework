@@ -2,4 +2,12 @@
   <style name="OneFrameworkTheme">
     <item name="android:background">@color/app_background</item>
   </style>
+
+  <style name="TextButtonStyle">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">match_parent</item>
+    <item name="android:padding">10dp</item>
+    <item name="android:clickable">true</item>
+    <item name="android:textColor">@color/one_text_button_style</item>
+  </style>
 </resources>

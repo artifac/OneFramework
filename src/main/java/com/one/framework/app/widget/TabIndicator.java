@@ -86,9 +86,16 @@ public class TabIndicator extends AbsTabIndicatorScrollerView implements ITabInd
   }
 
   @Override
-  protected void onScale(float scale) {
+  protected void onScaleMove(float scale) {
     if (mScaleListener != null) {
       mScaleListener.onScaleMove(scale);
+    }
+  }
+
+  @Override
+  protected void onScaleUp() {
+    if (mScaleListener != null) {
+      mScaleListener.onScaleUp();
     }
   }
 

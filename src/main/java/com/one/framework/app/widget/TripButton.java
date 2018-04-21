@@ -14,7 +14,6 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.Button;
 import com.one.framework.R;
-import com.one.framework.log.Logger;
 import com.one.framework.utils.UIUtils;
 
 
@@ -41,7 +40,6 @@ public class TripButton extends Button {
   private int mStrokeColor;
   private float mStokeWidth;
   private int mStyle;
-  
   
   public TripButton(Context context) {
     this(context, null);
@@ -85,7 +83,6 @@ public class TripButton extends Button {
     super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     int widthSize = MeasureSpec.getSize(widthMeasureSpec);
     int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-    Logger.e("ldx", "heightSize >>> " + heightSize);
     if (mStrokeColor == 0) {
       heightSize -= mRadius / 2;
     }
@@ -135,7 +132,7 @@ public class TripButton extends Button {
     mPaint.setTextSize(mTextSize);
     mMetrics = mPaint.getFontMetrics(); // 一定要在setTextSize()之后
     mPaint.setTextAlign(Paint.Align.CENTER);
-    canvas.drawText((String) mText, mRectF.centerX(), (getHeight() - mMetrics.ascent - mMetrics.leading - mMetrics.descent) / 2, mPaint);
+    canvas.drawText((String) mText, getWidth() / 2, (getHeight() - mMetrics.ascent - mMetrics.leading - mMetrics.descent) / 2, mPaint);
     if (mStrokeColor != 0) {
       Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
       paint.setAntiAlias(true);
@@ -144,9 +141,11 @@ public class TripButton extends Button {
       paint.setStyle(Style.STROKE);
       paint.setStrokeWidth(mStokeWidth);
       RectF strokeRect = new RectF(mRectF.left + mRadius / 2f, mRectF.top + mRadius / 2f, mRectF.right - mRadius / 2f, mRectF.bottom - mRadius / 2f);
-//      canvas.drawRoundRect(mRectF, mRadius, mRadius, paint);
       canvas.drawRoundRect(strokeRect, mRadius, mRadius, paint);
     }
+
+
+
   }
   
   private float getTextWidth() {

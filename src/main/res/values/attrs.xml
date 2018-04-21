@@ -20,5 +20,11 @@
       <enum name="self" value="1"/>
     </attr>
     <attr format="dimension" name="scroll_max_height"/>
+    <attr name="header_view_id" format="reference"/>
+
+    <attr name="resolve_conflict" format="boolean"/>
+    <attr name="have_footer_view" format="boolean"/>
+    <attr name="have_header_view" format="boolean"/>
   </declare-styleable>
+
 </resources>

@@ -1,3 +1,6 @@
 <resources>
   <color name="app_background">#e3e3e3</color>
+
+  <drawable name="one_navigator_options_pressed">#e9e9e9</drawable>
+  <drawable name="transparent">#00000000</drawable>
 </resources>

@@ -1,18 +1,49 @@
-<com.one.framework.app.widget.PullScrollRelativeLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<com.one.framework.app.widget.ScrollerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
-
-  <com.one.framework.app.widget.PullScrollView
+  <LinearLayout
+    android:id="@+id/one_navigator_general"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <LinearLayout
+    android:layout_height="80dp"
+    android:layout_alignParentBottom="true"
+    android:background="@android:color/holo_red_light"
+    android:orientation="horizontal">
+
+
+  </LinearLayout>
+
+  <TextView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_centerVertical="true"
+    android:gravity="center"
+    android:text="^_^"/>
+
+  <com.one.framework.app.widget.NavigatorHeaderView
+    android:id="@+id/one_navigator_header_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentTop="true"
+    android:background="#e5e5e5"/>
+
+  <com.one.framework.app.widget.PullScrollRelativeLayout
+    android:id="@+id/one_nav_pull_view_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_above="@id/one_navigator_general"
+    android:layout_below="@id/one_navigator_header_view">
+    <com.one.framework.app.widget.PullListView
+      android:id="@android:id/list"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:layout_gravity="center"
-      android:orientation="vertical">
+      android:cacheColorHint="@android:color/transparent"
+      android:listSelector="@android:color/transparent"
+      android:background="@android:color/white"
+      app:have_footer_view="false"
+      app:have_header_view="false"
+      app:resolve_conflict="true"
+      app:scroll_view="self"/>
+  </com.one.framework.app.widget.PullScrollRelativeLayout>
 
-    </LinearLayout>
-  </com.one.framework.app.widget.PullScrollView>
-
-</com.one.framework.app.widget.PullScrollRelativeLayout>
+</com.one.framework.app.widget.ScrollerLayout>

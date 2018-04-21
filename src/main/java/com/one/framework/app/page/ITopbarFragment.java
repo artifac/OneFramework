@@ -3,6 +3,7 @@ package com.one.framework.app.page;
 import android.view.View;
 import com.one.framework.app.model.TabItem;
 import com.one.framework.app.widget.base.ITabIndicatorListener.ITabItemListener;
+import com.one.framework.app.widget.base.ITopTitleView.ITopTitleListener;
 import java.util.List;
 
 /**
@@ -11,6 +12,7 @@ import java.util.List;
 
 public interface ITopbarFragment {
   void setTabItemListener(ITabItemListener listener);
+  void setTitleClickListener(ITopTitleListener listener);
   void setTabItems(List<TabItem> items);
   void setTitle(String title);
   void setTitle(int titleResId);

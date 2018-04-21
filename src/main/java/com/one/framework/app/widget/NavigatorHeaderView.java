@@ -11,26 +11,26 @@ import com.one.framework.R;
 import com.one.framework.app.widget.base.BaseHeaderView;
 
 /**
- * Created by ludexiang on 2018/4/3.
+ * Created by ludexiang on 2018/4/21.
  */
 
-public class HeaderView extends BaseHeaderView {
+public class NavigatorHeaderView extends BaseHeaderView {
 
-  public HeaderView(@NonNull Context context, int maxHeight) {
+  public NavigatorHeaderView(@NonNull Context context, int maxScrollHeight) {
     this(context, null);
-    mScrollMaxHeight = maxHeight;
+    mScrollMaxHeight = maxScrollHeight;
   }
 
-  public HeaderView(@NonNull Context context, @Nullable AttributeSet attrs) {
+  public NavigatorHeaderView(@NonNull Context context, @Nullable AttributeSet attrs) {
     this(context, attrs, 0);
   }
 
-  public HeaderView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+  public NavigatorHeaderView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
   }
 
   @Override
   protected View createView(Context context, ViewGroup container) {
-    return LayoutInflater.from(context).inflate(R.layout.one_list_header_view_layout, container, true);
+    return LayoutInflater.from(context).inflate(R.layout.one_navigator_header_layout, container, true);
   }
 }

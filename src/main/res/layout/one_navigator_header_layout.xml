@@ -1,0 +1,49 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@id/list_header_parent_layout"
+  android:layout_width="match_parent"
+  android:layout_height="180dp">
+
+  <ImageView
+    android:id="@+id/one_navigator_bg"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scaleType="centerCrop"
+    android:src="@drawable/one_navigator_background"/>
+
+  <TextView
+    android:id="@+id/one_navigator_grade"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:layout_marginBottom="10dp"
+    android:layout_marginLeft="20dp"
+    android:layout_alignParentBottom="true"
+    android:textColor="@android:color/white"
+    android:text="Grade"/>
+
+  <ImageView
+    android:id="@+id/one_navigator_avator"
+    android:layout_width="40dp"
+    android:layout_height="40dp"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="10dp"
+    android:layout_alignParentLeft="true"
+    android:layout_gravity="center"
+    android:scaleType="center"
+    android:layout_above="@id/one_navigator_grade"
+    android:src="@drawable/one_navigator_avator_default"/>
+
+  <TextView
+    android:id="@+id/one_navigator_user"
+    android:textStyle="bold"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignBottom="@id/one_navigator_avator"
+    android:layout_alignTop="@id/one_navigator_avator"
+    android:layout_centerVertical="true"
+    android:layout_toRightOf="@id/one_navigator_avator"
+    android:text="bubblelu"
+    android:textColor="@android:color/white"
+    android:textSize="28sp"/>
+
+</RelativeLayout>

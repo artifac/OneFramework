@@ -39,7 +39,7 @@ public class PageDelegateManager extends AbstractDelegateManager<Fragment> {
     }
   }
 
-  public Fragment getFragment(Context context, Intent intent, IBusinessContext businessContext) {
+  public Fragment getFragment(Intent intent, IBusinessContext businessContext) {
     ArrayList<Class<? extends Fragment>> matchedPages = new ArrayList<>();
 
     // 先进行ComponentName匹配 如果匹配OK 则直接返回
@@ -66,7 +66,7 @@ public class PageDelegateManager extends AbstractDelegateManager<Fragment> {
 
     // 如果component匹配未成功 则进行全方位匹配
     if (!isComponentMatched) {
-      fullMatch(context, intent, matchedPages);
+      fullMatch(businessContext.getContext(), intent, matchedPages);
     }
 
     // 匹配的个数
