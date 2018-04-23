@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import com.one.framework.R;
 import com.one.framework.app.widget.base.BaseHeaderView;
 
@@ -30,7 +29,12 @@ public class HeaderView extends BaseHeaderView {
   }
 
   @Override
-  protected View createView(Context context, ViewGroup container) {
-    return LayoutInflater.from(context).inflate(R.layout.one_list_header_view_layout, container, true);
+  protected View createView(Context context) {
+    return LayoutInflater.from(context).inflate(R.layout.one_list_header_view_layout, this, true);
+  }
+
+  @Override
+  public View getView() {
+    return this;
   }
 }

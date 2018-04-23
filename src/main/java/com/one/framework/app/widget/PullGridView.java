@@ -2,27 +2,24 @@ package com.one.framework.app.widget;
 
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.os.Build.VERSION_CODES;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
-import android.widget.ListView;
+import android.widget.GridView;
 import com.one.framework.R;
 import com.one.framework.app.widget.base.IHeaderView;
 import com.one.framework.app.widget.base.IMovePublishListener;
 import com.one.framework.app.widget.base.IPullView;
 
 /**
- * Created by ludexiang on 2018/4/3.
+ * Created by ludexiang on 2018/4/22.
  */
 
-@TargetApi(VERSION_CODES.M)
-public class PullListView extends ListView implements IMovePublishListener, IPullView,
+public class PullGridView extends GridView implements IMovePublishListener, IPullView,
     OnScrollListener {
 
   private SparseArray<ItemRecord> recordSp = new SparseArray(0);
@@ -36,15 +33,15 @@ public class PullListView extends ListView implements IMovePublishListener, IPul
   private boolean isHaveHeaderView;
   private boolean isResolveConflict;
 
-  public PullListView(Context context) {
+  public PullGridView(Context context) {
     this(context, null);
   }
 
-  public PullListView(Context context, AttributeSet attrs) {
+  public PullGridView(Context context, AttributeSet attrs) {
     this(context, attrs, 0);
   }
 
-  public PullListView(Context context, AttributeSet attrs, int defStyleAttr) {
+  public PullGridView(Context context, AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
 
     TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PullView);
@@ -65,25 +62,22 @@ public class PullListView extends ListView implements IMovePublishListener, IPul
     setOnScrollListener(this);
   }
 
-  @Override
   public void addHeaderView(View v) {
     if (isHaveHeaderView) {
-      super.addHeaderView(v);
     }
   }
 
 
-  @Override
   public void addFooterView(View v) {
     if (isHaveFooterView) {
-      super.addFooterView(v);
     }
   }
 
   @Override
   protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
     if (isResolveConflict) {
-      super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE >> 2, MeasureSpec.AT_MOST));
+      super.onMeasure(widthMeasureSpec,
+          MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE >> 2, MeasureSpec.AT_MOST));
     } else {
       super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
@@ -113,6 +107,7 @@ public class PullListView extends ListView implements IMovePublishListener, IPul
   }
 
   class ItemRecord {
+
     int height = 0;
     int top = 0;
   }

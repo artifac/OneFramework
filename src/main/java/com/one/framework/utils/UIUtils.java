@@ -11,6 +11,7 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Build;
+import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
 /**
@@ -33,6 +34,11 @@ public class UIUtils {
     boolean fastClick = curTime - sLastClickTime < DURATION;
     sLastClickTime = curTime;
     return fastClick;
+  }
+
+  public static int dip2pxInt(Context context, float dip) {
+    DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+    return (int)(dip * metrics.density);
   }
 
   /**

@@ -1,17 +1,7 @@
-<com.one.framework.app.widget.ScrollerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
-  <LinearLayout
-    android:id="@+id/one_navigator_general"
-    android:layout_width="match_parent"
-    android:layout_height="80dp"
-    android:layout_alignParentBottom="true"
-    android:background="@android:color/holo_red_light"
-    android:orientation="horizontal">
-
-
-  </LinearLayout>
 
   <TextView
     android:layout_width="match_parent"
@@ -31,19 +21,50 @@
     android:id="@+id/one_nav_pull_view_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_above="@id/one_navigator_general"
-    android:layout_below="@id/one_navigator_header_view">
+    android:layout_below="@id/one_navigator_header_view"
+    android:background="@android:color/white">
     <com.one.framework.app.widget.PullListView
       android:id="@android:id/list"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
+      android:background="@android:color/white"
       android:cacheColorHint="@android:color/transparent"
       android:listSelector="@android:color/transparent"
-      android:background="@android:color/white"
       app:have_footer_view="false"
       app:have_header_view="false"
       app:resolve_conflict="true"
       app:scroll_view="self"/>
   </com.one.framework.app.widget.PullScrollRelativeLayout>
 
-</com.one.framework.app.widget.ScrollerLayout>
+  <com.one.framework.app.widget.ScrollerLayout
+    android:id="@+id/one_navigator_general"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_below="@id/one_navigator_header_view"
+    android:background="#f5f5f5">
+
+    <ImageView
+      android:id="@+id/one_navigator_general_arrow"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="10dp"
+      android:layout_alignParentTop="true"
+      android:layout_centerHorizontal="true"
+      android:padding="8dp"
+      android:scaleType="fitCenter"
+      android:src="@drawable/one_navigator_general_arrow"/>
+
+    <com.one.framework.app.widget.PullGridView
+      android:id="@+id/one_navigator_grid_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_below="@id/one_navigator_general_arrow"
+      android:cacheColorHint="@android:color/transparent"
+      android:horizontalSpacing="10dp"
+      android:listSelector="@android:color/transparent"
+      android:numColumns="3"
+      android:verticalSpacing="10dp"
+      app:scroll_view="self"/>
+
+  </com.one.framework.app.widget.ScrollerLayout>
+</RelativeLayout>

@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 import com.one.framework.R;
 
 /**
@@ -28,10 +27,11 @@ public abstract class BaseHeaderView extends FrameLayout implements IHeaderView 
    */
   protected int mViewHeight;
 
-  private LayoutParams mParams;
+  private ViewGroup.LayoutParams mParams;
 
   public BaseHeaderView(Context context, int maxScrollHeight) {
-    this(context, null);
+    super(context);
+    mScrollMaxHeight = maxScrollHeight;
   }
 
   public BaseHeaderView(Context context, AttributeSet attrs) {
@@ -40,7 +40,7 @@ public abstract class BaseHeaderView extends FrameLayout implements IHeaderView 
 
   public BaseHeaderView(Context context, AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
-    View view = createView(context, this);
+    View view = createView(context);
     initView(view);
     view.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
       @Override
@@ -55,17 +55,17 @@ public abstract class BaseHeaderView extends FrameLayout implements IHeaderView 
   }
 
   private void initView(View view) {
-    mParentLayout = (FrameLayout) view.findViewById(R.id.list_header_parent_layout);
+    mParentLayout = view.findViewById(R.id.list_header_parent_layout);
     if (mParentLayout == null) {
       throw new IllegalArgumentException("HeaderView id must be list_header_parent_layout");
     }
 
-    mParams = (LayoutParams) mParentLayout.getLayoutParams();
+    mParams = mParentLayout.getLayoutParams();
     mViewHeight = mParams.height;
   }
 
 
-  protected abstract View createView(Context context, ViewGroup container);
+  protected abstract View createView(Context context);
 
 
   @Override
@@ -109,10 +109,5 @@ public abstract class BaseHeaderView extends FrameLayout implements IHeaderView 
       }
     });
     translate.start();
-  }
-
-  @Override
-  public View getView() {
-    return this;
   }
 }

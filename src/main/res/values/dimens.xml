@@ -1,0 +1,4 @@
+<resources>
+  <dimen name="one_general_default_show_height">90dp</dimen>
+  <dimen name="one_general_header_height">180dp</dimen>
+</resources>

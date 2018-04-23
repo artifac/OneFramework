@@ -67,8 +67,8 @@ public abstract class AbsBaseAdapter<T, H> extends BaseAdapter {
     if (convertView == null) {
       holder = createHolder();
       convertView = createView();
-      convertView.setTag(holder);
       initView(convertView, holder);
+      convertView.setTag(holder);
     } else {
       holder = (H) convertView.getTag();
     }

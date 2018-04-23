@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:id="@id/list_header_parent_layout"
   android:layout_width="match_parent"
-  android:layout_height="180dp">
+  android:layout_height="@dimen/one_general_header_height">
 
   <ImageView
     android:id="@+id/one_navigator_bg"

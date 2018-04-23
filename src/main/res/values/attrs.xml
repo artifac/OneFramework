@@ -1,4 +1,15 @@
 <resources>
+  <declare-styleable name="ShapeImageView">
+    <attr name="imageType">
+      <enum name="none" value="0"/>
+      <enum name="cycle" value="1"/>
+      <enum name="round" value="2"/>
+    </attr>
+    <attr name="borderColor" format="color"/>
+    <attr name="borderWidth" format="dimension"/>
+    <attr name="rectRoundRadius" format="dimension"/>
+  </declare-styleable>
+
   <declare-styleable name="TripButton">
     <attr format="dimension" name="radius"/>
     <attr format="color" name="enable_color"/>

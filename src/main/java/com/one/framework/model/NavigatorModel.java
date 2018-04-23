@@ -5,7 +5,8 @@ package com.one.framework.model;
  */
 
 public class NavigatorModel {
-  public String optionsUrl; // 小 icon
+  public String optionsIconUrl; // 小 icon
+  public int optionsIconId;
   public String optionsInfo;
   public String optionsExtra;
 }

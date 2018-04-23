@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import com.one.framework.R;
 import com.one.framework.app.widget.base.BaseHeaderView;
 
@@ -17,8 +16,7 @@ import com.one.framework.app.widget.base.BaseHeaderView;
 public class NavigatorHeaderView extends BaseHeaderView {
 
   public NavigatorHeaderView(@NonNull Context context, int maxScrollHeight) {
-    this(context, null);
-    mScrollMaxHeight = maxScrollHeight;
+    super(context, maxScrollHeight);
   }
 
   public NavigatorHeaderView(@NonNull Context context, @Nullable AttributeSet attrs) {
@@ -30,7 +28,12 @@ public class NavigatorHeaderView extends BaseHeaderView {
   }
 
   @Override
-  protected View createView(Context context, ViewGroup container) {
-    return LayoutInflater.from(context).inflate(R.layout.one_navigator_header_layout, container, true);
+  protected View createView(Context context) {
+    return LayoutInflater.from(context).inflate(R.layout.one_navigator_header_layout, this, true);
+  }
+
+  @Override
+  public View getView() {
+    return this;
   }
 }
