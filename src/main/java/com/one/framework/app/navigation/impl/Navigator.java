@@ -40,6 +40,7 @@ public final class Navigator implements INavigator {
     Fragment fragment = getFragment(intent, businessContext);
     if (fragment != null) {
       FragmentTransaction transaction = mFragmentManager.beginTransaction();
+//      transaction.setCustomAnimations();
       String fragmentTag = getFragmentTag(fragment.getClass());
       boolean isAddToBackStack = intent.getBooleanExtra(BUNDLE_ADD_TO_BACK_STACK, true);
       if (isAddToBackStack) {

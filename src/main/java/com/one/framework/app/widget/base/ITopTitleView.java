@@ -1,6 +1,8 @@
 package com.one.framework.app.widget.base;
 
 
+import android.view.View;
+
 /**
  * Created by ludexiang on 2018/4/17.
  */
@@ -23,4 +25,6 @@ public interface ITopTitleView {
   }
 
   void setTopTitleListener(ITopTitleListener listener);
+
+  View getView();
 }

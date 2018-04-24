@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ScrollView;
 import com.one.framework.R;
 import com.one.framework.app.widget.base.IHeaderView;
+import com.one.framework.app.widget.base.IItemClickListener;
 import com.one.framework.app.widget.base.IMovePublishListener;
 import com.one.framework.app.widget.base.IPullView;
 import com.one.framework.log.Logger;
@@ -144,5 +145,10 @@ public class PullScrollView extends ScrollView implements IPullView, IMovePublis
   @Override
   public int getHeaderHeight() {
     return mHeaderView.getHeaderHeight();
+  }
+
+  @Override
+  public void setItemClickListener(IItemClickListener listener) {
+
   }
 }

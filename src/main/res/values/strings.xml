@@ -1,4 +1,5 @@
 <resources>
   <string name="app_name">OneFramework</string>
   <string name="one_list_footer_view_info">Loading...</string>
+  <string name="one_all_business">All Business</string>
 </resources>

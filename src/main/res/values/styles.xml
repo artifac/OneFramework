@@ -10,4 +10,15 @@
     <item name="android:clickable">true</item>
     <item name="android:textColor">@color/one_text_button_style</item>
   </style>
+
+  <!-- pop up window 默认动画从底部出来 从底部出去-->
+  <style name="PopDefaultAnimation">
+    <item name="android:windowEnterAnimation">@anim/one_in_bottom_to_up</item>
+    <item name="android:windowExitAnimation">@anim/one_out_up_to_bottom</item>
+  </style>
+
+  <style name="TopBarMenuPopAnimation">
+    <item name="android:windowEnterAnimation">@anim/one_fade_in</item>
+    <item name="android:windowExitAnimation">@anim/one_fade_out</item>
+  </style>
 </resources>

@@ -21,8 +21,7 @@
     android:id="@+id/one_nav_pull_view_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_below="@id/one_navigator_header_view"
-    android:background="@android:color/white">
+    android:layout_below="@id/one_navigator_header_view">
     <com.one.framework.app.widget.PullListView
       android:id="@android:id/list"
       android:layout_width="match_parent"

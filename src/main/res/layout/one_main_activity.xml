@@ -42,6 +42,6 @@
       android:id="@+id/one_navigator_fragment"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:name="com.one.framework.app.page.NavigatorFragment"/>
+      android:name="com.one.framework.app.page.impl.NavigatorFragment"/>
   </RelativeLayout>
 </android.support.v4.widget.DrawerLayout>

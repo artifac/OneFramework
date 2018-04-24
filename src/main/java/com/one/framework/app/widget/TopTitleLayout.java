@@ -110,4 +110,9 @@ public class TopTitleLayout extends RelativeLayout implements ITopTitleView, OnC
       }
     }
   }
+
+  @Override
+  public View getView() {
+    return this;
+  }
 }

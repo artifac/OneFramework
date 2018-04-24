@@ -9,9 +9,12 @@ import android.util.SparseArray;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 import com.one.framework.R;
 import com.one.framework.app.widget.base.IHeaderView;
+import com.one.framework.app.widget.base.IItemClickListener;
 import com.one.framework.app.widget.base.IMovePublishListener;
 import com.one.framework.app.widget.base.IPullView;
 
@@ -20,10 +23,12 @@ import com.one.framework.app.widget.base.IPullView;
  */
 
 public class PullGridView extends GridView implements IMovePublishListener, IPullView,
-    OnScrollListener {
+    OnScrollListener, OnItemClickListener {
 
+  private static String NAMESPACE_ANDROID = "http://schemas.android.com/apk/res/android";
   private SparseArray<ItemRecord> recordSp = new SparseArray(0);
   private int mCurrentFirstVisibleItem = 0;
+  private final int mNumColumns;
 
   private IHeaderView mHeaderView;
   private int mScroller; // 0 scroll Header 1 scroll self
@@ -32,6 +37,8 @@ public class PullGridView extends GridView implements IMovePublishListener, IPul
   private boolean isHaveFooterView;
   private boolean isHaveHeaderView;
   private boolean isResolveConflict;
+
+  private IItemClickListener mItemClickListener;
 
   public PullGridView(Context context) {
     this(context, null);
@@ -57,9 +64,21 @@ public class PullGridView extends GridView implements IMovePublishListener, IPul
     }
     a.recycle();
 
+    /**
+     * extends GridView 时
+     * 1.定义命名空间，
+     * private static String NAMESPACE_ANDROID = "http://schemas.android.com/apk/res/android";
+     * 2.在继承GridView的构造方法中增加下代码 //防止在api 11之前出错
+     * columnNum = attrs.getAttributeIntValue(NAMESPACE_ANDROID,"numColumns",2);
+     * 3.在使用到getNumColumns()的地方替换成columnNum ；
+     * 注意：使用该方式，在布局文件中写GridView布局时，属性android:numColumns="2"必须设固定值，不可使用auto_fit,否则获取的列数将会为0
+     **/
+    mNumColumns = attrs.getAttributeIntValue(NAMESPACE_ANDROID,"numColumns",2);
     mHeaderView = new HeaderView(context, mMaxHeight);
     addHeaderView(mHeaderView.getView());
     setOnScrollListener(this);
+
+    setOnItemClickListener(this);
   }
 
   public void addHeaderView(View v) {
@@ -71,6 +90,11 @@ public class PullGridView extends GridView implements IMovePublishListener, IPul
   public void addFooterView(View v) {
     if (isHaveFooterView) {
     }
+  }
+
+  @Override
+  public int getNumColumns() {
+    return mNumColumns;
   }
 
   @Override
@@ -199,7 +223,19 @@ public class PullGridView extends GridView implements IMovePublishListener, IPul
   }
 
   @Override
+  public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    if (mItemClickListener != null) {
+      mItemClickListener.onItemClick(parent, view, position);
+    }
+  }
+
+  @Override
   public boolean isHeaderNeedScroll() {
     return mHeaderView.isNeedScroll();
+  }
+
+  @Override
+  public void setItemClickListener(IItemClickListener listener) {
+    mItemClickListener = listener;
   }
 }

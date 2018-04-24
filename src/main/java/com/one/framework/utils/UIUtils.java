@@ -2,6 +2,7 @@ package com.one.framework.utils;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -12,6 +13,8 @@ import android.graphics.drawable.StateListDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Build;
 import android.util.DisplayMetrics;
+import android.view.View;
+import android.view.View.MeasureSpec;
 import android.view.WindowManager;
 
 /**
@@ -25,6 +28,7 @@ public class UIUtils {
 
   private static Integer sScreenWidth = null;
   private static Integer sScreenHeight = null;
+  private static Integer sStatusBarHeight = null;
 
   /**
    * 检验是否是快速点击
@@ -81,6 +85,51 @@ public class UIUtils {
           : new LayerDrawable(new Drawable[]{rectDrawable, maskDrawable});
       return layerDrawable;
     }
+  }
+
+  /**
+   * 获取StatusBar的高度
+   *
+   * @param context
+   * @return
+   */
+  public static int getStatusbarHeight(Context context) {
+    if (sStatusBarHeight != null) {
+      return sStatusBarHeight;
+    }
+
+    Resources resources = context.getResources();
+    int resId = resources.getIdentifier("status_bar_height", "dimen", "android");
+    if (resId <= 0) {
+      return (sStatusBarHeight = dip2pxInt(context, 25));
+    }
+
+    try {
+      return (sStatusBarHeight = resources.getDimensionPixelSize(resId));
+    } catch (Resources.NotFoundException e) {
+      return (sStatusBarHeight = dip2pxInt(context, 25));
+    }
+
+  }
+
+  public static int getViewWidth(View view) {
+    calculateViewMeasure(view);
+    return view.getMeasuredWidth();
+  }
+
+  public static int getViewHeight(View view) {
+    calculateViewMeasure(view);
+    return view.getMeasuredHeight();
+  }
+
+  /**
+   * 测量控件的尺寸
+   */
+  private static void calculateViewMeasure(View view) {
+    int w = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+    int h = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+
+    view.measure(w, h);
   }
 
   /**

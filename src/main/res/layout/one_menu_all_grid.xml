@@ -1,0 +1,51 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:orientation="vertical">
+
+  <FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="45dp"
+    android:background="#fff">
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:gravity="center"
+      android:text="@string/one_all_business"
+      android:textColor="#333333"
+      android:textSize="18sp"/>
+    <ImageView
+      android:id="@+id/one_menu_close"
+      android:layout_width="45dp"
+      android:layout_height="match_parent"
+      android:layout_gravity="right"
+      android:scaleType="center"
+      android:src="@drawable/one_x_close"/>
+  </FrameLayout>
+
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="0.5dp"
+    android:background="#dcdcdc"/>
+
+  <com.one.framework.app.widget.PullScrollRelativeLayout
+    android:id="@+id/one_top_bar_menu_pull_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white">
+
+    <com.one.framework.app.widget.PullGridView
+      android:id="@+id/one_top_bar_menu_grid_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:horizontalSpacing="0.5dp"
+      android:numColumns="3"
+      android:cacheColorHint="@android:color/transparent"
+      android:listSelector="@android:color/transparent"
+      android:verticalSpacing="0.5dp"
+      android:background="#dcdcdc"
+      app:scroll_view="self"/>
+
+  </com.one.framework.app.widget.PullScrollRelativeLayout>
+</LinearLayout>

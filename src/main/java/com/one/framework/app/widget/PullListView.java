@@ -11,9 +11,12 @@ import android.util.SparseArray;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import com.one.framework.R;
 import com.one.framework.app.widget.base.IHeaderView;
+import com.one.framework.app.widget.base.IItemClickListener;
 import com.one.framework.app.widget.base.IMovePublishListener;
 import com.one.framework.app.widget.base.IPullView;
 
@@ -23,7 +26,7 @@ import com.one.framework.app.widget.base.IPullView;
 
 @TargetApi(VERSION_CODES.M)
 public class PullListView extends ListView implements IMovePublishListener, IPullView,
-    OnScrollListener {
+    OnScrollListener, OnItemClickListener {
 
   private SparseArray<ItemRecord> recordSp = new SparseArray(0);
   private int mCurrentFirstVisibleItem = 0;
@@ -35,6 +38,7 @@ public class PullListView extends ListView implements IMovePublishListener, IPul
   private boolean isHaveFooterView;
   private boolean isHaveHeaderView;
   private boolean isResolveConflict;
+  private IItemClickListener mItemClickListener;
 
   public PullListView(Context context) {
     this(context, null);
@@ -63,6 +67,7 @@ public class PullListView extends ListView implements IMovePublishListener, IPul
     mHeaderView = new HeaderView(context, mMaxHeight);
     addHeaderView(mHeaderView.getView());
     setOnScrollListener(this);
+    setOnItemClickListener(this);
   }
 
   @Override
@@ -206,5 +211,17 @@ public class PullListView extends ListView implements IMovePublishListener, IPul
   @Override
   public boolean isHeaderNeedScroll() {
     return mHeaderView.isNeedScroll();
+  }
+
+  @Override
+  public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    if (mItemClickListener != null) {
+      mItemClickListener.onItemClick(parent, view, position);
+    }
+  }
+
+  @Override
+  public void setItemClickListener(IItemClickListener listener) {
+    mItemClickListener = listener;
   }
 }

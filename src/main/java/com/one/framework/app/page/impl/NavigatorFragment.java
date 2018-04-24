@@ -1,4 +1,4 @@
-package com.one.framework.app.page;
+package com.one.framework.app.page.impl;
 
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
@@ -13,6 +13,7 @@ import com.one.framework.R;
 import com.one.framework.adapter.AbsBaseAdapter;
 import com.one.framework.adapter.impl.NavigatorOptionsAdapter;
 import com.one.framework.adapter.impl.NavigatorOptionsGridAdapter;
+import com.one.framework.app.page.ISlideDrawer;
 import com.one.framework.app.widget.PullGridView;
 import com.one.framework.app.widget.PullListView;
 import com.one.framework.app.widget.PullScrollRelativeLayout;
@@ -27,7 +28,7 @@ import java.util.List;
  * Created by ludexiang on 2018/4/16.
  */
 
-public class NavigatorFragment extends Fragment implements IMovePublishListener {
+public class NavigatorFragment extends Fragment implements IMovePublishListener, ISlideDrawer {
 
   private PullScrollRelativeLayout mPullRootLayout;
   private PullListView mNavigatorOptionsList;
@@ -82,6 +83,9 @@ public class NavigatorFragment extends Fragment implements IMovePublishListener 
   // 通用布局进行滚动
   @Override
   public void onMove(float offsetX, float offsetY) {
+    if (mGeneralLayout.getTranslationY() < 0) {
+      return;
+    }
     float translationY = mGeneralLayout.getTranslationY() + offsetY + 0.5f;
     float scale = translationY / mGeneralLayout.getHeight();
     mGridArrow.setRotation((1f - scale) * 180);
@@ -93,7 +97,7 @@ public class NavigatorFragment extends Fragment implements IMovePublishListener 
     float translationY = mGeneralLayout.getTranslationY() + 0.5f;
     float scale = 1f - Math.abs(translationY / mGeneralLayout.getHeight());
     float to = isFling ? (bottom2Up ? 0 : mGeneralDefaultHeight) : scale >= 0.5f ? 0f : mGeneralDefaultHeight;
-    int duration = (int) (300 * scale);
+    int duration = (int) Math.abs(300 * scale);
     goonMove(translationY, to, duration);
   }
 

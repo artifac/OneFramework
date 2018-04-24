@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.one.framework.R;
+import com.one.framework.app.widget.base.IItemClickListener;
 
 public class SwipeListView extends ListView implements AbsListView.OnScrollListener,
     SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemClickListener {
@@ -99,10 +100,5 @@ public class SwipeListView extends ListView implements AbsListView.OnScrollListe
     if (mItemListener != null) {
       mItemListener.onItemClick(adapterView, view, position);
     }
-  }
-
-  public interface IItemClickListener {
-
-    void onItemClick(AdapterView<?> adapterView, View view, int position);
   }
 }

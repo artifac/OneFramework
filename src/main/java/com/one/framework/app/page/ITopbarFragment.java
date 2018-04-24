@@ -18,4 +18,10 @@ public interface ITopbarFragment {
   void setTitle(int titleResId);
   View getTabView();
   int getTopbarHeight();
+
+  /**
+   * 设置所有业务
+   * @param tabs
+   */
+  void setAllBusiness(List<TabItem> tabs);
 }

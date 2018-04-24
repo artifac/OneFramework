@@ -21,6 +21,11 @@ public class TabItem {
   public String tabIcon;
 
   /**
+   * tab icon id
+   */
+  public int tabIconResId;
+
+  /**
    * position of viewgroup
    */
   public int position;

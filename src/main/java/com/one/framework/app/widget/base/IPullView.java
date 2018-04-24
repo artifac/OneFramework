@@ -30,5 +30,7 @@ public interface IPullView {
 
   int getHeaderHeight();
 
+  void setItemClickListener(IItemClickListener listener);
+
   View getView();
 }
