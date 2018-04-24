@@ -1,18 +1,14 @@
 package com.one.framework.app.page.impl;
 
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.MeasureSpec;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -39,8 +35,6 @@ import com.one.framework.app.widget.base.ITabIndicatorListener.ITabItemListener;
 import com.one.framework.app.widget.TabIndicator;
 import com.one.framework.app.widget.base.ITopTitleView;
 import com.one.framework.app.widget.base.ITopTitleView.ITopTitleListener;
-import com.one.framework.log.Logger;
-import com.one.framework.model.NavigatorModel;
 import com.one.framework.utils.UIUtils;
 import java.util.ArrayList;
 import java.util.List;
@@ -109,7 +103,7 @@ public class TopBarFragment extends Fragment implements ITopbarFragment, IScaleL
      * 如果想让PopUpWindow所包含的view做动画需通过PopupWindow.getContentView()获取对应的View在startAnimation
      */
     if (v.getId() == R.id.one_top_bar_tab_menu) {
-      mMenuView.setRotation(-45f);
+      rotate(mMenuView,-45f);
       mPopWindow = new PopWindow.PopupWindowBuilder(getContext())
           .setView(mMenuAllView)//显示的布局
           .size(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
@@ -157,6 +151,18 @@ public class TopBarFragment extends Fragment implements ITopbarFragment, IScaleL
     set.addAnimation(transY);
     set.setDuration(200);
     return set;
+  }
+
+  private void rotate(final View view, float rotate) {
+    ValueAnimator rotateAnim = ValueAnimator.ofFloat(0f, rotate);
+    rotateAnim.addUpdateListener(new AnimatorUpdateListener() {
+      @Override
+      public void onAnimationUpdate(ValueAnimator animation) {
+        view.setRotation((Float) animation.getAnimatedValue());
+      }
+    });
+    rotateAnim.setDuration(200);
+    rotateAnim.start();
   }
 
   @Override
@@ -228,6 +234,7 @@ public class TopBarFragment extends Fragment implements ITopbarFragment, IScaleL
     if (item != null && mTabItemListener != null) {
       mMenuClose.performClick();
       mTabItemListener.onItemClick(item);
+      mTabIndicator.update(position);
     }
   }
 }

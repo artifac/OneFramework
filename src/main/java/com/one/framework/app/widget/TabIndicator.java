@@ -49,10 +49,10 @@ public class TabIndicator extends AbsTabIndicatorScrollerView implements ITabInd
   }
 
   @Override
-  public void setTabItems(List<TabItem> items) {
+  public void setTabItems(final List<TabItem> items) {
     setChildViewGravity(items.size());
     for (int i = 0; i < items.size(); i++) {
-      TabItem tab = items.get(i);
+      final TabItem tab = items.get(i);
       View view = mInflater.inflate(R.layout.one_tab_item_layout, null);
       final TextView tabItem = (TextView) view.findViewById(R.id.one_tab_item);
       final View redPoint = view.findViewById(R.id.one_tab_item_red);
@@ -72,14 +72,7 @@ public class TabIndicator extends AbsTabIndicatorScrollerView implements ITabInd
       tabItem.setOnClickListener(new OnClickListener() {
         @Override
         public void onClick(View v) {
-          for (int i = 0; i < mTabContainer.getChildCount(); i++) {
-            mTabContainer.getChildAt(i).findViewById(R.id.one_tab_item).setSelected(false);
-          }
-          if (mTabItemListener != null) {
-            mTabItemListener.onItemClick((TabItem) tabItem.getTag());
-          }
-          redPoint.setVisibility(View.GONE);
-          tabItem.setSelected(true);
+          update(items.indexOf(tab));
         }
       });
     }
@@ -119,5 +112,25 @@ public class TabIndicator extends AbsTabIndicatorScrollerView implements ITabInd
   @Override
   public void setTabItemListener(ITabItemListener listener) {
     mTabItemListener = listener;
+  }
+
+  @Override
+  public void update(int position) {
+    for (int i = 0; i < mTabContainer.getChildCount(); i++) {
+      TextView txt = (TextView) mTabContainer.getChildAt(i).findViewById(R.id.one_tab_item);
+      if (i == position) {
+        txt.setSelected(true);
+      } else {
+        txt.setSelected(false);
+      }
+    }
+    View view = mTabContainer.getChildAt(position);
+    TextView tabItem = (TextView) view.findViewById(R.id.one_tab_item);
+    View redPoint = view.findViewById(R.id.one_tab_item_red);
+    if (mTabItemListener != null) {
+      mTabItemListener.onItemClick((TabItem) tabItem.getTag());
+    }
+    redPoint.setVisibility(View.GONE);
+    tabItem.setSelected(true);
   }
 }

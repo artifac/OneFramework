@@ -25,4 +25,6 @@ public interface ITabIndicatorListener {
     void onScaleMove(float scale);
     void onScaleUp();
   }
+
+  void update(int position);
 }
