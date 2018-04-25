@@ -6,6 +6,9 @@ import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 //import com.one.map.location.LocationProvider;
 //import com.one.map.view.IMapView;
+import com.one.framework.net.Api;
+import com.one.framework.net.model.ReqConfigResponse;
+import com.one.framework.net.request.IRequestConstant;
 import java.lang.reflect.Method;
 
 /**
@@ -40,6 +43,8 @@ public class OneApplication extends MultiDexApplication {
       Method method = applicationDelegateClass.getDeclaredMethod("attachBaseContext", Application.class);
       method.setAccessible(true);
       method.invoke(applicationDelegate, this);
+
+      Api.getInstance(base).request(IRequestConstant.REQUEST_CONFIG, null, new ReqConfigResponse());
     } catch (Exception e) {
       e.printStackTrace();
     }

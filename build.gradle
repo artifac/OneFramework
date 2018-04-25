@@ -72,6 +72,9 @@ dependencies {
     // 地图
     compile project(':onemap')
 //    implementation 'com.one.map:the-one-map:1.0.4'
+
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+    compile 'com.squareup.okio:okio:1.14.0'
 }
 
 //为支持aar动态更新，在build.gradle里添加如下代码
