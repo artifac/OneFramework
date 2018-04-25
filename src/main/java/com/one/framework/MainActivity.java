@@ -187,9 +187,9 @@ public class MainActivity extends FragmentActivity implements ITabItemListener {
     tab4.isSelected = false;
 
     TabItem tab5 = new TabItem();
-    tab5.tab = "摩拜单车";
+    tab5.tab = "共享单车";
     tab5.position = 4;
-    tab5.tabBiz = "mobike";
+    tab5.tabBiz = "driver";
     tab5.isRedPoint = true;
     tab5.tabIconResId = R.drawable.one_tab_business_bike;
     tab5.isSelected = false;
