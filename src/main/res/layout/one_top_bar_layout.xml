@@ -1,19 +1,15 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:background="@android:color/white"
   android:clickable="true"
   android:orientation="vertical">
-
-  <com.one.framework.app.widget.TopTitleLayout
-    android:id="@+id/one_top_title_layout"
-    android:layout_width="match_parent"
-    android:layout_height="50dp"/>
 
   <FrameLayout
     android:id="@+id/one_tab_container_parent"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_below="@id/one_top_title_layout"
+    android:background="@android:color/white">
     <com.one.framework.app.widget.TabIndicator
       android:id="@+id/one_top_bar_tab_indicator"
       android:layout_width="match_parent"
@@ -36,15 +32,23 @@
       android:id="@+id/one_top_bar_tab_menu"
       android:layout_width="32dp"
       android:layout_height="32dp"
+      android:layout_gravity="center | right"
       android:clickable="true"
       android:scaleType="center"
-      android:layout_gravity="center | right"
       android:src="@drawable/one_top_bar_menu"/>
+
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:layout_gravity="bottom"
+      android:background="#e3e3e3"/>
   </FrameLayout>
 
-  <View
+  <com.one.framework.app.widget.TopTitleLayout
+    android:id="@+id/one_top_title_layout"
     android:layout_width="match_parent"
-    android:layout_height="1dp"
-    android:background="#e3e3e3"/>
+    android:layout_height="50dp"
+    android:layout_alignParentTop="true"
+    android:background="@android:color/white"/>
 
-</LinearLayout>
+</RelativeLayout>

@@ -1,11 +1,13 @@
 package com.one.framework.app.page.impl;
 
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -195,11 +197,6 @@ public class TopBarFragment extends Fragment implements ITopbarFragment, IScaleL
   }
 
   @Override
-  public View getTabView() {
-    return mTabParentView;
-  }
-
-  @Override
   public void setTitle(String title) {
     mTopTitleView.setTitle(title);
   }
@@ -223,6 +220,7 @@ public class TopBarFragment extends Fragment implements ITopbarFragment, IScaleL
     int size = mol == 0 ? 0 : mPullGridView.getNumColumns() - mol;
     for (int i = 0; i < size; i++) {
       TabItem model = new TabItem();
+      model.isClickable = false;
       tabItems.add(model);
     }
     mMenuAdapter.setListData(tabItems);
@@ -231,10 +229,28 @@ public class TopBarFragment extends Fragment implements ITopbarFragment, IScaleL
   @Override
   public void onItemClick(AdapterView<?> adapterView, View view, int position) {
     TabItem item = (TabItem) mMenuAdapter.getItem(position);
-    if (item != null && mTabItemListener != null) {
+    if (item != null && mTabItemListener != null && item.isClickable) {
       mMenuClose.performClick();
       mTabItemListener.onItemClick(item);
       mTabIndicator.update(position);
     }
+  }
+
+  @Override
+  public void popBackListener() {
+    mTopTitleView.popBackListener();
+  }
+
+  @Override
+  public void tabIndicatorAnim(final boolean show) {
+    AnimatorSet set = new AnimatorSet();
+    // 1dip 是阴影高度
+    float fromY = show ? -mTabParentView.getMeasuredHeight() + TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getResources().getDisplayMetrics()) : 0f;
+    float toY = show ? 0f : -mTabParentView.getMeasuredHeight() + TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getResources().getDisplayMetrics());
+    ObjectAnimator translationY = ObjectAnimator.ofFloat(mTabParentView, "translationY", fromY, toY);
+//    ObjectAnimator alpha = ObjectAnimator.ofFloat(mTabParentView, "alpha", show ? 0f : 1f, show ? 1f : 0f);
+    set.setDuration(300);
+    set.playTogether(translationY/*, alpha*/);
+    set.start();
   }
 }

@@ -112,6 +112,18 @@ public class TopTitleLayout extends RelativeLayout implements ITopTitleView, OnC
   }
 
   @Override
+  public void popBackListener() {
+    // peek 返回栈顶元素 不移除
+    // pop 返回栈顶元素 移除
+    boolean onlyOne = mLeftListenerStack.size() == 1;
+    if (onlyOne) {
+      mLeftListenerStack.peek();
+    } else {
+      mLeftListenerStack.pop();
+    }
+  }
+
+  @Override
   public View getView() {
     return this;
   }

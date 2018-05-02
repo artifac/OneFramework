@@ -26,5 +26,7 @@ public interface ITopTitleView {
 
   void setTopTitleListener(ITopTitleListener listener);
 
+  void popBackListener();
+
   View getView();
 }

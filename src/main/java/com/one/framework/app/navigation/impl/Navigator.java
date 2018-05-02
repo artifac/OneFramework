@@ -1,10 +1,12 @@
 package com.one.framework.app.navigation.impl;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentManager.BackStackEntry;
 import android.support.v4.app.FragmentTransaction;
 import com.one.framework.R;
 import com.one.framework.app.model.IBusinessContext;
@@ -43,6 +45,7 @@ public final class Navigator implements INavigator {
 //      transaction.setCustomAnimations();
       String fragmentTag = getFragmentTag(fragment.getClass());
       boolean isAddToBackStack = intent.getBooleanExtra(BUNDLE_ADD_TO_BACK_STACK, true);
+      Logger.e("ldx", "isAddToBackStack " + isAddToBackStack);
       if (isAddToBackStack) {
         transaction.addToBackStack(fragmentTag);
       }
@@ -57,7 +60,26 @@ public final class Navigator implements INavigator {
         fragment.setArguments(bundle);
       }
       transaction.commitAllowingStateLoss();
+    } else {
+      // 跳转Activity
+      if (mSoftReference != null && mSoftReference.get() != null) {
+        if (!(mSoftReference.get() instanceof Activity)) {
+          intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
+        mSoftReference.get().startActivity(intent);
+      }
     }
+  }
+
+  @Override
+  public Fragment getCurrentFragment() {
+    int backStackCount = mFragmentManager.getBackStackEntryCount();
+    if (backStackCount != 0) { // 返回栈中存在Fragment
+      BackStackEntry stackEntry = mFragmentManager.getBackStackEntryAt(backStackCount - 1);
+      String fragmentTag = stackEntry.getName();
+      return mFragmentManager.findFragmentByTag(fragmentTag);
+    }
+    return null;
   }
 
   private String getFragmentTag(Class<? extends Fragment> fragment) {

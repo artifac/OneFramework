@@ -4,9 +4,14 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.KeyEvent.Callback;
+import com.one.framework.app.base.BaseActivity;
 import com.one.framework.app.model.BusinessContext;
 import com.one.framework.app.model.IBusinessContext;
 import com.one.framework.app.model.TabItem;
@@ -29,7 +34,7 @@ import java.util.List;
  * Created by ludexiang on 2018/3/26.
  */
 
-public class MainActivity extends FragmentActivity implements ITabItemListener {
+public class MainActivity extends BaseActivity implements ITabItemListener {
 
   private ActivityDelegateManager mDelegateManager;
   private IMap mMapFragment;
@@ -43,7 +48,6 @@ public class MainActivity extends FragmentActivity implements ITabItemListener {
   private ITopTitleListener mTopTitleListener = new ITopTitleListener() {
     @Override
     public void onTitleItemClick(ClickPosition position) {
-      Logger.e("ldx", "TOP title listener >>>>>" + position);
       switch (position) {
         case LEFT: {
           mDrawerLayout.openDrawer(Gravity.START);
@@ -68,21 +72,16 @@ public class MainActivity extends FragmentActivity implements ITabItemListener {
     addNavigator();
 
     mDrawerLayout = (DrawerLayout) findViewById(R.id.one_drawer_layout);
-    mMapFragment = (MapFragment) getSupportFragmentManager()
-        .findFragmentById(R.id.one_map_fragment);
-    mTopbarFragment = (TopBarFragment) getSupportFragmentManager()
-        .findFragmentById(R.id.one_top_bar_fragment);
-    mNavigatorFragment = (NavigatorFragment) getSupportFragmentManager()
-        .findFragmentById(R.id.one_navigator_fragment);
+    mMapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.one_map_fragment);
+    mTopbarFragment = (TopBarFragment) getSupportFragmentManager().findFragmentById(R.id.one_top_bar_fragment);
+    mNavigatorFragment = (NavigatorFragment) getSupportFragmentManager().findFragmentById(R.id.one_navigator_fragment);
     mTopbarFragment.setTabItemListener(this);
 
     mDelegateManager = new ActivityDelegateManager(this);
     mDelegateManager.notifyOnCreate();
 
     mBusinessContext = new BusinessContext(this, mMapFragment, mTopbarFragment, mNavigator);
-
     mTopbarFragment.setTabItems(testTabItems());
-
     mTopbarFragment.setAllBusiness(testTabItems());
   }
 
@@ -102,6 +101,22 @@ public class MainActivity extends FragmentActivity implements ITabItemListener {
   protected void onResume() {
     super.onResume();
     mDelegateManager.notifyOnResume();
+  }
+
+  @Override
+  protected void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+
+    try {
+      // 移除所有 FragmentManager 保存的状态信息,防止 Activity 重建时自动恢复 Fragment 实例
+      outState.remove("android:support:fragments");
+      outState.remove("android:support:next_request_index");
+      outState.remove("android:support:request_indicies");
+      outState.remove("android:support:request_fragment_who");
+    } finally {
+
+    }
+
   }
 
   @Override
@@ -136,12 +151,46 @@ public class MainActivity extends FragmentActivity implements ITabItemListener {
     mDelegateManager.notifyOnStop();
   }
 
+  @Override
+  public boolean onKeyDown(int keyCode, KeyEvent event) {
+    /**
+     * 如果返回的currentFragment为空 则表示在首页点击返回
+     */
+    Fragment currentFragment = mNavigator.getCurrentFragment();
+    if (currentFragment != null && currentFragment instanceof KeyEvent.Callback) {
+      boolean flag = ((Callback) currentFragment).onKeyDown(keyCode, event);
+      return !flag ? super.onKeyDown(keyCode, event) : flag;
+    }
+    return super.onKeyDown(keyCode, event);
+  }
+
+  @Override
+  public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+    return super.onKeyLongPress(keyCode, event);
+  }
+
+  @Override
+  public boolean onKeyUp(int keyCode, KeyEvent event) {
+    return super.onKeyUp(keyCode, event);
+  }
+
+  @Override
+  public boolean onKeyMultiple(int keyCode, int repeatCount, KeyEvent event) {
+    return super.onKeyMultiple(keyCode, repeatCount, event);
+  }
+
   public void addNavigator() {
     mNavigator = new Navigator(this, getSupportFragmentManager());
   }
 
   public ITopTitleListener getTopTitleListener() {
     return mTopTitleListener;
+  }
+
+  @Override
+  public void onBackPressed() {
+//    super.onBackPressed();
+    Logger.e("ldx", "onBackPressed >>>>>");
   }
 
   @Override

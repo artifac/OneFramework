@@ -16,7 +16,11 @@ public interface ITopbarFragment {
   void setTabItems(List<TabItem> items);
   void setTitle(String title);
   void setTitle(int titleResId);
-  View getTabView();
+
+  /**
+   * 整体标题栏高度
+   * @return
+   */
   int getTopbarHeight();
 
   /**
@@ -24,4 +28,11 @@ public interface ITopbarFragment {
    * @param tabs
    */
   void setAllBusiness(List<TabItem> tabs);
+
+  /**
+   * 弹出返回键监听
+   */
+  void popBackListener();
+
+  void tabIndicatorAnim(boolean show);
 }

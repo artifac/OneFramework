@@ -1,6 +1,7 @@
 package com.one.framework.app.navigation;
 
 import android.content.Intent;
+import android.support.v4.app.Fragment;
 import com.one.framework.app.model.IBusinessContext;
 
 /**
@@ -14,5 +15,11 @@ public interface INavigator {
   String BUNDLE_EXTRA_INFO = "bundle_extra_info";
 
   void startFragment(Intent intent, IBusinessContext businessContext);
+
+  /**
+   * 获得当前Fragment
+   * @return
+   */
+  Fragment getCurrentFragment();
   void backToRoot();
 }

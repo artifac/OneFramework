@@ -1,8 +1,10 @@
 package com.one.framework.adapter.impl;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.one.framework.R;
 import com.one.framework.adapter.AbsBaseAdapter;
@@ -28,6 +30,7 @@ public class TopbarMenuGripAdapter extends AbsBaseAdapter<TabItem, NavigatorHold
 
   @Override
   protected void initView(View view, NavigatorHolder holder) {
+    holder.allMenuLayout = (LinearLayout) view.findViewById(R.id.one_top_bar_all_menu_layout);
     holder.icon = (ShapeImageView) view.findViewById(R.id.one_menu_grid_icon);
     holder.options = (TextView) view.findViewById(R.id.one_menu_grid_info);
   }
@@ -35,8 +38,9 @@ public class TopbarMenuGripAdapter extends AbsBaseAdapter<TabItem, NavigatorHold
   @Override
   protected void bindData(TabItem model, NavigatorHolder holder, int position) {
     if (TextUtils.isEmpty(model.tab)) {
-
+      holder.allMenuLayout.setEnabled(false);
     } else {
+      holder.allMenuLayout.setEnabled(true);
       if (TextUtils.isEmpty(model.tabIcon)) {
         holder.icon.setImageResource(model.tabIconResId);
       } else {
@@ -52,7 +56,7 @@ public class TopbarMenuGripAdapter extends AbsBaseAdapter<TabItem, NavigatorHold
   }
 
   class NavigatorHolder {
-
+    LinearLayout allMenuLayout;
     ShapeImageView icon;
     TextView options;
   }
