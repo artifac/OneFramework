@@ -6,6 +6,7 @@ import com.one.framework.app.model.IBusinessContext;
 
 /**
  * Created by ludexiang on 2018/3/28.
+ * 界面路由器
  */
 
 public interface INavigator {
@@ -21,5 +22,6 @@ public interface INavigator {
    * @return
    */
   Fragment getCurrentFragment();
+  void lockDrawerLayout(boolean lock);
   void backToRoot();
 }

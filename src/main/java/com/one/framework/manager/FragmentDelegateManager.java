@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.PatternMatcher;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import com.one.framework.app.model.IBusinessContext;
 import com.one.framework.app.page.IComponent;
 import java.util.ArrayList;
@@ -20,20 +19,20 @@ import java.util.Set;
  * Created by ludexiang on 2018/3/28.
  */
 
-public class PageDelegateManager extends AbstractDelegateManager<Fragment> {
+public class FragmentDelegateManager extends AbstractDelegateManager<Fragment> {
 
   private Map<IntentFilter, Class<? extends Fragment>> fragments;
-  private static PageDelegateManager sPageDelegateManager;
+  private static FragmentDelegateManager sPageDelegateManager;
 
-  private PageDelegateManager() {
+  private FragmentDelegateManager() {
     fragments = new HashMap<>();
     loadFragments();
   }
 
-  public static PageDelegateManager getInstance() {
-    synchronized (PageDelegateManager.class) {
+  public static FragmentDelegateManager getInstance() {
+    synchronized (FragmentDelegateManager.class) {
       if (sPageDelegateManager == null) {
-        sPageDelegateManager = new PageDelegateManager();
+        sPageDelegateManager = new FragmentDelegateManager();
       }
       return sPageDelegateManager;
     }
@@ -92,8 +91,7 @@ public class PageDelegateManager extends AbstractDelegateManager<Fragment> {
     return cls2Page(target, intent, businessContext);
   }
 
-  private void fullMatch(Context context, Intent intent,
-      ArrayList<Class<? extends Fragment>> pageLists) {
+  private void fullMatch(Context context, Intent intent, ArrayList<Class<? extends Fragment>> pageLists) {
     // 全方位匹配
     String action = intent.getAction();
     String type = intent.resolveTypeIfNeeded(context.getApplicationContext().getContentResolver());

@@ -8,11 +8,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentManager.BackStackEntry;
 import android.support.v4.app.FragmentTransaction;
+import com.one.framework.MainActivity;
 import com.one.framework.R;
 import com.one.framework.app.model.IBusinessContext;
 import com.one.framework.app.navigation.INavigator;
 import com.one.framework.log.Logger;
-import com.one.framework.manager.PageDelegateManager;
+import com.one.framework.manager.FragmentDelegateManager;
 import java.lang.ref.SoftReference;
 
 /**
@@ -24,13 +25,13 @@ import java.lang.ref.SoftReference;
 public final class Navigator implements INavigator {
 
   private SoftReference<Context> mSoftReference;
-  private PageDelegateManager mPageManager;
+  private FragmentDelegateManager mPageManager;
   private FragmentManager mFragmentManager;
 
   public Navigator(Context context, FragmentManager manager) {
     mSoftReference = new SoftReference<Context>(context);
     mFragmentManager = manager;
-    mPageManager = PageDelegateManager.getInstance();
+    mPageManager = FragmentDelegateManager.getInstance();
   }
 
   private Fragment getFragment(Intent intent, IBusinessContext businessContext) {
@@ -45,7 +46,6 @@ public final class Navigator implements INavigator {
 //      transaction.setCustomAnimations();
       String fragmentTag = getFragmentTag(fragment.getClass());
       boolean isAddToBackStack = intent.getBooleanExtra(BUNDLE_ADD_TO_BACK_STACK, true);
-      Logger.e("ldx", "isAddToBackStack " + isAddToBackStack);
       if (isAddToBackStack) {
         transaction.addToBackStack(fragmentTag);
       }
@@ -67,6 +67,7 @@ public final class Navigator implements INavigator {
           intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         }
         mSoftReference.get().startActivity(intent);
+//        ((Activity)mSoftReference.get()).overridePendingTransition();
       }
     }
   }
@@ -88,7 +89,15 @@ public final class Navigator implements INavigator {
   }
 
   @Override
+  public void lockDrawerLayout(boolean lock) {
+    if (mSoftReference.get() != null && mSoftReference.get() instanceof MainActivity) {
+      ((MainActivity) mSoftReference.get()).lockDrawerLayout(lock);
+    }
+  }
+
+  @Override
   public void backToRoot() {
+
     int entryCount = mFragmentManager.getBackStackEntryCount();
     Logger.e("ldx", "entryCount " + entryCount);
 //    mFragmentManager.po

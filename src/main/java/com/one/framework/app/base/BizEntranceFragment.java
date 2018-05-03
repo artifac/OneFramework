@@ -1,26 +1,19 @@
 package com.one.framework.app.base;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.KeyEvent;
-import android.view.View;
-import android.view.View.OnKeyListener;
 import com.one.framework.MainActivity;
 import com.one.framework.api.annotation.ServiceProvider;
 import com.one.framework.app.model.IBusinessContext;
-import com.one.framework.app.navigation.INavigator;
-import com.one.framework.app.navigation.impl.Navigator;
 import com.one.framework.app.page.IComponent;
 import com.one.framework.app.page.ITopbarFragment;
-import com.one.framework.app.widget.base.ITopTitleView;
 import com.one.framework.app.widget.base.ITopTitleView.ClickPosition;
 import com.one.framework.app.widget.base.ITopTitleView.ITopTitleListener;
-import com.one.framework.log.Logger;
-import com.one.framework.manager.PageDelegateManager;
 import com.one.map.IMap;
 import java.lang.ref.SoftReference;
 
@@ -48,7 +41,6 @@ public abstract class BizEntranceFragment extends Fragment implements IComponent
 
   /**
    * 优先于 onAttach
-   * @param businessContext
    */
   @Override
   public void setBusinessContext(IBusinessContext businessContext) {
@@ -67,7 +59,6 @@ public abstract class BizEntranceFragment extends Fragment implements IComponent
 
   /**
    * 跳转到下一个界面
-   * @param clazz
    */
   protected final void forward(Class<? extends Fragment> clazz) {
     forward(clazz, null);
@@ -75,8 +66,6 @@ public abstract class BizEntranceFragment extends Fragment implements IComponent
 
   /**
    * 是否保留tab 入口
-   * @param clazz
-   * @param args
    */
   protected final void forward(Class<? extends Fragment> clazz, Bundle args) {
     forward(clazz, args, false);
@@ -84,10 +73,9 @@ public abstract class BizEntranceFragment extends Fragment implements IComponent
 
   /**
    * 跳转到下一个界面
-   * @param clazz
-   * @param args
    */
-  protected final void forward(Class<? extends Fragment> clazz, Bundle args, boolean isSaveTabEntrance) {
+  protected final void forward(Class<? extends Fragment> clazz, Bundle args,
+      boolean isSaveTabEntrance) {
     if (mBusContext == null) {
       return;
     }
@@ -109,20 +97,30 @@ public abstract class BizEntranceFragment extends Fragment implements IComponent
   /**
    * 离开首页
    * 跳转到其他页面
+   *
+   * @CallSuper 子类必须 invoke super.onLeaveHome
    */
+  @CallSuper
   protected void onLeaveHome() {
-    Logger.e("ldx", "onLeaveHome ......");
+    // 锁定DrawerLayout 不允许侧滑
+    mBusContext.getNavigator().lockDrawerLayout(true);
   }
 
   /**
    * 从其他页面回到根页面
+   *
+   * @CallSuper 子类必须 invoke super.onBackHome
    */
+  @CallSuper
   protected void onBackHome() {
     mBusContext.getTopbar().tabIndicatorAnim(true);
     mBusContext.getNavigator().backToRoot();
+    mBusContext.getNavigator().lockDrawerLayout(false);
   }
 
-  /** view 设置 **/
+  /**
+   * view 设置
+   **/
   protected void setTitle(String title) {
     mTopbarView.setTitle(title);
   }
@@ -133,7 +131,6 @@ public abstract class BizEntranceFragment extends Fragment implements IComponent
 
   /**
    * sub child Fragment 可以复写此方法处理title bar 点击事件
-   * @param position
    */
   @Override
   public void onTitleItemClick(ClickPosition position) {
@@ -147,9 +144,6 @@ public abstract class BizEntranceFragment extends Fragment implements IComponent
 
   /**
    * 若返回键做处理
-   * @param keyCode
-   * @param event
-   * @return
    */
   @Override
   public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -160,7 +154,6 @@ public abstract class BizEntranceFragment extends Fragment implements IComponent
     }
     return false;
   }
-
 
 
   @Override

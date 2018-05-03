@@ -193,6 +193,14 @@ public class MainActivity extends BaseActivity implements ITabItemListener {
     Logger.e("ldx", "onBackPressed >>>>>");
   }
 
+  public void lockDrawerLayout(boolean lock) {
+    if (lock) {
+      mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+    } else {
+      mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+    }
+  }
+
   @Override
   protected void onDestroy() {
     super.onDestroy();
