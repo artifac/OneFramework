@@ -102,7 +102,8 @@
     android:name="com.one.framework.app.base.OneApplication"
     android:resizeableActivity="false"
     android:supportsRtl="false"
-    tools:replace="android:allowBackup,android:supportsRtl">
+    android:theme="@style/AppTheme.Main"
+    tools:replace="android:allowBackup,android:supportsRtl,android:theme">
 
     <meta-data
       android:name="android.max_aspect"

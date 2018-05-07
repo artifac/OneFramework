@@ -13,7 +13,6 @@ import com.one.framework.app.widget.base.IHeaderView;
 import com.one.framework.app.widget.base.IItemClickListener;
 import com.one.framework.app.widget.base.IMovePublishListener;
 import com.one.framework.app.widget.base.IPullView;
-import com.one.framework.log.Logger;
 
 /**
  * Created by ludexiang on 2018/4/3.
@@ -97,7 +96,7 @@ public class PullScrollView extends ScrollView implements IPullView, IMovePublis
   public boolean isScrollBottom() {
     View childView = getChildAt(0);
     if (childView != null) {
-      return childView.getMeasuredHeight() <= getScrollingY() + getHeaderScrollHeight()
+      return childView.getMeasuredHeight() <= getScrollingPadding() + getHeaderScrollHeight()
           || childView.getMeasuredHeight() <= getHeight();
     }
     return false;
@@ -109,7 +108,7 @@ public class PullScrollView extends ScrollView implements IPullView, IMovePublis
   }
 
   @Override
-  public int getScrollingY() {
+  public int getScrollingPadding() {
     return getScrollY();
   }
 

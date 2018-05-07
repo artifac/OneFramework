@@ -140,7 +140,7 @@ public class PullGridView extends GridView implements IMovePublishListener, IPul
    * 获取滑动的距离
    */
   @Override
-  public int getScrollingY() {
+  public int getScrollingPadding() {
     int height = 0;
     for (int i = 0; i < mCurrentFirstVisibleItem; i++) {
       ItemRecord itemRecord = recordSp.get(i);

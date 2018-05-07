@@ -112,7 +112,7 @@ public class PullScrollRelativeLayout extends RelativeLayout {
         final int pointerIndex = MotionEventCompat.findPointerIndex(ev, mActivePointerId);
         final int curX = (int) MotionEventCompat.getX(ev, pointerIndex);
         final int curY = (int) MotionEventCompat.getY(ev, pointerIndex);
-        boolean isScrollTop = (curY - mLastDownY >= mMinScroll && mPullView.getScrollingY() == 0) || (mScrollView.getTranslationY() > 0 && !mPullView.isScrollBottom()) || mPullView.isHeaderNeedScroll();
+        boolean isScrollTop = (curY - mLastDownY >= mMinScroll && mPullView.getScrollingPadding() == 0) || (mScrollView.getTranslationY() > 0 && !mPullView.isScrollBottom()) || mPullView.isHeaderNeedScroll();
         boolean isScrollBottom = (mLastDownY - curY >= mMinScroll && mPullView.isScrollBottom() && mScrollView.getTranslationY() <= 0);
         isScrolling = isScrollTop || isScrollBottom;
         if (checkScrollView()) {
@@ -150,6 +150,11 @@ public class PullScrollRelativeLayout extends RelativeLayout {
     return super.dispatchTouchEvent(ev);
   }
 
+  @Override
+  public boolean onTouchEvent(MotionEvent event) {
+    return true;
+  }
+
   private void handleMove(float offsetX, float offsetY) {
     if (mMoveListener != null) {
       mMoveListener.onMove(offsetX, offsetY);
@@ -171,7 +176,7 @@ public class PullScrollRelativeLayout extends RelativeLayout {
    * 判断是否可滚动
    */
   private boolean canScroll() {
-    return isScrolling && (mPullView.getScrollingY() == 0 || mPullView.isScrollBottom());
+    return isScrolling && (mPullView.getScrollingPadding() == 0 || mPullView.isScrollBottom());
   }
 
   private void addVelocityTracker(MotionEvent event) {

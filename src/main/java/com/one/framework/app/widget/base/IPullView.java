@@ -9,9 +9,9 @@ import android.view.View;
 public interface IPullView {
 
   /**
-   * 获取滚动的高度
+   * 获取滚动的距离
    */
-  int getScrollingY();
+  int getScrollingPadding();
 
   /**
    * 获取header 滚动的高度

@@ -1,4 +1,12 @@
 <resources>
+
+  <!-- Base application theme. -->
+  <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+  </style>
+
+  <style name="AppTheme.Main" parent="AppTheme">
+  </style>
+
   <style name="OneFrameworkTheme">
     <item name="android:background">@color/app_background</item>
   </style>
