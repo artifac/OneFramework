@@ -11,6 +11,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.KeyEvent.Callback;
+import android.widget.Toast;
 import com.one.framework.app.base.BaseActivity;
 import com.one.framework.app.model.BusinessContext;
 import com.one.framework.app.model.IBusinessContext;
@@ -20,6 +21,7 @@ import com.one.framework.app.navigation.impl.Navigator;
 import com.one.framework.app.page.ITopbarFragment;
 import com.one.framework.app.page.impl.NavigatorFragment;
 import com.one.framework.app.page.impl.TopBarFragment;
+import com.one.framework.app.widget.MapCenterPinView;
 import com.one.framework.app.widget.base.ITabIndicatorListener.ITabItemListener;
 import com.one.framework.app.widget.base.ITopTitleView.ClickPosition;
 import com.one.framework.app.widget.base.ITopTitleView.ITopTitleListener;
@@ -27,6 +29,9 @@ import com.one.framework.log.Logger;
 import com.one.framework.manager.ActivityDelegateManager;
 import com.one.map.IMap;
 import com.one.map.MapFragment;
+import com.one.map.model.Address;
+import com.one.map.view.IMapDelegate.CenterLatLngParams;
+import com.one.map.view.IMapDelegate.IMapListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +49,7 @@ public class MainActivity extends BaseActivity implements ITabItemListener {
   private DrawerLayout mDrawerLayout;
   private int mCurrentPosition = -1;
   private NavigatorFragment mNavigatorFragment;
+  private MapCenterPinView mMapPinView;
 
   private ITopTitleListener mTopTitleListener = new ITopTitleListener() {
     @Override
@@ -75,6 +81,7 @@ public class MainActivity extends BaseActivity implements ITabItemListener {
     mMapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.one_map_fragment);
     mTopbarFragment = (TopBarFragment) getSupportFragmentManager().findFragmentById(R.id.one_top_bar_fragment);
     mNavigatorFragment = (NavigatorFragment) getSupportFragmentManager().findFragmentById(R.id.one_navigator_fragment);
+    mMapPinView = (MapCenterPinView) findViewById(R.id.one_map_center_pin);
     mTopbarFragment.setTabItemListener(this);
 
     mDelegateManager = new ActivityDelegateManager(this);
@@ -83,6 +90,8 @@ public class MainActivity extends BaseActivity implements ITabItemListener {
     mBusinessContext = new BusinessContext(this, mMapFragment, mTopbarFragment, mNavigator);
     mTopbarFragment.setTabItems(testTabItems());
     mTopbarFragment.setAllBusiness(testTabItems());
+    mMapFragment.setMapListener(this);
+    mMapPinView.setMap(mMapFragment);
   }
 
   @Override
@@ -116,7 +125,19 @@ public class MainActivity extends BaseActivity implements ITabItemListener {
     } finally {
 
     }
+  }
 
+  @Override
+  public void onMapMoveFinish(CenterLatLngParams params) {
+    mMapPinView.jumpTwice(params.center);
+  }
+
+  /**
+   * 地址反转
+   */
+  @Override
+  public void onMapGeo2Address(Address address) {
+    mMapPinView.stop();
   }
 
   @Override

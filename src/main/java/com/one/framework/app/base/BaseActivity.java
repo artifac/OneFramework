@@ -8,12 +8,14 @@ import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import com.one.map.view.IMapDelegate.CenterLatLngParams;
+import com.one.map.view.IMapDelegate.IMapListener;
 
 /**
  * Created by ludexiang on 2018/5/2.
  */
 
-public class BaseActivity extends FragmentActivity {
+public abstract class BaseActivity extends FragmentActivity implements IMapListener {
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,4 +44,15 @@ public class BaseActivity extends FragmentActivity {
       }
     }
   }
+
+  @Override
+  public void onMapLoaded() {
+
+  }
+
+  @Override
+  public void onMapMoveChange() {
+
+  }
+
 }
