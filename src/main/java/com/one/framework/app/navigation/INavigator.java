@@ -15,7 +15,7 @@ public interface INavigator {
   String BUNDLE_FORWARD_FRAGMENT_STYLE = "bundle_froward_fragment_style";
   String BUNDLE_EXTRA_INFO = "bundle_extra_info";
 
-  void startFragment(Intent intent, IBusinessContext businessContext);
+  Fragment startFragment(Intent intent, IBusinessContext businessContext);
 
   /**
    * 获得当前Fragment

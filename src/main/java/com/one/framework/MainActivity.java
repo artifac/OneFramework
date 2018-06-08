@@ -5,14 +5,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.KeyEvent.Callback;
-import android.widget.Toast;
 import com.one.framework.app.base.BaseActivity;
+import com.one.framework.app.base.BizEntranceFragment;
 import com.one.framework.app.model.BusinessContext;
 import com.one.framework.app.model.IBusinessContext;
 import com.one.framework.app.model.TabItem;
@@ -27,11 +26,11 @@ import com.one.framework.app.widget.base.ITopTitleView.ClickPosition;
 import com.one.framework.app.widget.base.ITopTitleView.ITopTitleListener;
 import com.one.framework.log.Logger;
 import com.one.framework.manager.ActivityDelegateManager;
+import com.one.framework.provider.HomeDataProvider;
 import com.one.map.IMap;
 import com.one.map.MapFragment;
 import com.one.map.model.Address;
 import com.one.map.view.IMapDelegate.CenterLatLngParams;
-import com.one.map.view.IMapDelegate.IMapListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +49,11 @@ public class MainActivity extends BaseActivity implements ITabItemListener {
   private int mCurrentPosition = -1;
   private NavigatorFragment mNavigatorFragment;
   private MapCenterPinView mMapPinView;
+  private LocalBroadcastManager mLocalBroadcastManager;
+  /**
+   * 当前业务线 入口 Fragment
+   */
+  private Fragment mCurrentFragment;
 
   private ITopTitleListener mTopTitleListener = new ITopTitleListener() {
     @Override
@@ -92,6 +96,8 @@ public class MainActivity extends BaseActivity implements ITabItemListener {
     mTopbarFragment.setAllBusiness(testTabItems());
     mMapFragment.setMapListener(this);
     mMapPinView.setMap(mMapFragment);
+
+    mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
   }
 
   @Override
@@ -138,6 +144,18 @@ public class MainActivity extends BaseActivity implements ITabItemListener {
   @Override
   public void onMapGeo2Address(Address address) {
     mMapPinView.stop();
+    HomeDataProvider.getInstance().saveLocAddress(address);
+    // notify observer
+
+    // todo current use LocalBroadcastManager
+    Intent intent = new Intent("INTENT_CURRENT_LOCATION_ADDRESS");
+    intent.putExtra("current_location_address", address);
+    mLocalBroadcastManager.sendBroadcast(intent);
+  }
+
+  @Override
+  public void onMapPoiAddresses(int type, List<Address> addresses) {
+    HomeDataProvider.getInstance().savePoiAddresses(type, addresses);
   }
 
   @Override
@@ -152,7 +170,15 @@ public class MainActivity extends BaseActivity implements ITabItemListener {
     intent.setData(uri);
     intent.putExtra(INavigator.BUNDLE_ADD_TO_BACK_STACK, false);
 
-    mNavigator.startFragment(intent, mBusinessContext);
+    Fragment entranceFragment = mNavigator.startFragment(intent, mBusinessContext);
+    if (entranceFragment == null) {
+      // todo
+    }
+    Fragment lastEntranceFragment = mCurrentFragment;
+    mCurrentFragment = entranceFragment == null ? new Fragment() : entranceFragment;
+    if (lastEntranceFragment != null) {
+      lastEntranceFragment.setUserVisibleHint(false);
+    }
   }
 
   private String constructUriString(TabItem tab) {
@@ -232,69 +258,69 @@ public class MainActivity extends BaseActivity implements ITabItemListener {
   private List<TabItem> testTabItems() {
     List<TabItem> items = new ArrayList<>();
 
-    TabItem tab1 = new TabItem();
-    tab1.tab = "快车";
-    tab1.position = 0;
-    tab1.tabBiz = "flash";
-    tab1.tabIconResId = R.drawable.one_tab_business_bike;
-    tab1.isRedPoint = false;
-    tab1.isSelected = true;
-
-    TabItem tab2 = new TabItem();
-    tab2.tab = "站点巴士";
-    tab2.position = 1;
-    tab2.tabIconResId = R.drawable.one_tab_business_bike;
-    tab2.tabBiz = "calendar";
-    tab2.isRedPoint = false;
-    tab2.isSelected = false;
-
-    TabItem tab3 = new TabItem();
-    tab3.tab = "专车";
-    tab3.position = 2;
-    tab3.tabIconResId = R.drawable.one_tab_business_bike;
-    tab3.tabBiz = "premium";
-    tab3.isRedPoint = false;
-    tab3.isSelected = false;
+//    TabItem tab1 = new TabItem();
+//    tab1.tab = "快车";
+//    tab1.position = 0;
+//    tab1.tabBiz = "flash";
+//    tab1.tabIconResId = R.drawable.one_tab_business_bike;
+//    tab1.isRedPoint = false;
+//    tab1.isSelected = true;
+//
+//    TabItem tab2 = new TabItem();
+//    tab2.tab = "站点巴士";
+//    tab2.position = 1;
+//    tab2.tabIconResId = R.drawable.one_tab_business_bike;
+//    tab2.tabBiz = "calendar";
+//    tab2.isRedPoint = false;
+//    tab2.isSelected = false;
+//
+//    TabItem tab3 = new TabItem();
+//    tab3.tab = "专车";
+//    tab3.position = 2;
+//    tab3.tabIconResId = R.drawable.one_tab_business_bike;
+//    tab3.tabBiz = "premium";
+//    tab3.isRedPoint = false;
+//    tab3.isSelected = false;
 
     TabItem tab4 = new TabItem();
     tab4.tab = "出租车";
-    tab4.position = 3;
+    tab4.position = 0;
     tab4.tabBiz = "taxi";
     tab4.isRedPoint = true;
     tab4.tabIconResId = R.drawable.one_tab_business_bike;
-    tab4.isSelected = false;
+    tab4.isSelected = true;
 
-    TabItem tab5 = new TabItem();
-    tab5.tab = "共享单车";
-    tab5.position = 4;
-    tab5.tabBiz = "driver";
-    tab5.isRedPoint = true;
-    tab5.tabIconResId = R.drawable.one_tab_business_bike;
-    tab5.isSelected = false;
+//    TabItem tab5 = new TabItem();
+//    tab5.tab = "共享单车";
+//    tab5.position = 4;
+//    tab5.tabBiz = "driver";
+//    tab5.isRedPoint = true;
+//    tab5.tabIconResId = R.drawable.one_tab_business_bike;
+//    tab5.isSelected = false;
+//
+//    TabItem tab6 = new TabItem();
+//    tab6.tab = "专车";
+//    tab6.position = 5;
+//    tab6.tabBiz = "premium";
+//    tab6.isRedPoint = false;
+//    tab6.isSelected = false;
+//    tab6.tabIconResId = R.drawable.one_tab_business_bike;
+//
+//    TabItem tab7 = new TabItem();
+//    tab7.tab = "香港专车";
+//    tab7.position = 6;
+//    tab7.tabBiz = "premium";
+//    tab7.isRedPoint = false;
+//    tab7.isSelected = false;
+//    tab7.tabIconResId = R.drawable.one_tab_business_bike;
 
-    TabItem tab6 = new TabItem();
-    tab6.tab = "专车";
-    tab6.position = 5;
-    tab6.tabBiz = "premium";
-    tab6.isRedPoint = false;
-    tab6.isSelected = false;
-    tab6.tabIconResId = R.drawable.one_tab_business_bike;
-
-    TabItem tab7 = new TabItem();
-    tab7.tab = "香港专车";
-    tab7.position = 6;
-    tab7.tabBiz = "premium";
-    tab7.isRedPoint = false;
-    tab7.isSelected = false;
-    tab7.tabIconResId = R.drawable.one_tab_business_bike;
-
-    items.add(tab1);
-    items.add(tab2);
-    items.add(tab3);
+//    items.add(tab1);
+//    items.add(tab2);
+//    items.add(tab3);
     items.add(tab4);
-    items.add(tab5);
-    items.add(tab6);
-    items.add(tab7);
+//    items.add(tab5);
+//    items.add(tab6);
+//    items.add(tab7);
 
     return items;
   }

@@ -7,8 +7,14 @@ import android.support.multidex.MultiDexApplication;
 //import com.one.map.location.LocationProvider;
 //import com.one.map.view.IMapView;
 import com.one.framework.net.Api;
+import com.one.framework.net.HeaderParams;
+import com.one.framework.net.NetworkConfig;
+import com.one.framework.net.base.INetworkConfig;
 import com.one.framework.net.model.ReqConfigResponse;
 import com.one.framework.net.request.IRequestConstant;
+import com.one.framework.utils.SystemUtils;
+import com.one.map.location.LocationProvider;
+import com.one.map.view.IMapView;
 import java.lang.reflect.Method;
 
 /**
@@ -44,7 +50,7 @@ public class OneApplication extends MultiDexApplication {
       method.setAccessible(true);
       method.invoke(applicationDelegate, this);
 
-      Api.getInstance(base).request(IRequestConstant.REQUEST_CONFIG, null, new ReqConfigResponse());
+//      Api.getInstance(base).request(IRequestConstant.REQUEST_CONFIG, null, new ReqConfigResponse());
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -54,6 +60,9 @@ public class OneApplication extends MultiDexApplication {
   public void onCreate() {
     super.onCreate();
     try {
+      SystemUtils.init(this);
+      INetworkConfig networkConfig = new NetworkConfig(this, new HeaderParams(), true);
+      Api.initNetworkConfig(networkConfig);
       checkAppDelegate();
       Method method = applicationDelegateClass.getDeclaredMethod("onCreate", Application.class);
       method.setAccessible(true);
@@ -61,6 +70,6 @@ public class OneApplication extends MultiDexApplication {
     } catch (Exception e) {
       e.printStackTrace();
     }
-//    LocationProvider.getInstance().buildLocation(this, IMapView.TENCENT);
+    LocationProvider.getInstance().buildLocation(this, IMapView.TENCENT);
   }
 }

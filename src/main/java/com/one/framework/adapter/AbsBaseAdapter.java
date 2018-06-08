@@ -52,7 +52,7 @@ public abstract class AbsBaseAdapter<T, H> extends BaseAdapter {
   }
   
   @Override
-  public Object getItem(int position) {
+  public T getItem(int position) {
     return mListData.get(position);
   }
   

@@ -1,2 +1,3 @@
 com.one.app.OneApplicationDelegate
 com.one.app.TwoApplicationDelegate
+com.trip.taxi.application.TaxiApplicationDelegate

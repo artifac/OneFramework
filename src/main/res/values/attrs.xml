@@ -47,4 +47,15 @@
     <attr name="pin_inner_circle_color" format="color"/>
   </declare-styleable>
 
+  <declare-styleable name="LoadingView">
+    <attr name="loading_type">
+      <enum name="point" value="0"/>
+      <enum name="progress" value="1"/>
+    </attr>
+    <attr name="loading_point_color" format="color|reference"/>
+    <attr name="loading_point_normal_size" format="dimension"/>
+    <attr name="loading_point_selector_size" format="dimension"/>
+    <attr name="loading_point_count" format="integer"/>
+  </declare-styleable>
+
 </resources>

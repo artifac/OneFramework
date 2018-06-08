@@ -14,7 +14,6 @@ import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.View.MeasureSpec;
 import android.view.WindowManager;
 
 /**
@@ -42,7 +41,7 @@ public class UIUtils {
 
   public static int dip2pxInt(Context context, float dip) {
     DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-    return (int)(dip * metrics.density);
+    return (int) (dip * metrics.density);
   }
 
   /**
@@ -89,9 +88,6 @@ public class UIUtils {
 
   /**
    * 获取StatusBar的高度
-   *
-   * @param context
-   * @return
    */
   public static int getStatusbarHeight(Context context) {
     if (sStatusBarHeight != null) {
@@ -142,7 +138,8 @@ public class UIUtils {
       return new RippleDrawable(ColorStateList.valueOf(maskColor), rectDrawable, maskDrawable);
     } else {
       StateListDrawable maskDrawable = new StateListDrawable();
-      maskDrawable.addState(new int[]{android.R.attr.state_pressed}, colorDrawableRounded(maskColor, roundedCorners));
+      maskDrawable.addState(new int[]{android.R.attr.state_pressed},
+          colorDrawableRounded(maskColor, roundedCorners));
       Drawable layerDrawable = rectDrawable == null ? maskDrawable
           : new LayerDrawable(new Drawable[]{rectDrawable, maskDrawable});
       return layerDrawable;

@@ -1,8 +1,10 @@
 package com.one.framework.net;
 
-import android.content.Context;
-import com.one.framework.net.base.BaseResponse;
+import android.text.TextUtils;
+import com.one.framework.net.base.BaseObject;
+import com.one.framework.net.base.INetworkConfig;
 import com.one.framework.net.request.RequestHelper;
+import com.one.framework.net.response.IResponseListener;
 import java.util.HashMap;
 
 /**
@@ -10,42 +12,36 @@ import java.util.HashMap;
  */
 
 public class Api {
+  public static String BASE_URL_HOST = "http://app.mobike.com/";
+  public static String BASE_URL_HOSTS = "https://app.mobike.com/";
+  private static String sApiUrl;
+  private static INetworkConfig sConfig;
 
-  private Context mContext;
-
-  private Api(Context context) {
-    mContext = context.getApplicationContext();
+  public static void initNetworkConfig(INetworkConfig config) {
+    sConfig = config;
   }
 
-  public static Api getInstance(Context context) {
-    return API.instance(context);
-  }
-
-  private static final class API {
-
-    static Api sApi;
-
-    static Api instance(Context context) {
-      if (sApi == null) {
-        sApi = new Api(context);
-      }
-      return sApi;
+  public static void apiUrl(String apiHost) {
+    if (TextUtils.isEmpty(apiHost)) {
+      sApiUrl = BASE_URL_HOSTS;
+      return;
     }
+    sApiUrl = apiHost;
   }
 
   /**
    * 请求时返回请求 hashcode()
    * @param url
    * @param urlParams
-   * @param <T> BaseResponse 子类
+   * @param <T> BaseObject 子类
    * @return
    */
-  public <T extends BaseResponse> int request(String url, HashMap<String, Object> urlParams, T t) {
-    CommonNameValueParams.addCommonParams(mContext, urlParams);
-    return RequestHelper.request(url, urlParams, t);
+  public static <T extends BaseObject> int request(String url, HashMap<String, Object> urlParams, IResponseListener<T> listener, Class<T> t) {
+    StringBuilder builder = new StringBuilder(sApiUrl);
+    return RequestHelper.getRequest(sConfig).request(builder.append(url).toString(), urlParams, listener, t);
   }
 
-  public void cancelRequest(int requestCode) {
+  public static void cancelRequest(int requestCode) {
     RequestHelper.cancelRequest(requestCode);
   }
 }

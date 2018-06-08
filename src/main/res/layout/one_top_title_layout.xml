@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_centerVertical="true"
     android:gravity="center"
-    android:text="title bar"
+    android:text="OneTrip"
     android:textColor="#000"
     android:textSize="17sp"/>
 

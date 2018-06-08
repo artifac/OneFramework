@@ -2,4 +2,8 @@
   <string name="app_name">OneFramework</string>
   <string name="one_list_footer_view_info">Loading...</string>
   <string name="one_all_business">All Business</string>
+
+  <string name="one_action_settings">Settings</string>
+  <string name="location_errorcode_62">定位失败，请检查运营商网络或者WiFi网络是否正常开启，尝试重新请求定位。</string>
+  <string name="gps_neverlocation_hint">关闭定位功能，应用将无法使用，建议您在设置中开启定位功能</string>
 </resources>

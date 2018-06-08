@@ -20,6 +20,7 @@ import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import com.one.framework.R;
 import com.one.map.IMap;
+import com.one.map.location.LocationProvider;
 import com.one.map.model.LatLng;
 
 /**
@@ -186,6 +187,7 @@ public class MapCenterPinView extends AppCompatImageView {
   public void jumpTwice(LatLng latLng) {
     toggleLoading();
     mMap.geo2Address(latLng);
+    mMap.poiNearByWithCity(LocationProvider.getInstance().getLocation().mAdrLatLng, LocationProvider.getInstance().getLocation().mCity);
   }
 
   public void stop() {

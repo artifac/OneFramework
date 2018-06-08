@@ -39,7 +39,7 @@ public final class Navigator implements INavigator {
   }
 
   @Override
-  public void startFragment(Intent intent, IBusinessContext businessContext) {
+  public Fragment startFragment(Intent intent, IBusinessContext businessContext) {
     Fragment fragment = getFragment(intent, businessContext);
     if (fragment != null) {
       FragmentTransaction transaction = mFragmentManager.beginTransaction();
@@ -60,6 +60,12 @@ public final class Navigator implements INavigator {
         fragment.setArguments(bundle);
       }
       transaction.commitAllowingStateLoss();
+      try {
+        mFragmentManager.executePendingTransactions();
+        fragment.setUserVisibleHint(true);
+      } catch (Exception e) {
+
+      }
     } else {
       // 跳转Activity
       if (mSoftReference != null && mSoftReference.get() != null) {
@@ -70,6 +76,7 @@ public final class Navigator implements INavigator {
 //        ((Activity)mSoftReference.get()).overridePendingTransition();
       }
     }
+    return fragment;
   }
 
   @Override
