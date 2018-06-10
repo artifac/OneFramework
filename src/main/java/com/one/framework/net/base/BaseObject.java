@@ -10,11 +10,12 @@ import com.one.framework.net.NetConstant;
 import java.io.Serializable;
 import org.json.JSONObject;
 
-public abstract class BaseObject implements Serializable, Cloneable {
+public class BaseObject implements Serializable, Cloneable {
 
   public int code = NetConstant.NO_DATA;
   public String message;
   public int timeoffset;
+  public String data;
   private Throwable throwable;
 
   public static boolean isAvailable(BaseObject obj) {
@@ -106,11 +107,19 @@ public abstract class BaseObject implements Serializable, Cloneable {
       if (obj.has(NetConstant.TIME_OFFSET)) {
         this.setTimeOffset(obj.optInt(NetConstant.TIME_OFFSET));
       }
+
+      if (obj.has(NetConstant.DATA)) {
+        setParseData(obj.optJSONObject(NetConstant.DATA).toString());
+      }
     }
   }
 
+  public void setParseData(String dataString) {
+    data = dataString;
+  }
+
   public String toString() {
-    return "BaseObject [code=" + this.code + ", message=" + this.message + "]";
+    return "BaseObject [code=" + this.code + ", message=" + this.message +  " data >>> " + data +"]";
   }
 
   public BaseObject clone() {

@@ -10,6 +10,7 @@ import android.view.KeyEvent;
 import com.one.framework.MainActivity;
 import com.one.framework.api.annotation.ServiceProvider;
 import com.one.framework.app.model.IBusinessContext;
+import com.one.framework.app.navigation.INavigator;
 import com.one.framework.app.page.IComponent;
 import com.one.framework.app.page.ITopbarFragment;
 import com.one.framework.app.widget.base.ITopTitleView.ClickPosition;
@@ -26,7 +27,8 @@ public abstract class BizEntranceFragment extends Fragment implements IComponent
 
   private SoftReference<MainActivity> mActivity;
   protected IBusinessContext mBusContext;
-  private ITopbarFragment mTopbarView;
+  protected ITopbarFragment mTopbarView;
+  protected INavigator mNavigator;
   protected IMap mMap;
   protected boolean isRootFragment;
 
@@ -47,6 +49,7 @@ public abstract class BizEntranceFragment extends Fragment implements IComponent
     mBusContext = businessContext;
     mTopbarView = mBusContext.getTopbar();
     mMap = mBusContext.getMap();
+    mNavigator = mBusContext.getNavigator();
 
     ServiceProvider provider = getClass().getAnnotation(ServiceProvider.class);
     if (provider != null) {
@@ -168,6 +171,11 @@ public abstract class BizEntranceFragment extends Fragment implements IComponent
 
   @Override
   public boolean onKeyMultiple(int keyCode, int count, KeyEvent event) {
+    return false;
+  }
+
+  @Override
+  public boolean onBackPressed() {
     return false;
   }
 

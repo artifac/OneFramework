@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_centerVertical="true"
     android:gravity="center"
-    android:text="OneTrip"
+    android:text="@string/app_name"
     android:textColor="#000"
     android:textSize="17sp"/>
 
@@ -18,8 +18,7 @@
     android:layout_centerVertical="true"
     android:padding="10dp"
     android:clickable="true"
-    android:scaleType="center"
-    android:src="@drawable/one_top_bar_right_alarm"/>
+    android:scaleType="center"/>
 
   <TextView
     android:id="@+id/one_top_right"

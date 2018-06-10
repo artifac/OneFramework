@@ -49,15 +49,20 @@ android {
         debug {
             minifyEnabled false
             minifyEnabled false
-//            shrinkResources false
 //            signingConfig signingConfigs.release
             debuggable true
         }
         release {
             minifyEnabled true
-            shrinkResources true
 //            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    sourceSets {
+        main() {
+            jniLibs.srcDirs = ['src/main/jniLibs']
+            jni.srcDirs = [] //屏蔽掉默认的jni编译生成过程
         }
     }
 

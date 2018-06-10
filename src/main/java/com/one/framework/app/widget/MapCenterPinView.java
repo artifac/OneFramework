@@ -191,7 +191,7 @@ public class MapCenterPinView extends AppCompatImageView {
   }
 
   public void stop() {
-    mHandler.sendEmptyMessageDelayed(1, 2000);
+    mHandler.sendEmptyMessageDelayed(1, 1000);
   }
 
 }

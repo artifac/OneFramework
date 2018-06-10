@@ -23,6 +23,10 @@ public class TopTitleLayout extends RelativeLayout implements ITopTitleView, OnC
   private ImageView mLeft;
   private TextView mRight;
 
+  private int mLeftDefaultResId;
+
+  private int mLeftResId;
+
   /**
    * Listener 通过栈 FILO
    */
@@ -49,9 +53,13 @@ public class TopTitleLayout extends RelativeLayout implements ITopTitleView, OnC
     mLeft = (ImageView) findViewById(R.id.one_top_left);
     mRight = (TextView) findViewById(R.id.one_top_right);
 
+    mLeftResId = mLeftDefaultResId = R.drawable.one_top_bar_my_center;
+
+
     mTitle.setOnClickListener(this);
     mLeft.setOnClickListener(this);
     mRight.setOnClickListener(this);
+    mLeft.setImageResource(mLeftDefaultResId);
   }
 
   @Override
@@ -71,6 +79,7 @@ public class TopTitleLayout extends RelativeLayout implements ITopTitleView, OnC
 
   @Override
   public void setLeftImage(int resId) {
+    mLeftResId = resId;
     mLeft.setImageResource(resId);
   }
 
@@ -85,6 +94,13 @@ public class TopTitleLayout extends RelativeLayout implements ITopTitleView, OnC
   @Override
   public void setRight(String txtBtn) {
 
+  }
+
+  @Override
+  public void titleReset() {
+    // 在首页但是处理不同的逻辑
+    setLeftImage(mLeftDefaultResId);
+    setTitle(R.string.app_name);
   }
 
   @Override

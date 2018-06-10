@@ -1,6 +1,7 @@
 package com.one.framework.net.request;
 
-import android.text.TextUtils;
+import android.os.Handler;
+import android.os.Looper;
 import com.google.gson.Gson;
 import com.one.framework.net.NetConstant;
 import com.one.framework.net.base.BaseObject;
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -46,6 +48,7 @@ public final class RequestHelper {
   private OkHttpClient beforeRequest(INetworkConfig config) {
     OkHttpClient.Builder builder = new OkHttpClient.Builder()
         .sslSocketFactory(config.getSslSocketFactory(), config.getTrustManager())
+        .connectTimeout(config.getTimeout(), TimeUnit.SECONDS)
         .hostnameVerifier(config.getHostnameVerifier());
     for (Interceptor interceptor : config.getInterceptors()) {
       builder.addInterceptor(interceptor);
@@ -84,42 +87,65 @@ public final class RequestHelper {
         } catch (IllegalAccessException e1) {
           e1.printStackTrace();
         }
-        if (t != null) {
-          t.setErrorCode(NetConstant.MSG_ERROR);
-//        t.setThrowable(t);
+        t.setErrorCode(NetConstant.MSG_ERROR);
+        t.setErrorMsg("error...");
 
-          if (listener == null) {
-            return;
-          }
-          listener.onFail(t);
-          listener.onFinish(t);
+        if (listener == null) {
+          return;
         }
+        final UIHandler<T> uiHandler = new UIHandler<>(Looper.getMainLooper(), t);
+        uiHandler.post(new Runnable() {
+          @Override
+          public void run() {
+            T t = uiHandler.t();
+             /* 非法数据 */
+            listener.onFail(t);
+            listener.onFinish(t);
+          }
+        });
       }
 
       @Override
       public void onResponse(Call call, Response response) throws IOException {
         requestQueue.remove(requestCode);
-        ResponseBody responseBody = response.body();
-        String result = responseBody.string();
-        Gson gson = new Gson();
-        T t = gson.fromJson(result, clazz);
-        t.parse(result);
-
+        boolean isSuccess = response.isSuccessful();
+        T t = null;
+        if (isSuccess) {
+          ResponseBody responseBody = response.body();
+          String result = responseBody.string();
+          Gson gson = new Gson();
+          BaseObject base = new BaseObject();
+          base.parse(result);
+          t = gson.fromJson(base.data, clazz);
+        } else {
+          try {
+            t = clazz.newInstance();
+          } catch (InstantiationException e) {
+            e.printStackTrace();
+          } catch (IllegalAccessException e) {
+            e.printStackTrace();
+          }
+        }
         /* 自动校验结果 */
         if (listener == null) {
           return;
         }
-        /* 非法数据 */
-        if (!t.isAvailable()) {
-          String error = t.getErrorMsg();
-          t.setErrorMsg(TextUtils.isEmpty(error) ? "好像出错了请稍后再试!" : error);
-          listener.onFail(t);
-          listener.onFinish(t);
-          return;
-        }
-        /* 合法数据 */
-        listener.onSuccess(t);
-        listener.onFinish(t);
+        final UIHandler<T> uiHandler = new UIHandler<>(Looper.getMainLooper(), t);
+        uiHandler.post(new Runnable() {
+          @Override
+          public void run() {
+            T t = uiHandler.t();
+             /* 非法数据 */
+            if (!t.isAvailable()) {
+              listener.onFail(t);
+              listener.onFinish(t);
+              return;
+            }
+            /* 合法数据 */
+            listener.onSuccess(t);
+            listener.onFinish(t);
+          }
+        });
       }
     });
     return requestCode;
@@ -132,6 +158,21 @@ public final class RequestHelper {
     Call call = requestQueue.get(requestCode);
     if (call != null && call.isExecuted()) {
       call.cancel();
+    }
+    requestQueue.remove(requestCode);
+  }
+
+  final class UIHandler<T> extends Handler {
+
+    T t;
+
+    UIHandler(Looper looper, T t) {
+      super(looper);
+      this.t = t;
+    }
+
+    T t() {
+      return t;
     }
   }
 }

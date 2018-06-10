@@ -1,7 +1,6 @@
 package com.one.framework.net;
 
 import android.text.TextUtils;
-import com.one.framework.utils.SafeUtil;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -147,6 +146,6 @@ public class NetInterceptor implements Interceptor {
       signContent = result;
     }
 
-    return SafeUtil.getJniString(signContent);
+    return signContent;//SafeUtil.getJniString(signContent);
   }
 }

@@ -28,5 +28,7 @@ public interface ITopTitleView {
 
   void popBackListener();
 
+  void titleReset();
+
   View getView();
 }

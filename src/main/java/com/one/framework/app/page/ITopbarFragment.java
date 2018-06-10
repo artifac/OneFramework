@@ -1,6 +1,5 @@
 package com.one.framework.app.page;
 
-import android.view.View;
 import com.one.framework.app.model.TabItem;
 import com.one.framework.app.widget.base.ITabIndicatorListener.ITabItemListener;
 import com.one.framework.app.widget.base.ITopTitleView.ITopTitleListener;
@@ -16,6 +15,9 @@ public interface ITopbarFragment {
   void setTabItems(List<TabItem> items);
   void setTitle(String title);
   void setTitle(int titleResId);
+  void titleBarReset();
+
+  void setLeft(int resId);
 
   /**
    * 整体标题栏高度

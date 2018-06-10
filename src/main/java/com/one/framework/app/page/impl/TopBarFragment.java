@@ -169,6 +169,11 @@ public class TopBarFragment extends Fragment implements ITopbarFragment, IScaleL
 
   @Override
   public void setTabItems(List<TabItem> items) {
+    if (items.size() < mPullGridView.getNumColumns()) {
+      mMenuView.setVisibility(View.INVISIBLE);
+    } else {
+      mMenuView.setVisibility(View.VISIBLE);
+    }
     mTabIndicator.setTabItems(items);
   }
 
@@ -204,6 +209,16 @@ public class TopBarFragment extends Fragment implements ITopbarFragment, IScaleL
   @Override
   public void setTitle(int titleResId) {
     mTopTitleView.setTitle(titleResId);
+  }
+
+  @Override
+  public void setLeft(int resId) {
+    mTopTitleView.setLeftImage(resId);
+  }
+
+  @Override
+  public void titleBarReset() {
+    mTopTitleView.titleReset();
   }
 
   @Override

@@ -17,6 +17,7 @@ import com.one.framework.app.model.IBusinessContext;
 import com.one.framework.app.model.TabItem;
 import com.one.framework.app.navigation.INavigator;
 import com.one.framework.app.navigation.impl.Navigator;
+import com.one.framework.app.page.IComponent;
 import com.one.framework.app.page.ITopbarFragment;
 import com.one.framework.app.page.impl.NavigatorFragment;
 import com.one.framework.app.page.impl.TopBarFragment;
@@ -199,6 +200,19 @@ public class MainActivity extends BaseActivity implements ITabItemListener {
   }
 
   @Override
+  public void onBackPressed() {
+    if (mCurrentFragment != null && mCurrentFragment instanceof IComponent) {
+      IComponent component = (IComponent) mCurrentFragment;
+      if (component.onBackPressed()) {
+        // 控件已经消费了此事件
+        return;
+      }
+    }
+//    super.onBackPressed();
+    Logger.e("ldx", "onBackPressed >>>>>");
+  }
+
+  @Override
   public boolean onKeyDown(int keyCode, KeyEvent event) {
     /**
      * 如果返回的currentFragment为空 则表示在首页点击返回
@@ -232,12 +246,6 @@ public class MainActivity extends BaseActivity implements ITabItemListener {
 
   public ITopTitleListener getTopTitleListener() {
     return mTopTitleListener;
-  }
-
-  @Override
-  public void onBackPressed() {
-//    super.onBackPressed();
-    Logger.e("ldx", "onBackPressed >>>>>");
   }
 
   public void lockDrawerLayout(boolean lock) {

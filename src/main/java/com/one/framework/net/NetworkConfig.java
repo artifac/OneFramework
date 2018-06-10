@@ -3,7 +3,6 @@ package com.one.framework.net;
 import android.content.Context;
 import com.one.framework.net.base.INetworkConfig;
 import com.one.framework.utils.HttpsUtils;
-import com.one.framework.utils.SafeUtil;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
@@ -34,7 +33,7 @@ public class NetworkConfig implements INetworkConfig {
   private void initHttps() {
     try {
       InputStream inputStream = mContext.getAssets().open("cert/oneTrip.bks");
-      HttpsUtils.SslParams params = HttpsUtils.getSslSocketFactory(inputStream, SafeUtil.getBKSString());
+      HttpsUtils.SslParams params = HttpsUtils.getSslSocketFactory(inputStream, "");
       mSslSocketFactory = params.sslSocketFactory;
       mTrustManager = params.trustManager;
     } catch (IOException e) {
@@ -60,6 +59,11 @@ public class NetworkConfig implements INetworkConfig {
         return true;
       }
     };
+  }
+
+  @Override
+  public long getTimeout() {
+    return 30;
   }
 
   @Override

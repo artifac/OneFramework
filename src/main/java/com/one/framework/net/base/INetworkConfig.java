@@ -19,4 +19,6 @@ public interface INetworkConfig {
   HostnameVerifier getHostnameVerifier();
 
   List<NetInterceptor> getInterceptors();
+
+  long getTimeout();
 }
