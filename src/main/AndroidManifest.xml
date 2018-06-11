@@ -115,5 +115,10 @@
         <category android:name="android.intent.category.DEFAULT"/>
       </intent-filter>
     </activity>
+
+    <provider
+      android:name="com.one.framework.db.DBContentProvider"
+      android:authorities="com.one.framework.contentprovider"/>
+
   </application>
 </manifest>

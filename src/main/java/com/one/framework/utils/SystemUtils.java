@@ -403,7 +403,7 @@ public class SystemUtils {
   public static void hideSoftKeyboard(View rootView) {
     if (rootView != null) {
       ((InputMethodManager) rootView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE))
-          .hideSoftInputFromWindow(rootView.getWindowToken(), 2);
+          .hideSoftInputFromWindow(rootView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
   }

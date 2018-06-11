@@ -12,6 +12,7 @@ import android.view.ViewConfiguration;
 import android.widget.RelativeLayout;
 import com.one.framework.app.widget.base.IMovePublishListener;
 import com.one.framework.app.widget.base.IPullView;
+import com.one.framework.utils.SystemUtils;
 import com.one.framework.utils.UIUtils;
 
 /**
@@ -109,6 +110,7 @@ public class PullScrollRelativeLayout extends RelativeLayout {
       case MotionEvent.ACTION_MOVE: {
 //        int curX = (int) ev.getX();
 //        int curY = (int) ev.getY();
+        SystemUtils.hideSoftKeyboard(this);
         final int pointerIndex = MotionEventCompat.findPointerIndex(ev, mActivePointerId);
         final int curX = (int) MotionEventCompat.getX(ev, pointerIndex);
         final int curY = (int) MotionEventCompat.getY(ev, pointerIndex);
