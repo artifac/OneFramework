@@ -10,6 +10,11 @@
     android:scaleType="centerCrop"
     android:src="@drawable/one_navigator_background"/>
 
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#80d3d3d3"/>
+
   <TextView
     android:id="@+id/one_navigator_grade"
     android:layout_width="match_parent"

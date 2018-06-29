@@ -1,5 +1,6 @@
 package com.one.framework.app.widget.base;
 
+import com.one.framework.app.common.SrcCarType;
 import com.one.framework.app.model.TabItem;
 import java.util.List;
 
@@ -19,6 +20,7 @@ public interface ITabIndicatorListener {
 
   interface ITabItemListener {
     void onItemClick(TabItem item);
+    void onItemClick(SrcCarType type);
   }
 
   interface IScaleListener {

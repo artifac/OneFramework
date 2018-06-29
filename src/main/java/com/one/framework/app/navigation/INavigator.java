@@ -3,6 +3,8 @@ package com.one.framework.app.navigation;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import com.one.framework.app.model.IBusinessContext;
+import com.onecore.SupportFragment;
+import com.onecore.core.anim.FragmentAnimator;
 
 /**
  * Created by ludexiang on 2018/3/28.
@@ -15,13 +17,20 @@ public interface INavigator {
   String BUNDLE_FORWARD_FRAGMENT_STYLE = "bundle_froward_fragment_style";
   String BUNDLE_EXTRA_INFO = "bundle_extra_info";
 
-  Fragment startFragment(Intent intent, IBusinessContext businessContext);
+  Fragment startFragment(Intent intent, IBusinessContext businessContext, FragmentAnimator animator);
 
+  Fragment getRootFragment(Intent intent, IBusinessContext businessContext);
   /**
    * 获得当前Fragment
    * @return
    */
   Fragment getCurrentFragment();
+
+  /**
+   * 获取Fragment pre Fragment
+   */
+  Fragment getPreFragment(Fragment fragment);
+
   void lockDrawerLayout(boolean lock);
   void backToRoot();
 }

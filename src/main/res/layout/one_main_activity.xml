@@ -26,17 +26,23 @@
       android:layout_alignParentTop="true"
       android:name="com.one.framework.app.page.impl.TopBarFragment"/>
 
-    <com.one.framework.app.widget.MapCenterPinView
-      android:id="@+id/one_map_center_pin"
-      android:layout_width="22dp"
-      android:layout_height="33dp"
-      android:layout_centerInParent="true"
-      android:layout_marginBottom="50dp"
-      app:pin_circle_color="#3cbca3"
-      app:pin_color="#329e89"
-      app:pin_width="2dp"
-      app:pin_height="15dp"
-      app:pin_circle_size="22dp"/>
+    <FrameLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+      <com.one.framework.app.widget.MapCenterPinView
+        android:id="@+id/one_map_center_pin"
+        android:layout_width="22dp"
+        android:layout_height="33dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_marginBottom="15.5dp"
+        app:pin_circle_color="#3cbca3"
+        app:pin_color="#329e89"
+        app:pin_width="2dp"
+        app:pin_height="15dp"
+        app:pin_circle_size="22dp"/>
+    </FrameLayout>
+
 
     <FrameLayout
       android:id="@id/content_view_container"

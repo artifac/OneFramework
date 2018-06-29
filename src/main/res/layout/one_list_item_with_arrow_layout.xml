@@ -1,0 +1,64 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:clipChildren="false"
+  android:descendantFocusability="blocksDescendants"
+  android:minHeight="80dp">
+
+  <com.one.framework.app.widget.ShapeImageView
+    android:id="@+id/list_item_img_view"
+    android:layout_width="32dp"
+    android:layout_height="32dp"
+    android:layout_marginLeft="16dp"
+    android:layout_alignParentLeft="true"
+    android:layout_centerVertical="true"
+    android:adjustViewBounds="true"
+    android:scaleType="fitXY"
+    android:visibility="gone"
+    app:borderColor="#ffffff"
+    app:imageType="cycle"/>
+
+  <TextView
+    android:id="@+id/list_item_info"
+    android:textStyle="bold"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="20dp"
+    android:layout_centerVertical="true"
+    android:layout_toRightOf="@id/list_item_img_view"
+    android:textColor="#373c43"
+    android:textSize="14sp"/>
+
+  <ImageView
+    android:id="@+id/list_item_right_arrow"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="20dp"
+    android:layout_alignParentRight="true"
+    android:layout_centerVertical="true"
+    android:src="@drawable/one_list_item_common_right_arrow"/>
+
+  <com.one.framework.app.widget.ScriptTextView
+    android:id="@+id/list_item_right_info"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="10dp"
+    android:layout_centerVertical="true"
+    android:layout_gravity="center"
+    android:layout_toLeftOf="@id/list_item_right_arrow"
+    android:gravity="center"
+    android:includeFontPadding="false"
+    android:textSize="14sp"
+    app:script_color="#373c43"
+    app:script_direction="right"
+    app:script_loc="top"
+    app:script_text_size="12sp"/>
+
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="0.5dp"
+    android:layout_alignParentBottom="true"
+    android:background="#f3f3f3"/>
+
+</merge>

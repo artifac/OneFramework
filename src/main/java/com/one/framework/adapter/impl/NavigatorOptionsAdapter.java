@@ -35,6 +35,7 @@ public class NavigatorOptionsAdapter extends AbsBaseAdapter<NavigatorModel, Navi
   protected void bindData(NavigatorModel model, NavigatorHolder holder, int position) {
     holder.options.setText(model.optionsInfo);
     holder.optionsExtra.setText(model.optionsExtra);
+    holder.icon.setImageResource(model.optionsIconId);
   }
 
   @Override

@@ -1,5 +1,7 @@
 package com.one.framework.app.navigation.impl;
 
+import static com.onecore.core.ISupportFragment.STANDARD;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -14,7 +16,13 @@ import com.one.framework.app.model.IBusinessContext;
 import com.one.framework.app.navigation.INavigator;
 import com.one.framework.log.Logger;
 import com.one.framework.manager.FragmentDelegateManager;
+import com.onecore.SupportFragment;
+import com.onecore.core.ISupportFragment;
+import com.onecore.core.ISupportFragment.LaunchMode;
+import com.onecore.core.anim.FragmentAnimator;
 import java.lang.ref.SoftReference;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ludexiang on 2018/3/28.
@@ -39,11 +47,18 @@ public final class Navigator implements INavigator {
   }
 
   @Override
-  public Fragment startFragment(Intent intent, IBusinessContext businessContext) {
+  public Fragment getRootFragment(Intent intent, IBusinessContext businessContext) {
+    return getFragment(intent, businessContext);
+  }
+
+  @Override
+  public Fragment startFragment(Intent intent, IBusinessContext businessContext, FragmentAnimator animator) {
     Fragment fragment = getFragment(intent, businessContext);
     if (fragment != null) {
       FragmentTransaction transaction = mFragmentManager.beginTransaction();
-//      transaction.setCustomAnimations();
+      if (animator != null) {
+        transaction.setCustomAnimations(animator.getEnter(), animator.getExit(), animator.getPopEnter(), animator.getPopExit());
+      }
       String fragmentTag = getFragmentTag(fragment.getClass());
       boolean isAddToBackStack = intent.getBooleanExtra(BUNDLE_ADD_TO_BACK_STACK, true);
       if (isAddToBackStack) {
@@ -60,12 +75,12 @@ public final class Navigator implements INavigator {
         fragment.setArguments(bundle);
       }
       transaction.commitAllowingStateLoss();
-      try {
+//      try {
         mFragmentManager.executePendingTransactions();
         fragment.setUserVisibleHint(true);
-      } catch (Exception e) {
-
-      }
+//      } catch (Exception e) {
+//        Logger.e("ldx", "forward exception ..." + e);
+//      }
     } else {
       // 跳转Activity
       if (mSoftReference != null && mSoftReference.get() != null) {
@@ -79,6 +94,9 @@ public final class Navigator implements INavigator {
     return fragment;
   }
 
+  /**
+   * 若为0表示在首页
+   */
   @Override
   public Fragment getCurrentFragment() {
     int backStackCount = mFragmentManager.getBackStackEntryCount();
@@ -87,6 +105,11 @@ public final class Navigator implements INavigator {
       String fragmentTag = stackEntry.getName();
       return mFragmentManager.findFragmentByTag(fragmentTag);
     }
+    return null;
+  }
+
+  @Override
+  public Fragment getPreFragment(Fragment fragment) {
     return null;
   }
 
@@ -104,9 +127,10 @@ public final class Navigator implements INavigator {
 
   @Override
   public void backToRoot() {
-
     int entryCount = mFragmentManager.getBackStackEntryCount();
-    Logger.e("ldx", "entryCount " + entryCount);
-//    mFragmentManager.po
+    if (entryCount > 0) {
+      final String tag = mFragmentManager.getBackStackEntryAt(0).getName();
+      mFragmentManager.popBackStack(tag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    }
   }
 }

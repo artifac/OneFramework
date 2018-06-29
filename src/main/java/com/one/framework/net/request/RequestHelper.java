@@ -3,6 +3,7 @@ package com.one.framework.net.request;
 import android.os.Handler;
 import android.os.Looper;
 import com.google.gson.Gson;
+import com.one.framework.log.Logger;
 import com.one.framework.net.NetConstant;
 import com.one.framework.net.base.BaseObject;
 import com.one.framework.net.base.INetworkConfig;
@@ -56,7 +57,7 @@ public final class RequestHelper {
     return builder.build();
   }
 
-  public <T extends BaseObject> int request(String url, HashMap<String, Object> params,
+  public <T extends BaseObject> int requestPost(String url, HashMap<String, Object> params,
       final IResponseListener<T> listener, final Class<T> clazz) {
     OkHttpClient mHttpClient = beforeRequest(mConfig);
     Builder bodyBuilder = new FormBody.Builder();
@@ -64,13 +65,43 @@ public final class RequestHelper {
       Set<String> keys = params.keySet();
       for (Iterator<String> iterator = keys.iterator(); iterator.hasNext(); ) {
         String key = iterator.next();
-        bodyBuilder.add(key, params.get(key).toString());
+        if (params.get(key) != null) {
+          bodyBuilder.add(key, params.get(key).toString());
+        }
       }
     }
     Request request = new Request.Builder().url(url).post(bodyBuilder.build()).build();
     Call call = mHttpClient.newCall(request);
     final int requestCode = call.hashCode();
     requestQueue.put(requestCode, call);
+    executeRequest(listener, clazz, call, requestCode);
+    return requestCode;
+  }
+
+  public <T extends BaseObject> int requestGet(String url, HashMap<String, Object> urlParams,
+      final IResponseListener<T> listener, final Class<T> clazz) {
+    StringBuilder params = new StringBuilder();
+    OkHttpClient mHttpClient = beforeRequest(mConfig);
+    int pos = 0;
+    for (String key : urlParams.keySet()) {
+      if (pos > 0) {
+        params.append("&");
+      }
+      params.append(String.format("%s=%s", key, urlParams.get(key)));
+      pos++;
+    }
+    String requestUrl = String.format("%s?%s", url, params.toString());
+    Request request = new Request.Builder().get().url(requestUrl).build();
+    Call call = mHttpClient.newCall(request);
+    final int requestCode = call.hashCode();
+    requestQueue.put(requestCode, call);
+    executeRequest(listener, clazz, call, requestCode);
+    return requestCode;
+  }
+
+  private <T extends BaseObject> void executeRequest(final IResponseListener<T> listener,
+      final Class<T> clazz,
+      Call call, final int requestCode) {
     /**
      * 异步请求
      */
@@ -87,9 +118,11 @@ public final class RequestHelper {
         } catch (IllegalAccessException e1) {
           e1.printStackTrace();
         }
-        t.setErrorCode(NetConstant.MSG_ERROR);
-        t.setErrorMsg("error...");
 
+        if (t != null) {
+          t.setErrorCode(NetConstant.MSG_ERROR);
+          t.setErrorMsg("error...");
+        }
         if (listener == null) {
           return;
         }
@@ -99,7 +132,7 @@ public final class RequestHelper {
           public void run() {
             T t = uiHandler.t();
              /* 非法数据 */
-            listener.onFail(t);
+            listener.onFail(t != null ? t.code : NetConstant.NO_DATA, t);
             listener.onFinish(t);
           }
         });
@@ -116,7 +149,17 @@ public final class RequestHelper {
           Gson gson = new Gson();
           BaseObject base = new BaseObject();
           base.parse(result);
-          t = gson.fromJson(base.data, clazz);
+        if (base != null && base.isAvailable()) {
+            if (base.data != null) {
+              t = gson.fromJson(base.data, clazz);
+            } else if (base.object != null) {
+              t = gson.fromJson(base.object, clazz);
+            }
+            if (base.data == null && clazz == BaseObject.class) {
+              // 后端有可能返回 data: null 无返回值但是请求成功
+              t = (T) base;
+            }
+          }
         } else {
           try {
             t = clazz.newInstance();
@@ -130,25 +173,25 @@ public final class RequestHelper {
         if (listener == null) {
           return;
         }
-        final UIHandler<T> uiHandler = new UIHandler<>(Looper.getMainLooper(), t);
+        final UIHandler<T> uiHandler = new UIHandler<T>(Looper.getMainLooper(), t);
         uiHandler.post(new Runnable() {
           @Override
           public void run() {
             T t = uiHandler.t();
+//            Logger.e("ldx", " t >> " + t);
              /* 非法数据 */
-            if (!t.isAvailable()) {
-              listener.onFail(t);
+            if (t != null && t.isAvailable()) {
+              /* 合法数据 */
+              listener.onSuccess(t);
               listener.onFinish(t);
               return;
             }
-            /* 合法数据 */
-            listener.onSuccess(t);
+            listener.onFail(t != null ? t.code : NetConstant.NO_DATA, t);
             listener.onFinish(t);
           }
         });
       }
     });
-    return requestCode;
   }
 
   /**

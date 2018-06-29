@@ -153,7 +153,7 @@ public class PullListView extends ListView implements IMovePublishListener, IPul
 
   @Override
   public boolean isScrollBottom() {
-    if (getLastVisiblePosition() == (getCount() - 1)) {
+    if (getLastVisiblePosition() != INVALID_POSITION && getLastVisiblePosition() == (getCount() - 1)) {
       final View bottomChildView = getChildAt(getLastVisiblePosition() - getFirstVisiblePosition());
       return getHeight() >= bottomChildView.getBottom();
     }

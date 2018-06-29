@@ -2,9 +2,11 @@
 //apply from: 'upload.gradle'
 apply plugin: 'com.android.library'
 apply plugin: 'maven'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 buildscript {
-
+    ext.kotlin_version = '1.2.50'
     repositories {
         jcenter()
         mavenCentral()
@@ -76,6 +78,7 @@ repositories {
     flatDir {
         dirs 'libs'
     }
+    mavenCentral()
 }
 
 dependencies {
@@ -90,9 +93,12 @@ dependencies {
     // 地图
     compile project(':onemap')
     //    implementation 'com.one.map:the-one-map:1.0.4'
+    compile project(':onecore')
     compile 'com.squareup.okhttp3:okhttp:3.10.0'
     compile 'com.squareup.okio:okio:1.14.0'
     compile 'com.google.code.gson:gson:2.2.4'
+    compile 'org.greenrobot:eventbus:3.0.0'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
 //为支持aar动态更新，在build.gradle里添加如下代码

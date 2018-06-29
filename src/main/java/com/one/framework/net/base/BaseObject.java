@@ -8,6 +8,7 @@ package com.one.framework.net.base;
 import android.text.TextUtils;
 import com.one.framework.net.NetConstant;
 import java.io.Serializable;
+import java.util.Objects;
 import org.json.JSONObject;
 
 public class BaseObject implements Serializable, Cloneable {
@@ -16,7 +17,7 @@ public class BaseObject implements Serializable, Cloneable {
   public String message;
   public int timeoffset;
   public String data;
-  private Throwable throwable;
+  public String object;
 
   public static boolean isAvailable(BaseObject obj) {
     return obj != null && obj.isAvailable();
@@ -36,14 +37,6 @@ public class BaseObject implements Serializable, Cloneable {
 
       return result;
     }
-  }
-
-  public Throwable getThrowable() {
-    return this.throwable;
-  }
-
-  public void setThrowable(Throwable throwable) {
-    this.throwable = throwable;
   }
 
   public int getErrorCode() {
@@ -109,13 +102,27 @@ public class BaseObject implements Serializable, Cloneable {
       }
 
       if (obj.has(NetConstant.DATA)) {
-        setParseData(obj.optJSONObject(NetConstant.DATA).toString());
+        JSONObject dataObj = obj.optJSONObject(NetConstant.DATA);
+        if (dataObj != null) {
+          setParseData(dataObj.toString());
+        }
+      }
+
+      if (obj.has(NetConstant.OBJECT)) {
+        JSONObject objObj = obj.optJSONObject(NetConstant.OBJECT);
+        if (objObj != null) {
+          setParseObject(objObj.toString());
+        }
       }
     }
   }
 
-  public void setParseData(String dataString) {
+  private void setParseData(String dataString) {
     data = dataString;
+  }
+
+  private void setParseObject(String objectString) {
+    object = objectString;
   }
 
   public String toString() {

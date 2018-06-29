@@ -1,4 +1,9 @@
 <resources>
   <dimen name="one_general_default_show_height">90dp</dimen>
   <dimen name="one_general_header_height">180dp</dimen>
+
+  <dimen name="one_support_dialog_sheet_item_height">44dp</dimen>
+  <integer name="one_default_page_animation_duration">400</integer>
+
+  <dimen name="one_dialog_loading_wh">85dp</dimen>
 </resources>

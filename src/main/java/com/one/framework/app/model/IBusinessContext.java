@@ -2,7 +2,9 @@ package com.one.framework.app.model;
 
 import android.content.Context;
 import com.one.framework.app.navigation.INavigator;
+import com.one.framework.app.page.ISlideDrawer;
 import com.one.framework.app.page.ITopbarFragment;
+import com.one.framework.app.widget.base.IMapCenterPinView;
 import com.one.map.IMap;
 import java.io.Serializable;
 
@@ -16,4 +18,6 @@ public interface IBusinessContext extends Serializable {
   IMap getMap();
   ITopbarFragment getTopbar();
   INavigator getNavigator();
+  IMapCenterPinView getPinView();
+  ISlideDrawer getSlideDrawer();
 }

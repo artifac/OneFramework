@@ -1,6 +1,7 @@
 package com.one.framework.provider;
 
 import android.util.SparseArray;
+import com.one.framework.net.model.OrderDetail;
 import com.one.map.model.Address;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +18,8 @@ public class HomeDataProvider {
   private Map<String, Address> mAdrMap = new HashMap<String, Address>();
   private SparseArray<List<Address>> mSearchResult = new SparseArray<>();
 //  private List<Address> mPoiAddress = new ArrayList<Address>();
+
+  private OrderDetail mOrderDetail;
 
   private HomeDataProvider() {
 
@@ -64,5 +67,13 @@ public class HomeDataProvider {
 
   public Address obtainCurAddress() {
     return sCurAddress;
+  }
+
+  public void saveOrderDetail(OrderDetail detail) {
+    mOrderDetail = detail;
+  }
+
+  public OrderDetail obtainOrderDetail() {
+    return mOrderDetail;
   }
 }

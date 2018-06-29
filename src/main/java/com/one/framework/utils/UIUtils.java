@@ -12,15 +12,24 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Build;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
+import java.util.Stack;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by ludexiang on 2018/4/16.
  */
 
 public class UIUtils {
+
+  private static final String FORMAT = "\\{[^}]*\\}";
+  private static final int FORMAT_COLOR = Color.parseColor("#f05b48");
 
   private static long sLastClickTime = 0;
   private static final long DURATION = 500L;
@@ -72,20 +81,6 @@ public class UIUtils {
     return sScreenHeight;
   }
 
-  public static Drawable rippleDrawableRect(int color, int maskColor) {
-    Drawable rectDrawable = color == 0 ? null : new ColorDrawable(color);
-    if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      Drawable maskDrawable = new ColorDrawable(Color.WHITE);
-      return new RippleDrawable(ColorStateList.valueOf(maskColor), rectDrawable, maskDrawable);
-    } else {
-      StateListDrawable maskDrawable = new StateListDrawable();
-      maskDrawable.addState(new int[]{android.R.attr.state_pressed}, new ColorDrawable(maskColor));
-      Drawable layerDrawable = rectDrawable == null ? maskDrawable
-          : new LayerDrawable(new Drawable[]{rectDrawable, maskDrawable});
-      return layerDrawable;
-    }
-  }
-
   /**
    * 获取StatusBar的高度
    */
@@ -126,6 +121,20 @@ public class UIUtils {
     int h = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
 
     view.measure(w, h);
+  }
+
+  public static Drawable rippleDrawableRect(int color, int maskColor) {
+    Drawable rectDrawable = color == 0 ? null : new ColorDrawable(color);
+    if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      Drawable maskDrawable = new ColorDrawable(maskColor);
+      return new RippleDrawable(ColorStateList.valueOf(maskColor), rectDrawable, maskDrawable);
+    } else {
+      StateListDrawable maskDrawable = new StateListDrawable();
+      maskDrawable.addState(new int[]{android.R.attr.state_pressed}, new ColorDrawable(maskColor));
+      Drawable layerDrawable = rectDrawable == null ? maskDrawable
+          : new LayerDrawable(new Drawable[]{rectDrawable, maskDrawable});
+      return layerDrawable;
+    }
   }
 
   /**
@@ -172,5 +181,45 @@ public class UIUtils {
     ShapeDrawable drawable = new ShapeDrawable(shape);
     drawable.getPaint().setColor(color);
     return drawable;
+  }
+
+  public static CharSequence highlight(String input, String format, int color) {
+    Pattern pattern = Pattern.compile(format);
+    Matcher matcher = pattern.matcher(input);
+
+    Stack<Range> matches = new Stack<>();
+    while (matcher.find()) {
+      matches.push(new Range(matcher.start(), matcher.end()));
+    }
+
+    SpannableStringBuilder builder = new SpannableStringBuilder(input);
+    while (matches.size() > 0) {
+      Range range = matches.pop();
+      builder.delete(range.start, range.start + 1);
+      builder.delete(range.end - 2, range.end - 1);
+      builder.setSpan(new ForegroundColorSpan(color), range.start, range.end - 2,
+          Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+    }
+
+    return builder;
+  }
+
+  public static CharSequence highlight(String input, int color) {
+    return highlight(input, FORMAT, color);
+  }
+
+  public static CharSequence highlight(String input) {
+    return highlight(input, FORMAT, FORMAT_COLOR);
+  }
+
+  static class Range {
+
+    public final int start;
+    public final int end;
+
+    public Range(int start, int end) {
+      this.start = start;
+      this.end = end;
+    }
   }
 }

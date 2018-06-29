@@ -31,6 +31,7 @@ public class DBTables {
    * 地址
    */
   public interface AddressTable extends BaseAddressTable {
+    int NONE = -1;
     int START = 1;
     int END = 2;
     int SEARCH_HISTORY = 3;
@@ -40,7 +41,7 @@ public class DBTables {
 
     @Target({ElementType.PARAMETER, ElementType.LOCAL_VARIABLE, ElementType.FIELD})
     @Retention(RetentionPolicy.RUNTIME)
-    @IntDef({START, END, SEARCH_HISTORY, HOME, COMPANY, SEARCH})
+    @IntDef({NONE, START, END, SEARCH_HISTORY, HOME, COMPANY, SEARCH})
     @interface AddressType {
     }
     String TABLE_NAME = "address";

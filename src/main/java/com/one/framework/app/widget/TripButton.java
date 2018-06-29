@@ -26,6 +26,8 @@ import com.one.framework.utils.UIUtils;
 public class TripButton extends Button {
   
   private static final int NORMAL = 0;
+
+  private Context mContext;
   
   private int mRadius;
   private int mEnableColor;
@@ -51,6 +53,7 @@ public class TripButton extends Button {
   
   public TripButton(Context context, AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
+    mContext = context;
     TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.TripButton);
     mRadius = array.getDimensionPixelOffset(R.styleable.TripButton_radius, 6);
     mEnableColor = array.getColor(R.styleable.TripButton_enable_color, 0);
@@ -114,6 +117,11 @@ public class TripButton extends Button {
     mText = text;
     postInvalidate();
   }
+
+  public void setTripButtonText(int text) {
+    mText = mContext.getString(text);
+    postInvalidate();
+  }
   
   public String getTripButtonText() {
     return mText.toString();
@@ -143,9 +151,6 @@ public class TripButton extends Button {
       RectF strokeRect = new RectF(mRectF.left + mRadius / 2f, mRectF.top + mRadius / 2f, mRectF.right - mRadius / 2f, mRectF.bottom - mRadius / 2f);
       canvas.drawRoundRect(strokeRect, mRadius, mRadius, paint);
     }
-
-
-
   }
   
   private float getTextWidth() {

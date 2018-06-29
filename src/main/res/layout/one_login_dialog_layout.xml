@@ -1,0 +1,147 @@
+<com.one.framework.app.login.LoginDialogView xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:layout_marginLeft="50dp"
+  android:layout_marginRight="50dp"
+  android:layout_gravity="center"
+  android:clipChildren="false"
+  android:background="@android:color/white"
+  android:orientation="vertical">
+
+  <ImageView
+    android:id="@+id/one_login_dlg_close"
+    android:layout_width="20dp"
+    android:layout_height="20dp"
+    android:layout_margin="5dp"
+    android:layout_alignParentRight="true"
+    android:layout_gravity="right"
+    android:scaleType="center"
+    android:src="@drawable/one_login_dlg_close"/>
+
+  <TextView
+    android:id="@+id/one_login_dlg_title"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="20dp"
+    android:layout_alignParentTop="true"
+    android:gravity="center_horizontal"
+    android:text="@string/one_login"
+    android:textSize="18sp"/>
+
+  <EditText
+    android:id="@+id/one_login_input"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="30dp"
+    android:layout_marginLeft="30dp"
+    android:layout_marginRight="30dp"
+    android:layout_below="@id/one_login_dlg_title"
+    android:background="@null"
+    android:hint="请输入手机号码"
+    android:inputType="phone"
+    android:maxLength="13"
+    android:textSize="14sp"/>
+
+  <View
+    android:id="@+id/one_login_input_line"
+    android:layout_width="match_parent"
+    android:layout_height="0.5dp"
+    android:layout_marginTop="3dp"
+    android:layout_marginLeft="30dp"
+    android:layout_marginRight="30dp"
+    android:layout_below="@id/one_login_input"
+    android:background="#d3d3d3"/>
+
+  <RelativeLayout
+    android:id="@+id/one_login_btn_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/one_login_input_line"
+    android:layout_marginTop="40dp">
+    <com.one.framework.app.widget.TripButton
+      android:id="@+id/one_login_next"
+      android:layout_width="match_parent"
+      android:layout_height="40dp"
+
+      app:disable_color="#ffffff"
+      app:enable_color="#343d4a"
+      app:radius="0dp"
+      app:text="@string/one_login_next"
+      app:text_color="#ffffff"
+      app:text_size="14sp"/>
+
+    <com.one.framework.app.widget.LoadingView
+      android:id="@+id/one_login_dlg_loading"
+      android:layout_width="match_parent"
+      android:layout_height="40dp"
+      android:visibility="gone"
+      app:loading_point_color="@android:color/white"
+      app:loading_point_count="3"
+      app:loading_type="point"/>
+  </RelativeLayout>
+
+  <LinearLayout
+    android:id="@+id/one_login_verification_code_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/one_login_dlg_title"
+    android:layout_marginTop="10dp"
+    android:layout_marginBottom="10dp"
+    android:clipChildren="false"
+    android:gravity="center_horizontal"
+    android:visibility="gone"
+    android:orientation="vertical">
+
+    <TextView
+      android:id="@+id/one_login_input_verification_code"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="10dp"
+      android:text="@string/one_login_verification_confirm"/>
+
+    <com.one.framework.app.login.VerificationCodeView
+      android:id="@+id/one_login_verification_code"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="center"
+      android:orientation="horizontal"
+      app:vcv_et_bg="@drawable/one_login_code"
+      app:vcv_et_cursor="@drawable/one_verification_cursor"
+      app:vcv_et_inputType="number"
+      app:vcv_et_number="6"
+      app:vcv_et_text_color="@android:color/black"
+      app:vcv_et_text_size="6sp"/>
+
+  </LinearLayout>
+
+  <RelativeLayout
+    android:id="@+id/one_login_dlg_login_loading_layout"
+    android:layout_width="match_parent"
+    android:layout_height="176.5dp"
+    android:clipChildren="false"
+    android:layout_centerInParent="true"
+    android:background="#cdffffff"
+    android:visibility="gone"
+    android:layout_gravity="center_horizontal">
+    <com.one.framework.app.widget.LoadingView
+      android:id="@+id/one_login_loading_view"
+      android:layout_width="80dp"
+      android:layout_height="80dp"
+      android:layout_centerInParent="true"
+      android:layout_gravity="center_horizontal"
+      app:loading_progress_color="#d3d3d3"
+      app:loading_progress_type="circle"
+      app:loading_progress_width="3dp"
+      app:loading_type="progress"/>
+
+    <TextView
+      android:id="@+id/taxi_wait_count_down"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:gravity="center"
+      android:text="@string/one_logining"
+      android:layout_centerInParent="true"/>
+  </RelativeLayout>
+</com.one.framework.app.login.LoginDialogView>

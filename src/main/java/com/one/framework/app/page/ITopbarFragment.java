@@ -1,5 +1,6 @@
 package com.one.framework.app.page;
 
+import android.view.View;
 import com.one.framework.app.model.TabItem;
 import com.one.framework.app.widget.base.ITabIndicatorListener.ITabItemListener;
 import com.one.framework.app.widget.base.ITopTitleView.ITopTitleListener;
@@ -16,6 +17,12 @@ public interface ITopbarFragment {
   void setTitle(String title);
   void setTitle(int titleResId);
   void titleBarReset();
+
+  void setTitleRight(int txtResId);
+
+  void setTitleRight(String right);
+
+  void setCompoundDrawableBounds(int left, int top, int right, int bottom);
 
   void setLeft(int resId);
 
@@ -37,4 +44,8 @@ public interface ITopbarFragment {
   void popBackListener();
 
   void tabIndicatorAnim(boolean show);
+
+  void tabItemClick(int position);
+
+  View getRightView();
 }

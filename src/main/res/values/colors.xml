@@ -4,4 +4,13 @@
   <drawable name="one_navigator_options_pressed">#e9e9e9</drawable>
   <drawable name="transparent">#00000000</drawable>
   <drawable name="white">#ffffff</drawable>
+
+  <drawable name="one_pop_item_normal">@android:color/transparent</drawable>
+  <drawable name="one_pop_item_select">#d3d3d3</drawable>
+
+  <color name="one_support_dialog_bg_default">#ffffff</color>
+  <color name="one_support_dialog_bg_select">#f2f2f4</color>
+  <color name="one_support_dialog_bg_div">#d3d3d3</color>
+  <color name="one_support_dialog_bg_text">#1fbad6</color>
+  <color name="one_dialog_loading_bg_translate">#25000000</color>
 </resources>

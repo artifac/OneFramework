@@ -1,4 +1,7 @@
-include ':app', ':onemap'
+include ':app', ':onemap', ':onecore'
 
 def map = project(':onemap')
 map.projectDir = new File('../OneMap')
+
+def onecore = project(':onecore')
+onecore.projectDir = new File('../OneFrameworkCore')

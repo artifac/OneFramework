@@ -1,5 +1,7 @@
 package com.one.framework.app.page.impl;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
@@ -227,6 +229,21 @@ public class TopBarFragment extends Fragment implements ITopbarFragment, IScaleL
   }
 
   @Override
+  public void setTitleRight(int txtResId) {
+    mTopTitleView.setRightResId(txtResId);
+  }
+
+  @Override
+  public void setTitleRight(String right) {
+    mTopTitleView.setRightText(right);
+  }
+
+  @Override
+  public void setCompoundDrawableBounds(int left, int top, int right, int bottom) {
+    mTopTitleView.setRightCompoundDrawableBounds(left, top, right, bottom);
+  }
+
+  @Override
   public void setAllBusiness(List<TabItem> tabs) {
     List<TabItem> tabItems = new ArrayList<TabItem>(tabs);
     // 此处通过GridView.getNumColumns() return -1
@@ -247,8 +264,18 @@ public class TopBarFragment extends Fragment implements ITopbarFragment, IScaleL
     if (item != null && mTabItemListener != null && item.isClickable) {
       mMenuClose.performClick();
       mTabItemListener.onItemClick(item);
-      mTabIndicator.update(position);
+//      mTabIndicator.update(position);
     }
+  }
+
+  @Override
+  public void tabItemClick(int position) {
+    mTabIndicator.update(position);
+  }
+
+  @Override
+  public View getRightView() {
+    return mTopTitleView.getRightView();
   }
 
   @Override
@@ -260,12 +287,19 @@ public class TopBarFragment extends Fragment implements ITopbarFragment, IScaleL
   public void tabIndicatorAnim(final boolean show) {
     AnimatorSet set = new AnimatorSet();
     // 1dip 是阴影高度
-    float fromY = show ? -mTabParentView.getMeasuredHeight() + TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getResources().getDisplayMetrics()) : 0f;
-    float toY = show ? 0f : -mTabParentView.getMeasuredHeight() + TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getResources().getDisplayMetrics());
+    float fromY = show ? -mTabParentView.getMeasuredHeight() : 0f;
+    float toY = show ? 0f : -mTabParentView.getMeasuredHeight() /*+ TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getResources().getDisplayMetrics())*/;
     ObjectAnimator translationY = ObjectAnimator.ofFloat(mTabParentView, "translationY", fromY, toY);
 //    ObjectAnimator alpha = ObjectAnimator.ofFloat(mTabParentView, "alpha", show ? 0f : 1f, show ? 1f : 0f);
     set.setDuration(300);
     set.playTogether(translationY/*, alpha*/);
+    set.addListener(new AnimatorListenerAdapter() {
+      @Override
+      public void onAnimationEnd(Animator animation) {
+        super.onAnimationEnd(animation);
+        mTabParentView.setVisibility(show ? View.VISIBLE : View.GONE);
+      }
+    });
     set.start();
   }
 }

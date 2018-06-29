@@ -79,8 +79,13 @@ public class TopTitleLayout extends RelativeLayout implements ITopTitleView, OnC
 
   @Override
   public void setLeftImage(int resId) {
-    mLeftResId = resId;
-    mLeft.setImageResource(resId);
+    if (resId != 0) {
+      mLeftResId = resId;
+      mLeft.setImageResource(resId);
+      mLeft.setVisibility(View.VISIBLE);
+    } else {
+      mLeft.setVisibility(View.GONE);
+    }
   }
 
   @Override
@@ -92,8 +97,27 @@ public class TopTitleLayout extends RelativeLayout implements ITopTitleView, OnC
   }
 
   @Override
-  public void setRight(String txtBtn) {
+  public void setRightText(String txtBtn) {
+    mRight.setText(txtBtn);
+    mRight.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+  }
 
+  @Override
+  public void setRightResId(int txtResId) {
+    if (txtResId != 0) {
+      mRight.setText(txtResId);
+      mRight.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+      mRight.setOnClickListener(this);
+    } else {
+      mRight.setVisibility(View.INVISIBLE);
+      mRight.setOnClickListener(null);
+    }
+  }
+
+  @Override
+  public void setRightCompoundDrawableBounds(int left, int top, int right, int bottom) {
+    mRight.setText("");
+    mRight.setCompoundDrawablesWithIntrinsicBounds(left, top, right, bottom);
   }
 
   @Override
@@ -137,6 +161,12 @@ public class TopTitleLayout extends RelativeLayout implements ITopTitleView, OnC
     } else {
       mLeftListenerStack.pop();
     }
+    Logger.e("ldx", "TopbarFragment ..... " + mLeftListenerStack);
+  }
+
+  @Override
+  public View getRightView() {
+    return mRight;
   }
 
   @Override

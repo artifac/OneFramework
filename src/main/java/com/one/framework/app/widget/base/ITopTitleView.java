@@ -15,8 +15,9 @@ public interface ITopTitleView {
 
   void setTitle(String title);
   void setTitle(int resId);
-  void setRight(String txtBtn);
-  void setRight(int txtResId);
+  void setRightText(String txtBtn);
+  void setRightResId(int txtResId);
+  void setRightCompoundDrawableBounds(int left, int top, int right, int bottom);
   void setLeftImage(int resId);
   int getViewHeight();
 
@@ -29,6 +30,8 @@ public interface ITopTitleView {
   void popBackListener();
 
   void titleReset();
+
+  View getRightView();
 
   View getView();
 }

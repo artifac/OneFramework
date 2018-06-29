@@ -25,6 +25,6 @@
     style="@style/TextButtonStyle"
     android:layout_alignParentRight="true"
     android:layout_centerVertical="true"
-    android:clickable="true"
-    android:src="@drawable/one_top_bar_right_alarm"/>
+    android:gravity="center"
+    android:clickable="true"/>
 </merge>

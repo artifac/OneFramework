@@ -2,7 +2,9 @@ package com.one.framework.app.model;
 
 import android.content.Context;
 import com.one.framework.app.navigation.INavigator;
+import com.one.framework.app.page.ISlideDrawer;
 import com.one.framework.app.page.ITopbarFragment;
+import com.one.framework.app.widget.base.IMapCenterPinView;
 import com.one.map.IMap;
 
 /**
@@ -17,12 +19,16 @@ public class BusinessContext implements IBusinessContext {
   private IMap mMap;
   private ITopbarFragment mTopbar;
   private INavigator mNavigator;
+  private IMapCenterPinView mPinView;
+  private ISlideDrawer mSlideDrawer;
 
-  public BusinessContext(Context context, IMap map, ITopbarFragment topbar, INavigator navigator) {
+  public BusinessContext(Context context, ISlideDrawer slideDrawer, IMap map, ITopbarFragment topbar, INavigator navigator, IMapCenterPinView pinView) {
     mContext = context;
+    mSlideDrawer = slideDrawer;
     mMap = map;
     mTopbar = topbar;
     mNavigator = navigator;
+    mPinView = pinView;
   }
 
   @Override
@@ -43,5 +49,15 @@ public class BusinessContext implements IBusinessContext {
   @Override
   public INavigator getNavigator() {
     return mNavigator;
+  }
+
+  @Override
+  public IMapCenterPinView getPinView() {
+    return mPinView;
+  }
+
+  @Override
+  public ISlideDrawer getSlideDrawer() {
+    return mSlideDrawer;
   }
 }

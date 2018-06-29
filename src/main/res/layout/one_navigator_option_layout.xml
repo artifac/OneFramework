@@ -10,6 +10,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginLeft="20dp"
+    android:layout_centerInParent="true"
     android:layout_alignParentLeft="true"/>
 
   <TextView
@@ -20,7 +21,7 @@
     android:layout_alignParentRight="true"
     android:gravity="center_vertical"
     android:textColor="#333333"
-    android:textSize="18sp"/>
+    android:textSize="14sp"/>
 
   <TextView
     android:id="@+id/one_options"
@@ -31,5 +32,5 @@
     android:layout_toRightOf="@id/one_options_icon"
     android:gravity="center_vertical"
     android:textColor="#333333"
-    android:textSize="18sp"/>
+    android:textSize="16sp"/>
 </RelativeLayout>

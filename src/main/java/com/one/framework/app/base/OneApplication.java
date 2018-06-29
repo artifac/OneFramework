@@ -4,14 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
-//import com.one.map.location.LocationProvider;
-//import com.one.map.view.IMapView;
-import com.one.framework.net.Api;
-import com.one.framework.net.HeaderParams;
-import com.one.framework.net.NetworkConfig;
-import com.one.framework.net.base.INetworkConfig;
-import com.one.framework.net.model.ReqConfigResponse;
-import com.one.framework.net.request.IRequestConstant;
+import com.one.framework.log.Logger;
 import com.one.framework.utils.SystemUtils;
 import com.one.map.location.LocationProvider;
 import com.one.map.view.IMapView;
@@ -61,14 +54,14 @@ public class OneApplication extends MultiDexApplication {
     super.onCreate();
     try {
       SystemUtils.init(this);
-      INetworkConfig networkConfig = new NetworkConfig(this, new HeaderParams(), true);
-      Api.initNetworkConfig(networkConfig);
+
       checkAppDelegate();
       Method method = applicationDelegateClass.getDeclaredMethod("onCreate", Application.class);
       method.setAccessible(true);
       method.invoke(applicationDelegate, this);
     } catch (Exception e) {
       e.printStackTrace();
+      Logger.e("ldx", "ApplicationDelegate onCreate exception");
     }
     LocationProvider.getInstance().buildLocation(this, IMapView.TENCENT);
   }

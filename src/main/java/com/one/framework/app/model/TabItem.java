@@ -44,4 +44,9 @@ public class TabItem {
    * 是否可点击
    */
   public boolean isClickable = true;
+
+  /**
+   * tab bizType
+   */
+  public int tabBizType;
 }

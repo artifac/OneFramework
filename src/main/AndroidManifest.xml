@@ -109,7 +109,8 @@
       android:name="android.max_aspect"
       android:value="2.1"/>
 
-    <activity android:name="com.one.framework.MainActivity">
+    <activity android:name="com.one.framework.MainActivity"
+      android:theme="@style/MainTheme">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
         <category android:name="android.intent.category.DEFAULT"/>

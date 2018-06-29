@@ -36,13 +36,14 @@
       android:clickable="true"
       android:scaleType="center"
       android:src="@drawable/one_top_bar_menu"/>
-
-    <View
-      android:layout_width="match_parent"
-      android:layout_height="1dp"
-      android:layout_gravity="bottom"
-      android:background="#e3e3e3"/>
   </FrameLayout>
+
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:layout_below="@id/one_tab_container_parent"
+    android:layout_gravity="bottom"
+    android:background="#e3e3e3"/>
 
   <com.one.framework.app.widget.TopTitleLayout
     android:id="@+id/one_top_title_layout"

@@ -7,5 +7,6 @@ import java.util.HashMap;
  */
 
 public interface IHeaderParams {
+  void setLoginPhone(String mobilePhone);
   HashMap<String, Object> getParams();
 }

@@ -1,0 +1,83 @@
+<com.one.framework.app.widget.PullScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="#f3f3f3">
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+      android:id="@+id/one_account_safe"
+      layout="@layout/one_list_item_with_right_arrow"
+      android:layout_width="match_parent"
+      android:layout_height="50dp"
+      android:layout_marginTop="10dp"
+      android:layout_marginBottom="10dp"/>
+
+    <include
+      android:id="@+id/one_normal_address"
+      layout="@layout/one_list_item_with_right_arrow"
+      android:layout_width="match_parent"
+      android:layout_height="50dp"/>
+
+    <include
+      android:id="@+id/one_urgent_connect"
+      layout="@layout/one_list_item_with_right_arrow"
+      android:layout_width="match_parent"
+      android:layout_height="50dp"/>
+
+    <include
+      android:id="@+id/one_clear_cache"
+      layout="@layout/one_list_item_with_right_arrow"
+      android:layout_width="match_parent"
+      android:layout_height="50dp"
+      android:layout_marginTop="10dp"
+      android:layout_marginBottom="10dp"/>
+
+    <include
+      android:id="@+id/one_user_edu"
+      layout="@layout/one_list_item_with_right_arrow"
+      android:layout_width="match_parent"
+      android:layout_height="50dp"/>
+
+    <include
+      android:id="@+id/one_evaluate"
+      layout="@layout/one_list_item_with_right_arrow"
+      android:layout_width="match_parent"
+      android:layout_height="50dp"/>
+
+
+    <include
+      android:id="@+id/one_lawer_private"
+      layout="@layout/one_list_item_with_right_arrow"
+      android:layout_width="match_parent"
+      android:layout_height="50dp"
+      android:layout_marginTop="10dp"/>
+
+    <include
+      android:id="@+id/one_about"
+      layout="@layout/one_list_item_with_right_arrow"
+      android:layout_width="match_parent"
+      android:layout_height="50dp"
+      android:layout_marginBottom="10dp"/>
+
+    <com.one.framework.app.widget.TripButton
+      android:id="@+id/one_logout"
+      android:layout_width="match_parent"
+      android:layout_height="50dp"
+      android:layout_alignParentBottom="true"
+      android:clickable="true"
+      android:gravity="center"
+      app:disable_color="#e3e3e3"
+      app:enable_color="#ffffff"
+      app:radius="0dp"
+      app:text="@string/one_logout"
+      app:text_color="#f05b48"
+      app:text_size="14sp"/>
+
+  </LinearLayout>
+
+</com.one.framework.app.widget.PullScrollView>

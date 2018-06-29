@@ -51,12 +51,15 @@ public class NetConstant {
   public static String TIME_OFFSET = "timeoffset";
   /** 后端返回数据*/
   public static String DATA = "data";
+  public static String OBJECT = "object";
   /** 数据返回正常 */
   public final static int OK = 0;
   /** 无数据 */
   public final static int NO_DATA = -800;
   /** 数据格式错误 */
   public static final int ERROR_INVALID_DATA_FORMAT = -900;
+  /** 未完成订单*/
+  public static final int ORDER_UNFINISHED = 200021;
   /** 订单已被抢 */
   public static final int ORDER_STRIVED = 1002;
   /** 订单已取消 */

@@ -6,9 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
-import com.one.map.view.IMapDelegate.CenterLatLngParams;
+import com.one.framework.app.style.ThemeStyles;
 import com.one.map.view.IMapDelegate.IMapListener;
 
 /**
@@ -17,32 +16,68 @@ import com.one.map.view.IMapDelegate.IMapListener;
 
 public abstract class BaseActivity extends FragmentActivity implements IMapListener {
 
+  private String brandSmall = Build.BRAND.toLowerCase();
+
+  private boolean isMiUi = true;
+  private boolean isFlyme = true;
+
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        //5.x开始需要把颜色设置透明，否则导航栏会呈现系统默认的浅灰色
-        Window window = getWindow();
-        View decorView = window.getDecorView();
-        //两个 flag 要结合使用，表示让应用的主体内容占用系统状态栏的空间
-        int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-        decorView.setSystemUiVisibility(option);
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(Color.TRANSPARENT);
-        //导航栏颜色也可以正常设置
-//                window.setNavigationBarColor(Color.TRANSPARENT);
+    setStatusColor(getStatusBarColor());
+
+  }
+
+  /**
+   * 设置状态栏的颜色
+   */
+  protected int getStatusBarColor() {
+    return Color.WHITE;
+  }
+
+  protected void setStatusColor(int color) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        checkLightStatusBarSupportCompat();
+        setStatusBarColorCompat(color);
+        getWindow().setStatusBarColor(color);
       } else {
-        Window window = getWindow();
-        WindowManager.LayoutParams attributes = window.getAttributes();
-        int flagTranslucentStatus = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
-        int flagTranslucentNavigation = WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION;
-        attributes.flags |= flagTranslucentStatus;
-//                attributes.flags |= flagTranslucentNavigation;
-        window.setAttributes(attributes);
+        setStatusBarColorCompat(Color.parseColor("#191d21"));
       }
     }
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        getWindow().getDecorView()
+            .setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+      }
+      getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+    }
+  }
+
+  private void checkLightStatusBarSupportCompat() {
+    if (brandSmall.contains("xiaomi") && isMiUi) {
+      isMiUi = ThemeStyles.setMIUIStatusBarLightMode(this, true);
+    } else if (brandSmall.contains("meizu") && isFlyme) {
+      isFlyme = ThemeStyles.setFlymeStatusBarLightMode(this, true);
+    }
+  }
+
+  public void setStatusBarColorCompat(int color) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      getWindow().setStatusBarColor(color);
+    }
+  }
+
+  @Override
+  protected void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+
+    // 移除所有 FragmentManager 保存的状态信息,防止 Activity 重建时自动恢复 Fragment 实例
+    outState.remove("android:support:fragments");
+    outState.remove("android:support:next_request_index");
+    outState.remove("android:support:request_indicies");
+    outState.remove("android:support:request_fragment_who");
   }
 
   @Override

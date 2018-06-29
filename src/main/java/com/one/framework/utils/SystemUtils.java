@@ -193,6 +193,10 @@ public class SystemUtils {
     return sContext.getResources().getDisplayMetrics().densityDpi;
   }
 
+  public static float getScreenDensity() {
+    return sContext.getResources().getDisplayMetrics().density;
+  }
+
   /** @deprecated */
   @Deprecated
   public static String getVersionName() {
@@ -375,7 +379,7 @@ public class SystemUtils {
     return value < 10 ? (char) (48 + value) : (char) (65 + value - 10);
   }
 
-  public static void showSofyKeyboard(final View focusView) {
+  public static void showSoftKeyboard(final View focusView) {
     focusView.postDelayed(new Runnable() {
       public void run() {
         focusView.setFocusable(true);

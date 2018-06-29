@@ -1,0 +1,14 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:background="@android:color/white"
+  android:orientation="vertical">
+
+  <include
+    layout="@layout/one_bottom_dialog_title_bar_layout"/>
+
+  <FrameLayout
+    android:id="@+id/one_bottom_dlg_view_group"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"/>
+</LinearLayout>

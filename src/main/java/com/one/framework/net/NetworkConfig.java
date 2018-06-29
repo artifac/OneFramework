@@ -17,28 +17,30 @@ import javax.net.ssl.X509TrustManager;
  */
 
 public class NetworkConfig implements INetworkConfig {
+
   private Context mContext;
   private SSLSocketFactory mSslSocketFactory;
   private X509TrustManager mTrustManager;
   private IHeaderParams mHeaderParams;
 
-  public NetworkConfig(Context context, IHeaderParams params, boolean isHttps) {
+  public NetworkConfig(Context context, IHeaderParams params, InputStream inputStream,
+      String password, boolean isHttps) {
     mContext = context;
     mHeaderParams = params;
     if (isHttps) {
-      initHttps();
+      initHttps(inputStream, password);
     }
   }
 
-  private void initHttps() {
-    try {
-      InputStream inputStream = mContext.getAssets().open("cert/oneTrip.bks");
-      HttpsUtils.SslParams params = HttpsUtils.getSslSocketFactory(inputStream, "");
-      mSslSocketFactory = params.sslSocketFactory;
-      mTrustManager = params.trustManager;
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+  @Override
+  public void setUserPhone(String phone) {
+    mHeaderParams.setLoginPhone(phone);
+  }
+
+  private void initHttps(InputStream inputStream, String password) {
+    HttpsUtils.SslParams params = HttpsUtils.getSslSocketFactory(inputStream, password);
+    mSslSocketFactory = params.sslSocketFactory;
+    mTrustManager = params.trustManager;
   }
 
   @Override

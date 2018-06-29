@@ -18,7 +18,9 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
+import android.view.View;
 import com.one.framework.R;
+import com.one.framework.app.widget.base.IMapCenterPinView;
 import com.one.map.IMap;
 import com.one.map.location.LocationProvider;
 import com.one.map.model.LatLng;
@@ -28,7 +30,7 @@ import com.one.map.model.LatLng;
  * 地图中心点View GEO
  */
 
-public class MapCenterPinView extends AppCompatImageView {
+public class MapCenterPinView extends AppCompatImageView implements IMapCenterPinView {
 
   private int mPinLineWidth;
   private int mPinLineColor;
@@ -49,6 +51,8 @@ public class MapCenterPinView extends AppCompatImageView {
 
   private ValueAnimator mRadius;
   private Handler mHandler;
+
+  private boolean isReverseGeo = true;
 
   public MapCenterPinView(Context context) {
     this(context, null);
@@ -110,6 +114,7 @@ public class MapCenterPinView extends AppCompatImageView {
     mHandler.sendEmptyMessage(0);
   }
 
+  @Override
   public void setMap(IMap map) {
     mMap = map;
   }
@@ -183,15 +188,36 @@ public class MapCenterPinView extends AppCompatImageView {
 
   /**
    * move map toggle pin jump anim
+   * 地址翻转，通过LatLng 翻转出地址
    */
-  public void jumpTwice(LatLng latLng) {
-    toggleLoading();
-    mMap.geo2Address(latLng);
-    mMap.poiNearByWithCity(LocationProvider.getInstance().getLocation().mAdrLatLng, LocationProvider.getInstance().getLocation().mCity);
+  @Override
+  public void reverseGeoAddress(LatLng latLng) {
+    if (isReverseGeo) {
+      toggleLoading();
+      mMap.geo2Address(latLng);
+      mMap.poiNearByWithCity(LocationProvider.getInstance().getLocation().mAdrLatLng,
+          LocationProvider.getInstance().getLocation().mCity);
+    }
   }
 
+  @Override
   public void stop() {
     mHandler.sendEmptyMessageDelayed(1, 1000);
   }
 
+  @Override
+  public void isToggleLoading(boolean reverse) {
+    isReverseGeo = reverse;
+  }
+
+  @Override
+  public void hide(boolean isHide) {
+    setVisibility(isHide ? View.GONE : View.VISIBLE);
+    isReverseGeo = !isHide;
+  }
+
+  @Override
+  public View getView() {
+    return this;
+  }
 }

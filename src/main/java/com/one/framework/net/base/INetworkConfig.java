@@ -20,5 +20,7 @@ public interface INetworkConfig {
 
   List<NetInterceptor> getInterceptors();
 
+  void setUserPhone(String phone);
+
   long getTimeout();
 }

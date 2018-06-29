@@ -6,4 +6,47 @@
   <string name="one_action_settings">Settings</string>
   <string name="location_errorcode_62">定位失败，请检查运营商网络或者WiFi网络是否正常开启，尝试重新请求定位。</string>
   <string name="gps_neverlocation_hint">关闭定位功能，应用将无法使用，建议您在设置中开启定位功能</string>
+
+  <string name="one_dialog_data_picker_today">今天</string>
+  <string name="one_dialog_data_picker_tomorrow">明天</string>
+  <string name="one_dialog_data_picker_the_day_after_tomorrow">后天</string>
+
+  <string name="one_dialog_data_picker_hour">时</string>
+  <string name="one_dialog_data_picker_minute">分</string>
+
+  <string name="one_dialog_data_picker_hour_format">%1d时</string>
+  <string name="one_dialog_data_picker_minute_format">%1d分</string>
+
+  <string name="one_dialog_data_today_format">M月d日 今天</string>
+  <string name="one_dialog_data_day_format">M月d日 EEEE</string>
+
+  <string name="one_confirm">确定</string>
+  <string name="one_cancel">取消</string>
+
+  <string name="one_login">登录</string>
+  <string name="one_login_input_phone_hint">请输入手机号码</string>
+  <string name="one_login_next">下一步</string>
+  <string name="one_login_input_verification_code">输入验证码</string>
+  <string name="one_login_verification_confirm">验证码已发送到:{%1$s}</string>
+  <string name="one_login_reobtain_verificode_count_down">重新获取验证码(%1ds)</string>
+  <string name="one_login_reobtain_verificode">重新获取验证码</string>
+
+  <string name="one_slide_my_trips">我的行程</string>
+  <string name="one_slide_setting">通用设置</string>
+  <string name="one_trip_empty_msg">空空如也~</string>
+  <string name="one_dlg_loading">加载中...</string>
+  <string name="one_press_again_exit">再按一次退出</string>
+  <string name="one_logining">登录中</string>
+
+  <string name="one_settings">设置</string>
+  <string name="one_settings_account">账户与安全</string>
+  <string name="one_settings_normal_adr">常用地址</string>
+  <string name="one_settings_clear_cache">清空缓存</string>
+  <string name="one_settings_user_edu">用户指导</string>
+  <string name="one_settings_urgent_connect">紧急联系人</string>
+  <string name="one_settings_evaluate">给予好评</string>
+  <string name="one_settings_lawer_private">法律条款与隐私政策</string>
+  <string name="one_settings_about">关于我们</string>
+
+  <string name="one_logout">退出登录</string>
 </resources>

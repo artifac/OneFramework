@@ -1,6 +1,7 @@
 package com.one.framework.net;
 
 import android.text.TextUtils;
+import com.mobike.mobikeapp.util.SafeUtil;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -43,23 +44,20 @@ public class NetInterceptor implements Interceptor {
     // 处理header
     Builder builder = request.newBuilder();
     for (String key : mHeaderParams.getParams().keySet()) {
-      builder.addHeader(key, mHeaderParams.getParams().get(key).toString());
+      Object value = mHeaderParams.getParams().get(key);
+      if (value != null) {
+        builder.addHeader(key, value.toString());
+      }
     }
-    url = url.newBuilder()
-        .addQueryParameter(ServerParams.PARAM_TIME, String.valueOf(System.currentTimeMillis()))
-        .build();
-    request = request.newBuilder().url(url).build();
+    request = builder.url(url)/*.addHeader(ServerParams.PARAM_TIME, String.valueOf(System.currentTimeMillis()))*/.build();
     String sign = getSign(request);
-    return request.newBuilder().addHeader(ServerParams.PARAM_SIGN, sign).build();
+    return builder.addHeader(ServerParams.PARAM_SIGN, sign).build();
   }
 
   public String getSign(Request request) {
     Map<String, List<String>> map = new HashMap<String, List<String>>();
     Map<String, List<String>> params = getRequestParamsMap(request.url());
     map.putAll(params);
-
-//        val headers = getHeadersMap(request.headers())
-//        map.putAll(headers)
 
     if ("POST".equals(request.method())) {
       Map<String, List<String>> body = getRequestBodyMap(request.body());
@@ -146,6 +144,6 @@ public class NetInterceptor implements Interceptor {
       signContent = result;
     }
 
-    return signContent;//SafeUtil.getJniString(signContent);
+    return SafeUtil.getJniString(signContent);
   }
 }

@@ -1,0 +1,98 @@
+<FrameLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+  <LinearLayout
+    android:id="@+id/one_trip_cell_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="10dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginBottom="6dp"
+    android:background="@drawable/one_trip_bg_selector"
+    android:orientation="vertical">
+
+    <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="10dp"
+      android:layout_marginBottom="5dp">
+      <TextView
+        android:id="@+id/one_my_trips_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:textSize="16sp"
+        android:layout_alignParentLeft="true"/>
+
+      <TextView
+        android:id="@+id/one_my_trips_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:textSize="16sp"
+        android:layout_alignParentRight="true"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+      <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:orientation="vertical">
+        <TextView
+          android:id="@+id/one_my_trips_start"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:paddingLeft="10dp"
+          android:textSize="14sp"
+          android:gravity="center_vertical"
+          android:drawableLeft="@drawable/one_trip_start_address_point"
+          android:drawablePadding="10dp"
+          android:text="start address"/>
+
+        <View
+          android:id="@+id/one_trip_line"
+          android:layout_width="20dp"
+          android:layout_height="20dp"
+          android:layout_marginLeft="3dp"
+          android:layout_alignLeft="@id/one_my_trips_start"
+          android:layout_below="@id/one_my_trips_start"
+          android:background="@drawable/one_trip_dot_line"
+          android:layerType="software"/>
+
+        <TextView
+          android:id="@+id/one_my_trips_end"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_below="@id/one_trip_line"
+          android:paddingLeft="10dp"
+          android:textSize="14sp"
+          android:gravity="center_vertical"
+          android:drawableLeft="@drawable/one_trip_end_address_point"
+          android:drawablePadding="10dp"
+          android:text="end address"/>
+
+      </RelativeLayout>
+
+
+      <TextView
+        android:id="@+id/one_my_trips_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:layout_marginRight="10dp"
+        android:textColor="#c3c3c3"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"/>
+    </RelativeLayout>
+
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="0.5dp"
+      android:background="#e3e3e3"
+      android:layout_marginTop="10dp"/>
+  </LinearLayout>
+</FrameLayout>
