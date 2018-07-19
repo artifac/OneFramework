@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import com.one.framework.db.DBTables.AddressTable;
 import com.one.framework.db.DBTables.AddressTable.AddressType;
+import com.one.framework.log.Logger;
 import com.one.map.model.Address;
 import com.one.map.model.LatLng;
 import java.util.ArrayList;
@@ -65,5 +66,16 @@ public class DBUtil {
     values.put(AddressTable.TIMESTAMP, System.currentTimeMillis());
     values.put(AddressTable.TYPE, type);
     return context.getContentResolver().update(AddressTable.CONTENT_URI, values, AddressTable.TYPE + " = ?", new String[]{ String.valueOf(type)});
+  }
+
+  /**
+   * 清空表数据
+   * @param context
+   * @return
+   */
+  public static int deleteTables(Context context) {
+    int deleteRow = context.getContentResolver().delete(AddressTable.CONTENT_URI, null, null);
+    Logger.e("ldx", "deleteRow >>> " + deleteRow);
+    return deleteRow;
   }
 }

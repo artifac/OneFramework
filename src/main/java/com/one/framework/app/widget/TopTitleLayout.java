@@ -1,7 +1,9 @@
 package com.one.framework.app.widget;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -11,6 +13,7 @@ import android.widget.TextView;
 import com.one.framework.R;
 import com.one.framework.app.widget.base.ITopTitleView;
 import com.one.framework.log.Logger;
+import com.one.map.location.LocationProvider;
 import java.util.Stack;
 
 /**
@@ -30,7 +33,9 @@ public class TopTitleLayout extends RelativeLayout implements ITopTitleView, OnC
   /**
    * Listener 通过栈 FILO
    */
-  private Stack<ITopTitleListener> mLeftListenerStack = new Stack<>();
+  private Stack<ITopTitleListener> mClickListenerStack = new Stack<>();
+
+  private final int sTitleSize = 17;
 
 
   public TopTitleLayout(Context context) {
@@ -69,12 +74,18 @@ public class TopTitleLayout extends RelativeLayout implements ITopTitleView, OnC
 
   @Override
   public void setTitle(String title) {
-    mTitle.setText(title);
+    setTitle(title, sTitleSize);
   }
 
   @Override
   public void setTitle(int resId) {
-    mTitle.setText(resId);
+    setTitle(getContext().getString(resId), sTitleSize);
+  }
+
+  @Override
+  public void setTitle(String title, int sizeSp) {
+    mTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, sizeSp);
+    mTitle.setText(title);
   }
 
   @Override
@@ -90,24 +101,31 @@ public class TopTitleLayout extends RelativeLayout implements ITopTitleView, OnC
 
   @Override
   public void setTopTitleListener(ITopTitleListener listener) {
-    if (mLeftListenerStack.contains(listener)) {
+    Logger.e("ldx", "titleListener >>>> " + listener + " stack " + mClickListenerStack);
+    if (mClickListenerStack.contains(listener)) {
       return;
     }
-    mLeftListenerStack.push(listener);
+    mClickListenerStack.push(listener);
   }
 
   @Override
   public void setRightText(String txtBtn) {
-    mRight.setText(txtBtn);
-    mRight.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+    if (!TextUtils.isEmpty(txtBtn)) {
+      mRight.setVisibility(View.VISIBLE);
+      mRight.setText(txtBtn);
+      mRight.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+      mRight.setOnClickListener(this);
+    } else {
+      mRight.setVisibility(View.INVISIBLE);
+      mRight.setOnClickListener(null);
+    }
   }
 
   @Override
   public void setRightResId(int txtResId) {
     if (txtResId != 0) {
-      mRight.setText(txtResId);
-      mRight.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-      mRight.setOnClickListener(this);
+      mRight.setVisibility(View.VISIBLE);
+      setRightText(getContext().getString(txtResId));
     } else {
       mRight.setVisibility(View.INVISIBLE);
       mRight.setOnClickListener(null);
@@ -124,27 +142,28 @@ public class TopTitleLayout extends RelativeLayout implements ITopTitleView, OnC
   public void titleReset() {
     // 在首页但是处理不同的逻辑
     setLeftImage(mLeftDefaultResId);
-    setTitle(R.string.app_name);
+    setRightResId(0);
+    setTitle(LocationProvider.getInstance().getLocation().mCity, 14);
   }
 
   @Override
   public void onClick(View v) {
-    boolean onlyOne = mLeftListenerStack.size() == 1;
+    boolean onlyOne = mClickListenerStack.size() == 1;
     // 若是root Fragment 直接获取 Listener 不弹出栈 左上角默认🔙故直接pop
     ITopTitleListener listener;
     int id = v.getId();
     if (id == R.id.one_top_left) {
-      listener = onlyOne ? mLeftListenerStack.peek() : mLeftListenerStack.pop();
+      listener = onlyOne ? mClickListenerStack.peek() : mClickListenerStack.pop();
       if (listener != null) {
         listener.onTitleItemClick(ClickPosition.LEFT);
       }
     } else if (id == R.id.one_top_title) {
-      listener = mLeftListenerStack.peek();
+      listener = mClickListenerStack.peek();
       if (listener != null) {
         listener.onTitleItemClick(ClickPosition.TITLE);
       }
     } else if (id == R.id.one_top_right) {
-      listener = mLeftListenerStack.peek();
+      listener = mClickListenerStack.peek();
       if (listener != null) {
         listener.onTitleItemClick(ClickPosition.RIGHT);
       }
@@ -155,13 +174,13 @@ public class TopTitleLayout extends RelativeLayout implements ITopTitleView, OnC
   public void popBackListener() {
     // peek 返回栈顶元素 不移除
     // pop 返回栈顶元素 移除
-    boolean onlyOne = mLeftListenerStack.size() == 1;
+    boolean onlyOne = mClickListenerStack.size() == 1;
     if (onlyOne) {
-      mLeftListenerStack.peek();
+      mClickListenerStack.peek();
     } else {
-      mLeftListenerStack.pop();
+      mClickListenerStack.pop();
     }
-    Logger.e("ldx", "TopbarFragment ..... " + mLeftListenerStack);
+    Logger.e("ldx", "Topbar LeftBackStack >>>> " + mClickListenerStack);
   }
 
   @Override

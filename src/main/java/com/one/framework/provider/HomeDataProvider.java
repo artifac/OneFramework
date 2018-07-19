@@ -61,7 +61,11 @@ public class HomeDataProvider {
     return mAdrMap.get(key);
   }
 
-  public void saveLocAddress(Address address) {
+  /**
+   * 保存当前上车点位置
+   * @param address
+   */
+  public void saveCurAddress(Address address) {
     sCurAddress = address;
   }
 

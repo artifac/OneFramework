@@ -2,6 +2,7 @@ package com.one.framework.app.page.impl;
 
 import static com.one.framework.app.navigation.INavigator.BUNDLE_ADD_TO_BACK_STACK;
 import static com.one.framework.app.navigation.INavigator.BUNDLE_FORWARD_FRAGMENT_STYLE;
+import static com.one.framework.model.NavigatorModel.CUSTOMER_SERVICE;
 import static com.one.framework.model.NavigatorModel.MY_TRAVEL;
 import static com.one.framework.model.NavigatorModel.SETTING;
 
@@ -158,6 +159,9 @@ public class NavigatorFragment extends BaseFragment implements IMovePublishListe
         forward(MyTripsFragment.class, null);
         break;
       }
+      case CUSTOMER_SERVICE: {
+        break;
+      }
       case SETTING: {
         Bundle bundle = new Bundle();
         bundle.putBoolean(BUNDLE_FORWARD_FRAGMENT_STYLE, true);
@@ -176,12 +180,18 @@ public class NavigatorFragment extends BaseFragment implements IMovePublishListe
     myOrders.optionsType = MY_TRAVEL;
     myOrders.optionsIconId = R.drawable.one_slide_my_trips;
 
+    NavigatorModel customerService = new NavigatorModel();
+    customerService.optionsInfo = getString(R.string.one_slide_customer_service);
+    customerService.optionsType = CUSTOMER_SERVICE;
+    customerService.optionsIconId = R.drawable.one_slide_customer_service;
+
     NavigatorModel general = new NavigatorModel();
     general.optionsInfo = getString(R.string.one_slide_setting);
     general.optionsType = SETTING;
     general.optionsIconId = R.drawable.one_slide_setting;
 
     models.add(myOrders);
+    models.add(customerService);
     models.add(general);
     return models;
   }

@@ -1,18 +1,21 @@
 package com.one.framework;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.KeyEvent.Callback;
-import android.widget.Toast;
+import com.igexin.sdk.PushManager;
 import com.one.framework.app.base.BaseActivity;
 import com.one.framework.app.common.SrcCarType;
 import com.one.framework.app.login.ILogin;
@@ -29,6 +32,8 @@ import com.one.framework.app.page.ISlideDrawer;
 import com.one.framework.app.page.ITopbarFragment;
 import com.one.framework.app.page.impl.NavigatorFragment;
 import com.one.framework.app.page.impl.TopBarFragment;
+import com.one.framework.app.service.GetuiIntentService;
+import com.one.framework.app.service.GetuiService;
 import com.one.framework.app.widget.MapCenterPinView;
 import com.one.framework.app.widget.base.IMapCenterPinView;
 import com.one.framework.app.widget.base.ITabIndicatorListener.ITabItemListener;
@@ -46,7 +51,8 @@ import com.one.map.IMap;
 import com.one.map.MapFragment;
 import com.one.map.model.Address;
 import com.one.map.view.IMapDelegate.CenterLatLngParams;
-import com.onecore.core.ISupportFragment;
+import com.tencent.bugly.crashreport.CrashReport;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,6 +77,7 @@ public class MainActivity extends BaseActivity implements ITabItemListener, ILog
   // 再点一次退出程序时间设置
   private static final long WAIT_TIME = 2000L;
   private long TOUCH_TIME = 0;
+  private static final int REQUEST_PERMISSION = 0;
 
   /**
    * 是否有行程中订单，订单所属业务线
@@ -119,6 +126,7 @@ public class MainActivity extends BaseActivity implements ITabItemListener, ILog
     mNavigatorFragment = (NavigatorFragment) getSupportFragmentManager().findFragmentById(R.id.one_navigator_fragment);
     mMapPinView = (MapCenterPinView) findViewById(R.id.one_map_center_pin);
     mTopbarFragment.setTabItemListener(this);
+    mTopbarFragment.setTitleClickListener(mTopTitleListener);
 
     mDelegateManager = new ActivityDelegateManager(this);
     mDelegateManager.notifyOnCreate();
@@ -137,6 +145,51 @@ public class MainActivity extends BaseActivity implements ITabItemListener, ILog
     lockDrawerLayout(!mLogin.isLogin());
     mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
     obtainAllProjects();
+
+    PackageManager pkgManager = getPackageManager();
+
+    // 读写 sd card 权限非常重要, android6.0默认禁止的, 建议初始化之前就弹窗让用户赋予该权限
+    boolean sdCardWritePermission =
+        pkgManager.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, getPackageName()) == PackageManager.PERMISSION_GRANTED;
+
+    // read phone state用于获取 imei 设备信息
+    boolean phoneSatePermission =
+        pkgManager.checkPermission(Manifest.permission.READ_PHONE_STATE, getPackageName()) == PackageManager.PERMISSION_GRANTED;
+
+    if (Build.VERSION.SDK_INT >= 23 && !sdCardWritePermission || !phoneSatePermission) {
+      requestPermission();
+    } else {
+      PushManager.getInstance().initialize(getApplicationContext(), GetuiService.class);
+    }
+    PushManager.getInstance().registerPushIntentService(this.getApplicationContext(), GetuiIntentService.class);
+
+    // cpu 架构
+    Logger.d("ldx", "cpu arch = " + (Build.VERSION.SDK_INT < 21 ? Build.CPU_ABI : Build.SUPPORTED_ABIS[0]));
+
+    // 检查 so 是否存在
+    File file = new File(this.getApplicationInfo().nativeLibraryDir + File.separator + "libgetuiext2.so");
+    Logger.e("ldx", "libgetuiext2.so exist = " + file.exists());
+  }
+
+  private void requestPermission() {
+    ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE},
+        REQUEST_PERMISSION);
+  }
+
+  @Override
+  public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    if (requestCode == REQUEST_PERMISSION) {
+      if ((grantResults.length == 2 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+          && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+        PushManager.getInstance().initialize(getApplicationContext(), GetuiService.class);
+      } else {
+        Logger.e("ldx", "We highly recommend that you need to grant the special permissions before initializing the SDK, otherwise some "
+            + "functions will not work");
+        PushManager.getInstance().initialize(this.getApplicationContext(), GetuiService.class);
+      }
+    } else {
+      super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
   }
 
   @Override
@@ -154,6 +207,7 @@ public class MainActivity extends BaseActivity implements ITabItemListener, ILog
   protected void onResume() {
     super.onResume();
     mDelegateManager.notifyOnResume();
+    mNavigator.onResume();
   }
 
   @Override
@@ -167,7 +221,8 @@ public class MainActivity extends BaseActivity implements ITabItemListener, ILog
   @Override
   public void onMapGeo2Address(Address address) {
     mMapPinView.stop();
-    HomeDataProvider.getInstance().saveLocAddress(address);
+    // 保存geo reverse address
+    HomeDataProvider.getInstance().saveCurAddress(address);
     // notify observer
 
     // todo current use LocalBroadcastManager
@@ -278,6 +333,7 @@ public class MainActivity extends BaseActivity implements ITabItemListener, ILog
   protected void onPause() {
     super.onPause();
     mDelegateManager.notifyOnPause();
+    mNavigator.onPause();
   }
 
   @Override
@@ -293,7 +349,7 @@ public class MainActivity extends BaseActivity implements ITabItemListener, ILog
       int backStackCount = manager.getBackStackEntryCount();
       Logger.e("ldx", "MainActivity onBackPressed >>>>> " + backStackCount);
       if (backStackCount > 0) {
-        // 在首页
+        // 非首页
         return;
       }
     }
@@ -302,8 +358,7 @@ public class MainActivity extends BaseActivity implements ITabItemListener, ILog
       finish();
     } else {
       TOUCH_TIME = System.currentTimeMillis();
-      ToastUtils.toast(this, getString(R.string.one_press_again_exit));
-      Toast.makeText(this, getString(R.string.one_press_again_exit), Toast.LENGTH_LONG).show();
+      ToastUtils.toast(getApplicationContext(), getString(R.string.one_press_again_exit));
     }
   }
 
@@ -346,10 +401,6 @@ public class MainActivity extends BaseActivity implements ITabItemListener, ILog
     mNavigator = new Navigator(this, getSupportFragmentManager());
   }
 
-  public ITopTitleListener getTopTitleListener() {
-    return mTopTitleListener;
-  }
-
   public void lockDrawerLayout(boolean lock) {
     if (lock) {
       mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
@@ -368,71 +419,16 @@ public class MainActivity extends BaseActivity implements ITabItemListener, ILog
   private List<TabItem> testTabItems() {
     List<TabItem> items = new ArrayList<>();
 
-    TabItem tab1 = new TabItem();
-    tab1.tab = "快车";
-    tab1.position = 0;
-    tab1.tabBiz = "flash";
-    tab1.tabIconResId = R.drawable.one_tab_business_bike;
-    tab1.tabBizType = 2;
-    tab1.isRedPoint = false;
-    tab1.isSelected = false;
-//
-//    PopTabItem tab2 = new PopTabItem();
-//    tab2.tab = "站点巴士";
-//    tab2.position = 1;
-//    tab2.tabIconResId = R.drawable.one_tab_business_bike;
-//    tab2.tabBiz = "calendar";
-//    tab2.isRedPoint = false;
-//    tab2.isSelected = false;
-//
-//    PopTabItem tab3 = new PopTabItem();
-//    tab3.tab = "专车";
-//    tab3.position = 2;
-//    tab3.tabIconResId = R.drawable.one_tab_business_bike;
-//    tab3.tabBiz = "premium";
-//    tab3.isRedPoint = false;
-//    tab3.isSelected = false;
-
     TabItem tab4 = new TabItem();
     tab4.tab = "出租车";
-    tab4.position = 1;
+    tab4.position = 0;
     tab4.tabBiz = "taxi";
     tab4.isRedPoint = false;
     tab4.tabBizType = 3;
     tab4.tabIconResId = R.drawable.one_tab_business_bike;
     tab4.isSelected = true;
 
-//    PopTabItem tab5 = new PopTabItem();
-//    tab5.tab = "共享单车";
-//    tab5.position = 4;
-//    tab5.tabBiz = "driver";
-//    tab5.isRedPoint = true;
-//    tab5.tabIconResId = R.drawable.one_tab_business_bike;
-//    tab5.isSelected = false;
-//
-//    PopTabItem tab6 = new PopTabItem();
-//    tab6.tab = "专车";
-//    tab6.position = 5;
-//    tab6.tabBiz = "premium";
-//    tab6.isRedPoint = false;
-//    tab6.isSelected = false;
-//    tab6.tabIconResId = R.drawable.one_tab_business_bike;
-//
-//    PopTabItem tab7 = new PopTabItem();
-//    tab7.tab = "香港专车";
-//    tab7.position = 6;
-//    tab7.tabBiz = "premium";
-//    tab7.isRedPoint = false;
-//    tab7.isSelected = false;
-//    tab7.tabIconResId = R.drawable.one_tab_business_bike;
-
-    items.add(tab1);
-//    items.add(tab2);
-//    items.add(tab3);
     items.add(tab4);
-//    items.add(tab5);
-//    items.add(tab6);
-//    items.add(tab7);
 
     return items;
   }

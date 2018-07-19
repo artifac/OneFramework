@@ -22,8 +22,12 @@ import com.one.framework.app.widget.base.IMapCenterPinView;
 import com.one.framework.app.widget.base.ITopTitleView.ClickPosition;
 import com.one.framework.app.widget.base.ITopTitleView.ITopTitleListener;
 import com.one.framework.dialog.DialogLoading;
+import com.one.framework.log.Logger;
 import com.one.framework.utils.UIThreadHandler;
 import com.one.map.IMap;
+import com.one.map.location.LocationProvider;
+import com.one.map.location.LocationProvider.OnLocationChangedListener;
+import com.one.map.model.Address;
 import com.onecore.core.anim.DefaultVerticalAnimator;
 import java.lang.ref.SoftReference;
 import java.util.List;
@@ -39,16 +43,14 @@ public abstract class BizEntranceFragment extends Fragment implements IComponent
   protected ITopbarFragment mTopbarView;
   protected INavigator mNavigator;
   protected IMap mMap;
-  private IMapCenterPinView mPinView;
+  protected IMapCenterPinView mPinView;
   protected static boolean isRootFragment = true;
   protected DialogLoading mLoading;
+  private boolean isLocationSuccess = false;
   @Override
   public void onAttach(Activity activity) {
     super.onAttach(activity);
     mActivity = new SoftReference<MainActivity>((MainActivity) activity);
-    if (isRootFragment && mActivity != null && mActivity.get() != null && mTopbarView != null) {
-      mTopbarView.setTitleClickListener(mActivity.get().getTopTitleListener());
-    }
 
     mLoading = new DialogLoading.Builder(activity).setDlgInfo(R.string.one_dlg_loading).create();
     mLoading.setOnKeyListener(new OnKeyListener() {
@@ -72,6 +74,7 @@ public abstract class BizEntranceFragment extends Fragment implements IComponent
     mMap = mBusContext.getMap();
     mNavigator = mBusContext.getNavigator();
     mPinView = mBusContext.getPinView();
+    LocationProvider.getInstance().addLocationChangeListener(locationChangedListener);
 
     ServiceProvider provider = getClass().getAnnotation(ServiceProvider.class);
     if (provider != null) {
@@ -81,6 +84,17 @@ public abstract class BizEntranceFragment extends Fragment implements IComponent
       if (isAddLeftClick()) {
         mTopbarView.setTitleClickListener(this);
       }
+      updateTitlebar();
+    }
+    Logger.e("ldx", "setBusinessContext >>>>> " + isRootFragment + " isAdd " + isAddLeftClick());
+  }
+
+  private void updateTitlebar() {
+    Address locAdr = LocationProvider.getInstance().getLocation();
+    if (locAdr != null) {
+      mTopbarView.setTitle(locAdr.mCity, 14);
+    } else {
+      mTopbarView.setTitle(getString(R.string.one_locationing), 14);
     }
   }
 
@@ -120,14 +134,17 @@ public abstract class BizEntranceFragment extends Fragment implements IComponent
     if (mBusContext == null) {
       return;
     }
+
     FragmentManager fragmentManager = getChildFragmentManager();
     int backStackCount = fragmentManager.getBackStackEntryCount();
     if (backStackCount == 0) { // 若返回栈为空则表示离开首页
       onLeaveHome();
     }
+
     if (!isSaveTabEntrance) {
       mTopbarView.tabIndicatorAnim(false);
     }
+
     Intent intent = new Intent();
     intent.setClass(getContext(), clazz);
     args = args == null ? new Bundle() : args;
@@ -142,19 +159,35 @@ public abstract class BizEntranceFragment extends Fragment implements IComponent
     if (mBusContext == null) {
       return;
     }
-    final FragmentManager fragmentManager = getFragmentManager();
-    fragmentManager.executePendingTransactions();
-    Fragment currentFragment = mNavigator.getCurrentFragment();
-    final Fragment preFragment = mNavigator.getPreFragment(currentFragment);
-    fragmentManager.popBackStackImmediate();
-    forward(clazz, args);
     mTopbarView.popBackListener();
+    mNavigator.safePost(new Runnable() {
+      @Override
+      public void run() {
+        final FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.executePendingTransactions();
+        Fragment currentFragment = mNavigator.getCurrentFragment();
+        final Fragment preFragment = mNavigator.getPreFragment(currentFragment);
+        fragmentManager.popBackStackImmediate();
+        forward(clazz, args);
+      }
+    });
+
   }
 
   protected final void finishSelf() {
     onBackInvoke();
   }
 
+  private OnLocationChangedListener locationChangedListener = new OnLocationChangedListener() {
+    @Override
+    public void onLocationChanged(Address location) {
+      if (location != null && isRootFragment) {
+        isLocationSuccess = true;
+        updateTitlebar();
+        LocationProvider.getInstance().removeLocationChangedListener(this);
+      }
+    }
+  };
 
   /**
    * 离开首页
@@ -286,16 +319,20 @@ public abstract class BizEntranceFragment extends Fragment implements IComponent
    * return true 表示self 消费此事件, return false 由上层基类处理
    */
   public boolean onBackInvoke() {
-    FragmentManager manager = getFragmentManager();
-    if (manager != null) {
-      manager.popBackStackImmediate(); // 先弹出栈
-      int stackCount = manager.getBackStackEntryCount();
-      // 如果当前返回栈中为1且点击了返回键则表示回了首页
-      if (stackCount == 0) {
-        onBackHome();
-        return true;
+    mNavigator.safePost(new Runnable() {
+      @Override
+      public void run() {
+        FragmentManager manager = getFragmentManager();
+        if (manager != null) {
+          manager.popBackStackImmediate(); // 先弹出栈
+          int stackCount = manager.getBackStackEntryCount();
+          // 如果当前返回栈中为1且点击了返回键则表示回了首页
+          if (stackCount == 0) {
+            onBackHome();
+          }
+        }
       }
-    }
+    });
     return true;
   }
 }

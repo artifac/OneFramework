@@ -21,9 +21,10 @@ public class Api {
   public static String BASE_URL_HOSTS = "https://app.taxi.com";
   private static String LOGIN_SEND_SMS = "/api/v2/usermgr/getverifycode.do";
   private static String LOGIN_DO_LOGIN = "/api/user/usermgr/login.do";
-  private static String TRIP_TRAVELLING = "/api/chariot/trip/travelling";
-  private static final String TRIP_MY_TRIPS_LIST = "/api/chariot/trip/list";
-  private static final String TRIP_ORDER_DETAIL = "/api/chariot/trip/detail";
+  private static String LOGIN_DO_LOGOUT = "/api/user/usermgr/logout.do";
+  private static String TRIP_TRAVELLING = "/api/taxi/trip/travelling";
+  private static final String TRIP_MY_TRIPS_LIST = "/api/taxi/trip/list";
+  private static final String TRIP_ORDER_DETAIL = "/api/taxi/trip/detail";
   private static String sApiUrl = BASE_URL_HOSTS;
   private static INetworkConfig sConfig;
 
@@ -43,7 +44,6 @@ public class Api {
     sConfig.setUserPhone(phone);
     HashMap<String, Object> urlParams = new HashMap<>();
     urlParams.put("mobileNo", phone);
-    urlParams.put("bizType", 1);
     urlParams.put("userid", "");
     return request(LOGIN_SEND_SMS, urlParams, listener, BaseObject.class);
   }
@@ -54,6 +54,12 @@ public class Api {
     urlParams.put("mobileNo", mobileNo);
     urlParams.put("capt", verificode);
     return request(LOGIN_DO_LOGIN, urlParams, listener, UserInfo.class);
+  }
+
+  public static int doLogout(String userId, IResponseListener<BaseObject> listener) {
+    HashMap<String, Object> urlParams = new HashMap<>();
+    urlParams.put("userid", userId);
+    return request(LOGIN_DO_LOGOUT, urlParams, listener, BaseObject.class);
   }
 
   /**

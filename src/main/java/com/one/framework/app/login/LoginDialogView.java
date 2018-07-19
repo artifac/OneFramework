@@ -91,7 +91,7 @@ public class LoginDialogView extends RelativeLayout {
       }
       if (!sb.toString().equals(s.toString())) {
         int index = start + 1;
-        if (sb.charAt(start) == ' ') {
+        if (start < sb.length() && sb.charAt(start) == ' ') {
           if (before == 0) {
             index++;
           } else {

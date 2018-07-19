@@ -209,6 +209,11 @@ public class TopBarFragment extends Fragment implements ITopbarFragment, IScaleL
   }
 
   @Override
+  public void setTitle(String title, int sizeSp) {
+    mTopTitleView.setTitle(title, sizeSp);
+  }
+
+  @Override
   public void setTitle(int titleResId) {
     mTopTitleView.setTitle(titleResId);
   }

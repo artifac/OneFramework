@@ -79,7 +79,8 @@
   <!--外存储读权限，构建语法需要用到此权限 -->
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
   <!--配置权限，用来记录应用配置信息 -->
-  <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+  <uses-permission android:name="android.permission.WRITE_SETTINGS"
+    tools:ignore="ProtectedPermissions"/>
   <!--手机定位信息，用来为语义等功能提供定位，提供更精准的服务-->
   <!--定位信息是敏感信息，可通过Setting.setLocationEnable(false)关闭定位请求 -->
   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
@@ -87,7 +88,8 @@
   <uses-permission android:name="android.permission.CAMERA"/>
   <!-- 语音 end -->
 
-  <uses-permission android:name="android.permission.READ_LOGS"/>
+  <uses-permission android:name="android.permission.READ_LOGS"
+    tools:ignore="ProtectedPermissions"/>
 
   <!-- 解决Android L上通知显示异常问题，targetSdkVersion需要设置成22 -->
   <uses-sdk
@@ -110,6 +112,7 @@
       android:value="2.1"/>
 
     <activity android:name="com.one.framework.MainActivity"
+      android:screenOrientation="portrait"
       android:theme="@style/MainTheme">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
@@ -121,5 +124,11 @@
       android:name="com.one.framework.db.DBContentProvider"
       android:authorities="com.one.framework.contentprovider"/>
 
+    <service android:name="com.one.framework.app.service.GetuiService"
+      android:exported="true"
+      android:label="PushService"
+      android:process=":pushservice"/>
+
+    <service android:name="com.one.framework.app.service.GetuiIntentService"/>
   </application>
 </manifest>

@@ -33,7 +33,7 @@ data class OrderDetail(
         @field:SerializedName("driverInfo")
         val driver: OrderDriverInfo? = null,
         @field:SerializedName("taxiInfo")
-        val taxiInfo: TaxiInfo? = null,
+        val carInfo: CarInfo? = null,
         @field:SerializedName("feeInfo")
         val feeInfo: FeeInfo,
         @field:SerializedName("status")
@@ -94,13 +94,32 @@ data class FeeInfo(
         val refundMoney: Int
 )
 
-data class TaxiInfo(
+data class CarInfo(
         @field:SerializedName("payForPickUp")
         val pay4PickUp : Int,
         @field:SerializedName("riderTags")
-        val taxiMarks: List<String>,
+        val marks: List<String>,
         @field:SerializedName("dispatchFee")
-        val taxiTip : Int,
+        val tip : Int,
         @field:SerializedName("feedback")
-        val taxiFeedBack: Int
+        val feedback: Int,
+        @field:SerializedName("driverComment")
+        val evaluate: Evaluate
+)
+
+data class Evaluate(
+        @field:SerializedName("userId")
+        val userId : String,
+        @field:SerializedName("bizType")
+        val bizType : Int,
+        @field:SerializedName("driverId")
+        val driverId : String,
+        @field:SerializedName("orderId")
+        val orderId: String,
+        @field:SerializedName("content")
+        val content: String? = "",
+        @field:SerializedName("tags")
+        val tags: String?,
+        @field:SerializedName("star")
+        val star : Int
 )

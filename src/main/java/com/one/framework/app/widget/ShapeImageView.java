@@ -18,6 +18,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.annotation.Keep;
 import android.support.v7.widget.AppCompatImageView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -292,20 +293,7 @@ public class ShapeImageView extends AppCompatImageView {
       try {
         Glide.with(mContext).load(imgUrl).asBitmap().into(new SimpleTarget<Bitmap>() {
           @Override
-          public void onResourceReady(Bitmap resource,
-              GlideAnimation<? super Bitmap> glideAnimation) {
-            int imageHeight = resource.getHeight();
-//          if (imageHeight > getMeasuredHeight()) {
-//            imageHeight = getMeasuredHeight();
-//            ViewGroup.LayoutParams para = getLayoutParams();
-//            para.width = LayoutParams.MATCH_PARENT;
-//            para.height = imageHeight;
-//            setLayoutParams(para);
-//
-//            Glide.with(mContext).load(imgUrl).dontAnimate().centerCrop().into(ShapeImageView.this);
-//          } else {
-//            Glide.with(mContext).load(imgUrl).dontAnimate().into(ShapeImageView.this);
-//          }
+          public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
             if (resource != null) {
               setImageBitmap(resource);
             }
@@ -331,8 +319,8 @@ public class ShapeImageView extends AppCompatImageView {
     mListener = listener;
   }
 
+  @Keep
   public interface IClickListener {
-
     void onClick(String schema);
   }
 

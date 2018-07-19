@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.DataSetObserver;
 import android.graphics.Rect;
 import android.os.Build;
+import android.support.annotation.Keep;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
@@ -28,6 +29,7 @@ import java.util.Arrays;
  * 使用Orientation属性设置ListView方向，默认Horizonal
  * </p>
  */
+@Keep
 public class SimulateListView extends LinearLayout {
 
   /**
@@ -677,6 +679,7 @@ public class SimulateListView extends LinearLayout {
    * Interface definition for a callback to be invoked when an item in this SimulateListView has
    * been clicked.
    */
+  @Keep
   public interface OnItemClickListener {
 
     /**
@@ -698,6 +701,7 @@ public class SimulateListView extends LinearLayout {
    * Interface definition for a callback to be invoked when an item in this view has been clicked
    * and held.
    */
+  @Keep
   public interface OnItemLongClickListener {
 
     /**

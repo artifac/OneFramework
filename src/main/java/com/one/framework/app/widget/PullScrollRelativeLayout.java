@@ -128,7 +128,7 @@ public class PullScrollRelativeLayout extends RelativeLayout {
             handleMove(offsetX, offsetY);
             mActionDownX = curX;
             mActionDownY = curY;
-            return true;
+//            return false; // 去掉此处之后 有滑动阻尼的时候 listItem 就不会出现按下的效果了
           } else {
             // 不是顶部 | 底部的时候设置mScrollView的Y轴方向滚动为0
             mScrollView.setTranslationY(0);
@@ -140,12 +140,15 @@ public class PullScrollRelativeLayout extends RelativeLayout {
       case MotionEvent.ACTION_OUTSIDE:
       case MotionEvent.ACTION_UP: {
         int scrollY = (int) mScrollView.getTranslationY();
-        mTracker.computeCurrentVelocity(1000, mMaxVelocity);
-        float yVelocity = mTracker.getYVelocity();
-        boolean isFling = Math.abs(yVelocity) > mMinVelocity ? true : false;
-        boolean bottom2Up = scrollY > 0 ? true : false;
-        handleUp(bottom2Up, isFling);
-        recycleVelocityTracker();
+        if (scrollY != 0) { // 有阻尼效果
+          mTracker.computeCurrentVelocity(1000, mMaxVelocity);
+          float yVelocity = mTracker.getYVelocity();
+          boolean isFling = Math.abs(yVelocity) > mMinVelocity ? true : false;
+          boolean bottom2Up = scrollY > 0 ? true : false;
+          handleUp(bottom2Up, isFling);
+          recycleVelocityTracker();
+          return true;
+        }
         break;
       }
     }

@@ -21,6 +21,7 @@ import com.one.framework.net.Api;
 import com.one.framework.net.base.BaseObject;
 import com.one.framework.net.model.UserInfo;
 import com.one.framework.net.response.IResponseListener;
+import com.one.framework.utils.ToastUtils;
 import com.one.framework.utils.UIUtils;
 
 /**
@@ -61,6 +62,7 @@ public class Login implements ILogin {
     ImageView close = view.findViewById(R.id.one_login_dlg_close);
     final TextView title = view.findViewById(R.id.one_login_dlg_title);
     final EditText input = view.findViewById(R.id.one_login_input);
+    final TextView phoneArea = view.findViewById(R.id.one_login_dlg_phone_area);
     final TripButton next = view.findViewById(R.id.one_login_next);
     final LoadingView loading = view.findViewById(R.id.one_login_dlg_loading);
     final LinearLayout verifiLayout = view.findViewById(R.id.one_login_verification_code_layout);
@@ -93,6 +95,7 @@ public class Login implements ILogin {
 
           @Override
           public void onFail(int errCode, UserInfo userInfo) {
+            ToastUtils.toast(mContext, mContext.getString(R.string.one_login_verificode_error));
             if (mLoginListener != null) {
               mLoginListener.onLoginFail();
             }
@@ -115,11 +118,12 @@ public class Login implements ILogin {
     next.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
+        verificationCodeView.clear();
         next.setTripButtonText("");
         loading.setVisibility(View.VISIBLE);
         String phone = input.getText().toString();
         mobilePhone = phone.replace(" ", "");
-        sendSms(title, verifiLayout, verifiCode, input, next, loading);
+        sendSms(title, verifiLayout, verifiCode, input, next, loading, phoneArea);
       }
     });
     loginDialog.show();
@@ -127,12 +131,13 @@ public class Login implements ILogin {
 
   private void sendSms(final TextView title, final LinearLayout verifiLayout,
       final TextView verifiCode, final EditText input, final TripButton next,
-      final LoadingView loading) {
+      final LoadingView loading, final TextView phoneArea) {
     Api.sendSms(mobilePhone, new IResponseListener<BaseObject>() {
       @Override
       public void onSuccess(BaseObject baseObject) {
         title.setText(R.string.one_login_input_verification_code);
         verifiLayout.setVisibility(View.VISIBLE);
+        phoneArea.setVisibility(View.INVISIBLE);
         verifiCode.setText(UIUtils.highlight(
             String.format(mContext.getString(R.string.one_login_verification_confirm), mobilePhone),
             Color.parseColor("#f05b48")));
@@ -162,33 +167,7 @@ public class Login implements ILogin {
 
       @Override
       public void onFail(int errCode, BaseObject baseObject) {
-        title.setText(R.string.one_login_input_verification_code);
-        verifiLayout.setVisibility(View.VISIBLE);
-        verifiCode.setText(UIUtils.highlight(
-            String.format(mContext.getString(R.string.one_login_verification_confirm), mobilePhone),
-            Color.parseColor("#f05b48")));
-        input.setVisibility(View.INVISIBLE);
-        loading.setVisibility(View.GONE);
-        next.setTripButtonText(String
-            .format(mContext.getString(R.string.one_login_reobtain_verificode_count_down), 10));
-        next.setEnabled(false);
-        next.setRippleColor(Color.parseColor("#d3d3d3"), Color.WHITE);
-        countDown = new CountDownTimer(60000, 1000) {
-          @Override
-          public void onTick(long millisUntilFinished) {
-            next.setTripButtonText(
-                String.format(mContext.getString(R.string.one_login_reobtain_verificode_count_down),
-                    millisUntilFinished / 1000));
-          }
-
-          @Override
-          public void onFinish() {
-            next.setEnabled(true);
-            next.setTripButtonText(R.string.one_login_reobtain_verificode);
-            next.setRippleColor(Color.parseColor("#343d4a"), Color.WHITE);
-          }
-        };
-        countDown.start();
+        ToastUtils.toast(mContext, mContext.getString(R.string.one_login_verificode_fail));
       }
 
       @Override

@@ -58,6 +58,7 @@ public class MyTripsFragment extends BaseFragment implements IItemClickListener 
 
     mTopbarView.setLeft(R.drawable.one_top_bar_back_selector);
     mTopbarView.setTitle(R.string.one_slide_my_trips);
+    mTopbarView.setTitleRight(0);
     mListView.setEmptyView(mEmptyView);
     loadData(pageOffset);
     mListView.setItemClickListener(this);
@@ -72,7 +73,7 @@ public class MyTripsFragment extends BaseFragment implements IItemClickListener 
 
       @Override
       public void onFail(int errCode, MyTripsModel myTripsModel) {
-
+        noTrips();
       }
 
       @Override
@@ -112,6 +113,10 @@ public class MyTripsFragment extends BaseFragment implements IItemClickListener 
   private void fillList(MyTripsModel model) {
     mAdapter.setListData(model.getTripList());
     int count = mAdapter.getCount();
+    showEmptyView(count);
+  }
+
+  private void showEmptyView(int count) {
     if (count == 0) {
       mEmptyView.setVisibility(View.VISIBLE);
       mEmptyView.setImgRes(R.drawable.one_trip_order_empty);
@@ -119,5 +124,13 @@ public class MyTripsFragment extends BaseFragment implements IItemClickListener 
     } else {
       mEmptyView.setVisibility(View.GONE);
     }
+  }
+
+  private void noTrips() {
+    if (mAdapter.getCount() > 0) {
+      return;
+    }
+    mAdapter.clear();
+    showEmptyView(mAdapter.getCount());
   }
 }

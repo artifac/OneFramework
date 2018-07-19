@@ -3,12 +3,11 @@
   android:id="@+id/one_my_trips_parent_layout"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:background="@color/app_background">
+  android:background="#f3f3f3">
 
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#90ffffff"
     android:orientation="vertical">
 
     <com.one.framework.app.widget.PullListView

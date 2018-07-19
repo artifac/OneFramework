@@ -29,14 +29,26 @@
     android:text="@string/one_login"
     android:textSize="18sp"/>
 
+  <TextView
+    android:id="@+id/one_login_dlg_phone_area"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="30dp"
+    android:layout_marginLeft="30dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:textSize="14sp"
+    android:layout_below="@id/one_login_dlg_title"
+    android:text="+86"/>
+
   <EditText
     android:id="@+id/one_login_input"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="30dp"
-    android:layout_marginLeft="30dp"
     android:layout_marginRight="30dp"
     android:layout_below="@id/one_login_dlg_title"
+    android:layout_toRightOf="@id/one_login_dlg_phone_area"
     android:background="@null"
     android:hint="请输入手机号码"
     android:inputType="phone"

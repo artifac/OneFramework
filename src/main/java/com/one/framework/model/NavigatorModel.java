@@ -12,7 +12,8 @@ import java.lang.annotation.Target;
 
 public class NavigatorModel {
   public static final int MY_TRAVEL = 1;
-  public static final int SETTING = MY_TRAVEL << 2;
+  public static final int CUSTOMER_SERVICE = MY_TRAVEL << 2;
+  public static final int SETTING = MY_TRAVEL << 4;
 
   public String optionsIconUrl; // 小 icon
   public int optionsIconId;

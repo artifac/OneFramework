@@ -2,9 +2,6 @@ package com.one.framework.app.base;
 
 import android.app.Application;
 import com.one.framework.manager.ApplicationDelegateManager;
-import com.one.framework.net.Api;
-import com.one.framework.net.model.OrderTravelling;
-import com.one.framework.net.response.IResponseListener;
 import java.lang.reflect.Field;
 
 /**
@@ -27,7 +24,6 @@ public class OneApplicationDelegate extends ApplicationDelegate {
     } catch (Exception e) {
       e.printStackTrace();
     }
-
     appContext = application;
   }
 

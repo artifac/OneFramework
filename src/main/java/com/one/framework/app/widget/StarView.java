@@ -2,6 +2,7 @@ package com.one.framework.app.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.Keep;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -191,6 +192,7 @@ public class StarView extends LinearLayout {
     mStarChangeEnable = b;
   }
 
+  @Keep
   public interface OnStarChangeListener {
     void onStarChange(int level);
   }

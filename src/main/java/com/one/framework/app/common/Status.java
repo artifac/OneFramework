@@ -34,30 +34,30 @@ public class Status {
    * 订单状态
    */
   public enum OrderStatus implements Serializable {
-    UNKNOW("未知状态", -1),  // 返回的状态 OrderStatus 不包含则不做处理
+    UNKNOW("未知状态", 100),  // 返回的状态 OrderStatus 不包含则不做处理
     CREATE("等待应答", 0),  //新创建的订单，司机尚未接单
     RECEIVED("司机已接单", 1), //司机接单
-    SETOFF("司机已出发", 2), //司机出发，前往乘客上车地点
+    SET_OFF("司机已出发", 2), //司机出发，前往乘客上车地点
     READY("司机已到达", 3), //司机到达乘客上车地点
     START("行程中", 4), // 接到乘客，行程开始
     ARRIVED("待支付", 5), //到达终点
-    REASSIGN("重新派单", 6),  // 重新派单
-    CONFIRM("已完成", 7),
-    CANCELED("已取消", 8), //订单取消（终态）
-    PAID("已支付", 9),  // 支付完成（终态)
-    UNPAID("未支付", 10), //未支付（到达终点或者取消需要支付取消费用）
-    CONFIRMEDPRICE("", 11), //确认价格
-    AUTOPAY("支付中", 12),  // 发起支付
-    AUTOPAID("已支付", 13), // 已自动支付，费用未结清，待手动支付
-    REFUND("退款中", 14),  // 退款中
-    REFUNDED("已退款", 15),  // 退款完成（终态）
-    ABSENCE("订单不存在", 16), // 订单不存在
-    CLOSE("已关闭", 17),  //交易关闭（终态），如取消不需要支付费用
-    CANCELED_AUTOPAID("待支付", 18), // 取消待支付
-    CONFIRMED_PRICE("确认费用", 19), // 等待乘客确认金额
-    CANCELED_PAID("已支付", 20), // 乘客取消已支付
-    AUTOPAYING("支付中", 21),//支付中，乘客正在扣款
-    COMPLAINT("待支付", 22);
+    AUTO_PAID("待支付", 6), // 已自动支付，费用未结清，待手动支付
+    PAID("已支付", 7),  // 支付完成（终态)
+    COMPLAINT("订单疑义", 8),
+    CANCELED("已取消", 9), //订单取消（终态）
+    FINISH("已完成", 10), //未支付（到达终点或者取消需要支付取消费用）？？
+    REASSIGN("重新派单", 11),  // 重新派单
+    CANCELED_UNPAID("未支付", 12), // 取消未支付
+    CANCELED_AUTOPAID("待支付", 13), // 取消待支付
+    CANCELED_PAID("已支付", 14), // 乘客取消已支付
+    REFUNDING("退款中", 15), // 退款中
+    REFUNDED("已退款", 16),  // 退款完成（终态）
+    REFUND_FAILED("退款失败", 17),  //交易关闭（终态），如取消不需要支付费用
+    CONFIRM("已完成", 18), // 顺风车确认搭乘
+    DISCOUNT_REFUNDING("拼车退款", 19), // 顺风车拼车退款
+    DISCOUNT_REFUNDED("拼车退款完成", 20), // 顺风车拼车退款完毕
+    AUTO_PAYING("支付中", 21),//支付中，乘客支付
+    CONFIRMED_PRICE("待支付", 22); //确认价格
 
     int mValue;
     String mStatus;

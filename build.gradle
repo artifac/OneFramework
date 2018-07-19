@@ -4,6 +4,13 @@ apply plugin: 'com.android.library'
 apply plugin: 'maven'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'bugly'
+
+bugly {
+    appId = '69923719cb'
+    appKey = '909c3591-4f9f-4554-a41b-b7a95de3414e'
+    debug = true
+}
 
 buildscript {
     ext.kotlin_version = '1.2.50'
@@ -12,39 +19,53 @@ buildscript {
         mavenCentral()
         maven { url 'https://maven.google.com' }
         maven { url "https://github.com/artifac/onemap/raw/master" }
+        maven { url "http://mvn.gt.igexin.com/nexus/content/repositories/releases/" }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.0'
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.tencent.bugly:symtabfileuploader:latest.release'
     }
 }
 
 
 allprojects {
     repositories {
+        jcenter()
+        mavenCentral()
         maven { url 'https://maven.google.com' }
         maven { url "https://github.com/artifac/onemap/raw/master" }
-        mavenCentral()
-        jcenter()
+        maven { url "http://mvn.gt.igexin.com/nexus/content/repositories/releases/" }
     }
 }
 
 android {
     compileSdkVersion 26
-    buildToolsVersion '26.0.2'
+    buildToolsVersion "27.0.3"
 
     defaultConfig {
         buildConfigField 'String', 'AAR_MODE', "\"${project.VERSION.endsWith('-SNAPSHOT') ? 'debug' : 'release'}\""
         minSdkVersion 15
-        targetSdkVersion 26
+        targetSdkVersion 25
         versionCode 1
         versionName "1.0"
 
         multiDexEnabled true
 
+        renderscriptTargetApi 26
+        renderscriptSupportModeEnabled true
+
         javaCompileOptions { annotationProcessorOptions { includeCompileClasspath = true } }
+
+        manifestPlaceholders = [
+                GETUI_APP_ID    : "Ai5QigOdI98efhkdDbONO9",
+                GETUI_APP_KEY   : "2wA0vOBuNy8AzzuVUutnK",
+                GETUI_APP_SECRET: "3NyrUdH3Kg6AVGxIOP5QoA"
+        ]
+
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
+        }
     }
 
     buildTypes {
@@ -58,6 +79,7 @@ android {
             minifyEnabled true
 //            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
         }
     }
 
@@ -74,6 +96,7 @@ android {
     }
 }
 
+
 repositories {
     flatDir {
         dirs 'libs'
@@ -87,18 +110,20 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     compile 'com.android.support:appcompat-v7:26.1.0'
-    implementation 'com.android.support:recyclerview-v7:26.1.0'
+    compile 'com.android.support:recyclerview-v7:26.1.0'
     compile 'com.android.support:transition:26.1.0'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     // 地图
     compile project(':onemap')
     //    implementation 'com.one.map:the-one-map:1.0.4'
     compile project(':onecore')
+    compile 'com.getui:sdk:2.12.4.0'
     compile 'com.squareup.okhttp3:okhttp:3.10.0'
     compile 'com.squareup.okio:okio:1.14.0'
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'org.greenrobot:eventbus:3.0.0'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    compile 'com.tencent.bugly:crashreport:latest.release'
 }
 
 //为支持aar动态更新，在build.gradle里添加如下代码

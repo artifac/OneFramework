@@ -52,7 +52,7 @@ public class MyTripsAdapter extends AbsBaseAdapter<Trip, TripsHolder> {
     holder.tripEnd.setText(model.getTripEnd());
     OrderStatus status = OrderStatus.fromStateCode(model.getTripStatus());
     switch (status) {
-      case COMPLAINT:
+      case CONFIRMED_PRICE:
       case ARRIVED:
       case CANCELED_AUTOPAID: {
         holder.tripStatus.setTextColor(Color.parseColor("#f05b48"));

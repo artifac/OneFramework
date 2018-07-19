@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Handler;
+import android.support.annotation.Keep;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -579,6 +580,7 @@ public class WheelView extends View {
     return true;
   }
 
+  @Keep
   public interface OnItemSelectedListener {
     void onItemSelected(int selectedIndex, String item);
   }

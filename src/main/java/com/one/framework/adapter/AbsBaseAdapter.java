@@ -27,6 +27,9 @@ public abstract class AbsBaseAdapter<T, H> extends BaseAdapter {
   }
   
   public void setListData(List<T> lists) {
+    if (lists == null) {
+      return;
+    }
     if (lists != null) {
       mListData.addAll(lists);
     }
@@ -34,6 +37,9 @@ public abstract class AbsBaseAdapter<T, H> extends BaseAdapter {
   }
   
   public void refreshData(List<T> lists) {
+    if (lists == null) {
+      return;
+    }
     if (lists != null) {
       mListData.clear();
       mListData.addAll(lists);

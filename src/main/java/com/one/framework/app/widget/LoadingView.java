@@ -67,17 +67,12 @@ public class LoadingView extends View {
     TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.LoadingView);
     mLoadingType = a.getInt(R.styleable.LoadingView_loading_type, LOADING_POINT);
     mLoadingColor = a.getColor(R.styleable.LoadingView_loading_point_color, Color.GRAY);
-    mLoadingNormalSize = a
-        .getDimensionPixelSize(R.styleable.LoadingView_loading_point_normal_size, 5);
-    mLoadingSelectorSize = a
-        .getDimensionPixelSize(R.styleable.LoadingView_loading_point_selector_size, 8);
+    mLoadingNormalSize = a.getDimensionPixelSize(R.styleable.LoadingView_loading_point_normal_size, 5);
+    mLoadingSelectorSize = a.getDimensionPixelSize(R.styleable.LoadingView_loading_point_selector_size, 8);
     mLoadingCount = a.getInt(R.styleable.LoadingView_loading_point_count, 3);
-    mLoadingProgressType = a
-        .getInt(R.styleable.LoadingView_loading_progress_type, LOADING_PROGRESS_LINE);
-    mLoadingProgressColor = a
-        .getColor(R.styleable.LoadingView_loading_progress_color, Color.parseColor("#f05b48"));
-    mLoadingProgressWidth = a
-        .getDimensionPixelOffset(R.styleable.LoadingView_loading_progress_width, 5);
+    mLoadingProgressType = a.getInt(R.styleable.LoadingView_loading_progress_type, LOADING_PROGRESS_LINE);
+    mLoadingProgressColor = a.getColor(R.styleable.LoadingView_loading_progress_color, Color.parseColor("#f05b48"));
+    mLoadingProgressWidth = a.getDimensionPixelOffset(R.styleable.LoadingView_loading_progress_width, 5);
     a.recycle();
 
     mPointSpace = TypedValue
@@ -183,6 +178,9 @@ public class LoadingView extends View {
       return;
     }
 
+    float allStep = 360 / mWaitConfigTime; // waitConfigTime 走360
+    final float oneInterval = 1000 / allStep; // 因为step = 1 则 1s/allStep
+
     mProgressAnimator = new Thread(new Runnable() {
       @Override
       public void run() {
@@ -205,7 +203,7 @@ public class LoadingView extends View {
           }
           synchronized (lock) {
             try {
-              lock.wait(mWaitConfigTime > 10 ? (int) (2.5f * mWaitConfigTime) : mWaitConfigTime);
+              lock.wait((int) oneInterval);
             } catch (InterruptedException e) {
               e.printStackTrace();
             }
@@ -223,5 +221,6 @@ public class LoadingView extends View {
       mProgressAnimator.interrupt();
       mProgressAnimator = null;
     }
+    mProgressSweep = 0;
   }
 }

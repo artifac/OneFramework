@@ -80,7 +80,6 @@ public class ToastUtils {
       } else {
         OneBaseToast walletToast = new OneBaseToast(context);
         walletToast.setDuration(Toast.LENGTH_SHORT);
-//        walletToast.setGravity(Gravity.BOTTOM,0,0);
         walletToast.setView(v);
         walletToast.show();
       }

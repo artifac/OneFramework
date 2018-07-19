@@ -1,6 +1,5 @@
 package com.one.framework.app.login;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -22,7 +21,8 @@ import java.lang.reflect.Field;
 /**
  * Created by ludexiang on 2018/6/17.
  */
-public class VerificationCodeView extends LinearLayout implements TextWatcher, View.OnKeyListener, View.OnFocusChangeListener {
+public class VerificationCodeView extends LinearLayout implements TextWatcher, View.OnKeyListener,
+    View.OnFocusChangeListener {
 
   private Context mContext;
   private long endTime = 0;
@@ -135,13 +135,18 @@ public class VerificationCodeView extends LinearLayout implements TextWatcher, V
     this.mContext = context;
     TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.verificationCodeView);
     mEtNumber = typedArray.getInteger(R.styleable.verificationCodeView_vcv_et_number, 4);
-    int inputType = typedArray.getInt(R.styleable.verificationCodeView_vcv_et_inputType, VCInputType.NUMBER.ordinal());
+    int inputType = typedArray
+        .getInt(R.styleable.verificationCodeView_vcv_et_inputType, VCInputType.NUMBER.ordinal());
     mEtInputType = VCInputType.values()[inputType];
     mEtWidth = typedArray.getDimensionPixelSize(R.styleable.verificationCodeView_vcv_et_width, 100);
-    mEtTextColor = typedArray.getColor(R.styleable.verificationCodeView_vcv_et_text_color, Color.BLACK);
-    mEtTextSize = typedArray.getDimensionPixelSize(R.styleable.verificationCodeView_vcv_et_text_size, 16);
-    mEtTextBg = typedArray.getResourceId(R.styleable.verificationCodeView_vcv_et_bg, R.drawable.one_login_code);
-    mCursorDrawable = typedArray.getResourceId(R.styleable.verificationCodeView_vcv_et_cursor, R.drawable.one_verification_cursor);
+    mEtTextColor = typedArray
+        .getColor(R.styleable.verificationCodeView_vcv_et_text_color, Color.BLACK);
+    mEtTextSize = typedArray
+        .getDimensionPixelSize(R.styleable.verificationCodeView_vcv_et_text_size, 16);
+    mEtTextBg = typedArray
+        .getResourceId(R.styleable.verificationCodeView_vcv_et_bg, R.drawable.one_login_code);
+    mCursorDrawable = typedArray.getResourceId(R.styleable.verificationCodeView_vcv_et_cursor,
+        R.drawable.one_verification_cursor);
 
     //释放资源
     typedArray.recycle();
@@ -305,7 +310,21 @@ public class VerificationCodeView extends LinearLayout implements TextWatcher, V
     }
   }
 
+  public void clear() {
+    if (getChildCount() <= 0) {
+      return;
+    }
+    for (int i = mEtNumber - 1; i >= 0; i--) {
+      ((EditText) getChildAt(i)).setText("");
+      ((EditText) getChildAt(i)).clearFocus();
+      if (i == 0) {
+        ((EditText) getChildAt(i)).setFocusable(true);
+      }
+    }
+  }
+
   public interface OnCodeFinishListener {
+
     void onComplete(String content);
   }
 }

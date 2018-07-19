@@ -15,6 +15,7 @@ public interface ITopbarFragment {
   void setTitleClickListener(ITopTitleListener listener);
   void setTabItems(List<TabItem> items);
   void setTitle(String title);
+  void setTitle(String title, int sizeSp);
   void setTitle(int titleResId);
   void titleBarReset();
 

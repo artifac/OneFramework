@@ -17,12 +17,22 @@ public class TimeRange {
   private String startTime;
   private String endTime;
 
+  private long mStartTime;
+
   public Date getStartTime() {
     return CommonWheelView.dateTimeFromStr(startTime);
   }
 
   public void setStartTime(Date start_time) {
+    mStartTime = start_time.getTime();
     this.startTime = CommonWheelView.dateTimeToStr(start_time);
+  }
+
+  public Date getBookingMinuteStart(long bookingTime) {
+    long time = mStartTime + bookingTime;
+    Date date = new Date();
+    date.setTime(time);
+    return CommonWheelView.dateTimeFromStr(CommonWheelView.dateTimeToStr(date));
   }
 
   public Date getEndTime() {

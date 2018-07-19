@@ -104,7 +104,10 @@ public class PullScrollView extends ScrollView implements IPullView, IMovePublis
 
   @Override
   public int getHeaderScrollHeight() {
-    return mHeaderView.getScrollHeaderHeight();
+    if (mHeaderView != null) {
+      return mHeaderView.getScrollHeaderHeight();
+    }
+    return 0;
   }
 
   @Override
@@ -138,7 +141,7 @@ public class PullScrollView extends ScrollView implements IPullView, IMovePublis
 
   @Override
   public boolean isHeaderNeedScroll() {
-    return mHeaderView.isNeedScroll();
+    return mHeaderView != null && mHeaderView.isNeedScroll();
   }
 
   @Override

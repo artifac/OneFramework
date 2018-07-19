@@ -7,6 +7,7 @@ import com.one.framework.app.login.UserProfile;
 import com.one.framework.utils.MD5Util;
 import com.one.framework.utils.SystemUtils;
 import com.one.map.location.LocationProvider;
+import com.one.map.model.Address;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -50,10 +51,13 @@ public class HeaderParams implements IHeaderParams {
     mHeaderParams.put(ServerParams.PARAM_MOBILE, phoneNumber);
     mHeaderParams.put(ServerParams.PARAM_EPTION, MD5Util.GetMD5Code(phoneNumber + "#" + time).substring(2, 7));
     mHeaderParams.put(ServerParams.PARAM_LANG, Locale.getDefault().getLanguage());
-    mHeaderParams.put(ServerParams.PARAM_LATITUDE, LocationProvider.getInstance().getLocation().mAdrLatLng.latitude);
-    mHeaderParams.put(ServerParams.PARAM_LONGITUDE, LocationProvider.getInstance().getLocation().mAdrLatLng.longitude);
     mHeaderParams.put(ServerParams.PARAM_USERID, UserProfile.getInstance(mContext).getUserId());
-    mHeaderParams.put(ServerParams.PARAM_CITYCODE, LocationProvider.getInstance().getCityCode());
+    Address address = LocationProvider.getInstance().getLocation();
+    if (address != null && address.mAdrLatLng != null) {
+      mHeaderParams.put(ServerParams.PARAM_LATITUDE, address.mAdrLatLng.latitude);
+      mHeaderParams.put(ServerParams.PARAM_LONGITUDE, address.mAdrLatLng.longitude);
+      mHeaderParams.put(ServerParams.PARAM_CITYCODE, LocationProvider.getInstance().getCityCode());
+    }
     mHeaderParams.put(ServerParams.PARAM_TIME, time);
     return mHeaderParams;
   }

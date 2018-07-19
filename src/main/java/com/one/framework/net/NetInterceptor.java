@@ -1,7 +1,6 @@
 package com.one.framework.net;
 
 import android.text.TextUtils;
-import com.mobike.mobikeapp.util.SafeUtil;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -43,15 +42,17 @@ public class NetInterceptor implements Interceptor {
     HttpUrl url = request.url();
     // 处理header
     Builder builder = request.newBuilder();
-    for (String key : mHeaderParams.getParams().keySet()) {
-      Object value = mHeaderParams.getParams().get(key);
+    Map<String, Object> params = mHeaderParams.getParams();
+    for (String key : params.keySet()) {
+      Object value = params.get(key);
       if (value != null) {
         builder.addHeader(key, value.toString());
       }
     }
-    request = builder.url(url)/*.addHeader(ServerParams.PARAM_TIME, String.valueOf(System.currentTimeMillis()))*/.build();
-    String sign = getSign(request);
-    return builder.addHeader(ServerParams.PARAM_SIGN, sign).build();
+    request = builder.url(url).build();
+//    String sign = getSign(request);
+//    return builder.addHeader(ServerParams.PARAM_SIGN, sign).build();
+    return request;
   }
 
   public String getSign(Request request) {
@@ -116,9 +117,6 @@ public class NetInterceptor implements Interceptor {
   /**
    * sign the map
    */
-  /**
-   * sign the map
-   */
   private String computeSign(Map<String, List<String>> map) {
     List<String> list = new ArrayList<String>();
 
@@ -144,6 +142,6 @@ public class NetInterceptor implements Interceptor {
       signContent = result;
     }
 
-    return SafeUtil.getJniString(signContent);
+    return signContent;
   }
 }

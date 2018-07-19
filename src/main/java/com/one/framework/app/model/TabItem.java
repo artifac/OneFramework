@@ -1,9 +1,12 @@
 package com.one.framework.app.model;
 
+import android.support.annotation.Keep;
+
 /**
  * Created by ludexiang on 2018/3/28.
  */
 
+@Keep
 public class TabItem {
 
   /**

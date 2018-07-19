@@ -4,10 +4,13 @@ import android.app.Application;
 import android.content.Context;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
+import com.one.framework.BuildConfig;
+import com.one.framework.app.blur.BlurKit;
 import com.one.framework.log.Logger;
 import com.one.framework.utils.SystemUtils;
 import com.one.map.location.LocationProvider;
 import com.one.map.view.IMapView;
+import com.tencent.bugly.crashreport.CrashReport;
 import java.lang.reflect.Method;
 
 /**
@@ -36,7 +39,6 @@ public class OneApplication extends MultiDexApplication {
   @Override
   protected void attachBaseContext(Context base) {
     super.attachBaseContext(base);
-    MultiDex.install(this);
     try {
       checkAppDelegate();
       Method method = applicationDelegateClass.getDeclaredMethod("attachBaseContext", Application.class);
@@ -52,9 +54,11 @@ public class OneApplication extends MultiDexApplication {
   @Override
   public void onCreate() {
     super.onCreate();
+    MultiDex.install(this);
+    SystemUtils.init(this);
+    BlurKit.init(this);
     try {
-      SystemUtils.init(this);
-
+      CrashReport.initCrashReport(getApplicationContext(), "69923719cb", BuildConfig.DEBUG);
       checkAppDelegate();
       Method method = applicationDelegateClass.getDeclaredMethod("onCreate", Application.class);
       method.setAccessible(true);

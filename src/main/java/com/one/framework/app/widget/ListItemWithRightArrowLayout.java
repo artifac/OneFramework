@@ -43,6 +43,7 @@ public class ListItemWithRightArrowLayout extends RelativeLayout implements ILis
     mItemTitle = (TextView) view.findViewById(R.id.list_item_info);
     mRightTxt = (ScriptTextView) view.findViewById(R.id.list_item_right_info);
 
+    setClickable(true);
     setBackgroundDrawable(UIUtils.rippleDrawableRect(Color.WHITE, Color.parseColor("#e3e3e3")));
   }
 

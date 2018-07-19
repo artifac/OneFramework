@@ -1,6 +1,7 @@
 package com.one.framework.app.navigation;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import com.one.framework.app.model.IBusinessContext;
 import com.onecore.SupportFragment;
@@ -17,9 +18,14 @@ public interface INavigator {
   String BUNDLE_FORWARD_FRAGMENT_STYLE = "bundle_froward_fragment_style";
   String BUNDLE_EXTRA_INFO = "bundle_extra_info";
 
+  void onResume();
+
+  void onPause();
+
   Fragment startFragment(Intent intent, IBusinessContext businessContext, FragmentAnimator animator);
 
-  Fragment getRootFragment(Intent intent, IBusinessContext businessContext);
+  void safePost(Runnable runnable);
+
   /**
    * 获得当前Fragment
    * @return

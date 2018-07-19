@@ -54,6 +54,8 @@ public class NetConstant {
   public static String OBJECT = "object";
   /** 数据返回正常 */
   public final static int OK = 0;
+  /** 地址为空 */
+  public final static int ADDRESS_EMPTY = -500;
   /** 无数据 */
   public final static int NO_DATA = -800;
   /** 数据格式错误 */

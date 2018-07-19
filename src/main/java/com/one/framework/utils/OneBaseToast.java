@@ -13,6 +13,7 @@ import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.widget.Toast;
 import com.one.framework.R;
+import com.one.framework.log.Logger;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -158,9 +159,9 @@ public class OneBaseToast {
       }
       mRecords.add(view);
       mCancleRunnale = new CancleRunnable();
-      mHandler.postDelayed(mCancleRunnale,
-          mDuration == LENGTH_LONG ? LONG_DELAY : SHORT_DELAY);
+      mHandler.postDelayed(mCancleRunnale, mDuration == LENGTH_LONG ? LONG_DELAY : SHORT_DELAY);
     } catch (Exception e) {
+      Logger.e("ldx", "e " + e);
       // catch java.lang.RuntimeException: Adding window failed
     }
 

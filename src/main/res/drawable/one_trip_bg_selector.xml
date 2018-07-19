@@ -3,7 +3,7 @@
   <item android:state_pressed="true">
     <shape
       android:shape="rectangle">
-      <solid android:color="@drawable/one_pop_item_select"/>
+      <solid android:color="#f3f3f3"/>
       <corners android:radius="2dp"/>
     </shape>
   </item>

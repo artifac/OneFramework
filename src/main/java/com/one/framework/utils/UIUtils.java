@@ -3,6 +3,7 @@ package com.one.framework.utils;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -17,7 +18,11 @@ import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
+import android.widget.RelativeLayout;
+import java.util.Arrays;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -117,16 +122,20 @@ public class UIUtils {
    * 测量控件的尺寸
    */
   private static void calculateViewMeasure(View view) {
-    int w = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-    int h = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+    try {
+      int w = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+      int h = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+      view.measure(w, h);
+    } catch (Exception e) {
 
-    view.measure(w, h);
+    }
+
   }
 
   public static Drawable rippleDrawableRect(int color, int maskColor) {
-    Drawable rectDrawable = color == 0 ? null : new ColorDrawable(color);
+    Drawable rectDrawable = color == 0 ? null : colorDrawableRounded(color, 0);
     if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      Drawable maskDrawable = new ColorDrawable(maskColor);
+      Drawable maskDrawable = colorDrawableRounded(color, 0);
       return new RippleDrawable(ColorStateList.valueOf(maskColor), rectDrawable, maskDrawable);
     } else {
       StateListDrawable maskDrawable = new StateListDrawable();
@@ -181,6 +190,29 @@ public class UIUtils {
     ShapeDrawable drawable = new ShapeDrawable(shape);
     drawable.getPaint().setColor(color);
     return drawable;
+  }
+
+  /**
+   * view获取bitmap
+   *
+   * @param addViewContent
+   * @return
+   */
+  public static Bitmap getViewBitmap(View addViewContent) {
+    addViewContent.setDrawingCacheEnabled(true);
+    addViewContent.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+    addViewContent.measure(
+        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+    addViewContent.layout(0, 0,
+        addViewContent.getMeasuredWidth(),
+        addViewContent.getMeasuredHeight());
+
+    addViewContent.buildDrawingCache(true);
+    Bitmap bitmap = Bitmap.createBitmap(addViewContent.getDrawingCache());
+    addViewContent.setDrawingCacheEnabled(false);
+
+    return bitmap;
   }
 
   public static CharSequence highlight(String input, String format, int color) {

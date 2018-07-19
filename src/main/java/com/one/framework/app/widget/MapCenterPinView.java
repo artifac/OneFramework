@@ -23,6 +23,7 @@ import com.one.framework.R;
 import com.one.framework.app.widget.base.IMapCenterPinView;
 import com.one.map.IMap;
 import com.one.map.location.LocationProvider;
+import com.one.map.model.Address;
 import com.one.map.model.LatLng;
 
 /**
@@ -195,8 +196,10 @@ public class MapCenterPinView extends AppCompatImageView implements IMapCenterPi
     if (isReverseGeo) {
       toggleLoading();
       mMap.geo2Address(latLng);
-      mMap.poiNearByWithCity(LocationProvider.getInstance().getLocation().mAdrLatLng,
-          LocationProvider.getInstance().getLocation().mCity);
+      Address address = LocationProvider.getInstance().getLocation();
+      if (address != null) {
+        mMap.poiNearByWithCity(address.mAdrLatLng, address.mCity);
+      }
     }
   }
 

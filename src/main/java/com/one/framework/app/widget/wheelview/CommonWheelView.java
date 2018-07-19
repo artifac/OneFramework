@@ -12,6 +12,8 @@ import java.util.Date;
 
 public class CommonWheelView {
 
+  private static final long BOOK_TIME = 20 * 60 * 1000; // 20min
+
   public static final Date dateFromCommonStr(String stringDate) {
     return TimeUtils.stringToDate(stringDate, "yyyy-MM-dd");
   }
@@ -131,7 +133,7 @@ public class CommonWheelView {
   public static ArrayList buildMinutesByDayHour(Context context, WheelView wheelViewDay, WheelView wheelViewHour,
       TimeRange timeRange) {
     if (wheelViewDay.getSelectedPosition() == 0 && wheelViewHour.getSelectedPosition() == 0) {
-      return buildMinuteListStart(context, timeRange);
+      return buildMinuteListStart(context, timeRange, 10, BOOK_TIME);
     } else if (wheelViewDay.getSelectedPosition() == wheelViewDay.getSize() - 1 &&
         wheelViewHour.getSelectedPosition() == wheelViewHour.getSize() - 1) {
       return buildMinuteListEnd(context, timeRange);
@@ -195,26 +197,33 @@ public class CommonWheelView {
     return hourList;
   }
 
-  public static ArrayList buildMinuteListStart(Context context, TimeRange timeRange) {
-    Date dateStart = timeRange.getStartTime();
+  /**
+   *
+   * @param context
+   * @param timeRange
+   * @param minuteSpace 分钟间隔
+   * @return
+   */
+  public static ArrayList buildMinuteListStart(Context context, TimeRange timeRange, int minuteSpace, long bookingTimeSpace) {
+    Date dateStart = timeRange.getBookingMinuteStart(bookingTimeSpace);
     Calendar calendarStart = Calendar.getInstance();
     calendarStart.setTime(dateStart);
-    calendarStart.add(Calendar.MINUTE, 10);//分钟需要取整，5.55则从6:00开始
+    calendarStart.add(Calendar.MINUTE, minuteSpace);//分钟需要取整，5.55则从6:00开始
 
-    int minStart = (calendarStart.get(Calendar.MINUTE) / 10) * 10;//取整
+    int minStart = (calendarStart.get(Calendar.MINUTE) / minuteSpace) * minuteSpace;//取整
 
     Calendar calendarEnd = Calendar.getInstance();
     calendarEnd.setTime(timeRange.getEndTime());
 
     int minEnd;
     if (isInSameHour(calendarStart, calendarEnd)) {
-      minEnd = (calendarEnd.get(Calendar.MINUTE) / 10) * 10;
+      minEnd = (calendarEnd.get(Calendar.MINUTE) / minuteSpace) * minuteSpace;
     } else {
       minEnd = 50;
     }
     ArrayList minList = new ArrayList<>();
 
-    for (int i = minStart; i <= minEnd; i += 10) {
+    for (int i = minStart; i <= minEnd; i += minuteSpace) {
       minList.add(String.format(context.getString(R.string.one_dialog_data_picker_minute_format), i));
     }
 

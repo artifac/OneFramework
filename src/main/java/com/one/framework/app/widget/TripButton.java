@@ -114,11 +114,17 @@ public class TripButton extends Button {
   }
   
   public void setTripButtonText(String text) {
+    if (text == null) {
+      return;
+    }
     mText = text;
     postInvalidate();
   }
 
   public void setTripButtonText(int text) {
+    if (text == 0) {
+      return;
+    }
     mText = mContext.getString(text);
     postInvalidate();
   }
@@ -135,6 +141,9 @@ public class TripButton extends Button {
   @Override
   protected void onDraw(Canvas canvas) {
     super.onDraw(canvas);
+    if (TextUtils.isEmpty(mText)) {
+      return;
+    }
     mPaint.setTypeface(mStyle == NORMAL ? Typeface.DEFAULT : Typeface.DEFAULT_BOLD);
     mPaint.setColor(mTextColor);
     mPaint.setTextSize(mTextSize);

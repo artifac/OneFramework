@@ -80,7 +80,11 @@ public class DataPickerDialog extends BottomSheetDialog {
     final TimeRange timeRange = getTimeRange();
     mTime.setItems(CommonWheelView.buildDays(getContext(), timeRange), 0);
     mHour.setItems(CommonWheelView.buildHourListStart(getContext(), timeRange), 0);
-    mMinute.setItems(CommonWheelView.buildMinuteListStart(getContext(), timeRange), 0);
+    /**
+     * 10 表示间隔10分钟
+     */
+    long bookingTime = 20 * 60 * 1000;
+    mMinute.setItems(CommonWheelView.buildMinuteListStart(getContext(), timeRange, 10, bookingTime), 0);
 
     //联动逻辑效果
     mTime.setOnItemSelectedListener(new WheelView.OnItemSelectedListener() {
@@ -98,8 +102,7 @@ public class DataPickerDialog extends BottomSheetDialog {
     mHour.setOnItemSelectedListener(new WheelView.OnItemSelectedListener() {
       @Override
       public void onItemSelected(int index, String item) {
-        List minStrList = CommonWheelView
-            .buildMinutesByDayHour(getContext(), mTime, mHour, timeRange);
+        List minStrList = CommonWheelView.buildMinutesByDayHour(getContext(), mTime, mHour, timeRange);
         int newIndexMin = minStrList.indexOf(mMinute.getSelectedItem());
         mMinute.setItems(minStrList, newIndexMin);
       }
