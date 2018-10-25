@@ -11,9 +11,12 @@ import com.one.framework.app.widget.base.BaseHeaderView;
 
 /**
  * Created by ludexiang on 2018/4/3.
+ * 只保留一个Header View
  */
 
 public class HeaderView extends BaseHeaderView {
+  private int headerLayoutRes;
+  private View headerView;
 
   public HeaderView(@NonNull Context context, int maxHeight) {
     this(context, null);
@@ -31,6 +34,22 @@ public class HeaderView extends BaseHeaderView {
   @Override
   protected View createView(Context context) {
     return LayoutInflater.from(context).inflate(R.layout.one_list_header_view_layout, this, true);
+  }
+
+  @Override
+  public void setHeaderView(int layout) {
+    if (getChildCount() > 0) {
+      removeAllViews();
+    }
+    LayoutInflater.from(getContext()).inflate(layout, this, true);
+  }
+
+  @Override
+  public void setHeaderView(View view) {
+    if (getChildCount() > 0) {
+      removeAllViews();
+    }
+    addView(view);
   }
 
   @Override

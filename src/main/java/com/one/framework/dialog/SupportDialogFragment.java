@@ -15,16 +15,19 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.one.framework.R;
+import com.one.framework.log.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SupportDialogFragment extends DialogFragment {
+public class SupportDialogFragment extends DialogFragment implements OnClickListener {
 
   private TextView dialogTitle;
   private TextView dialogMsg;
@@ -41,6 +44,8 @@ public class SupportDialogFragment extends DialogFragment {
   private OnDismissListener mOnDismissListener;
   private OnCancelListener mOnCancelListener;
   private LinearLayout mItemLayout;
+
+  private ImageView mClose;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -88,7 +93,16 @@ public class SupportDialogFragment extends DialogFragment {
     cancelLayout = (LinearLayout) view.findViewById(R.id.one_support_dialog_cancel_layout);
     noTitleMsg = (TextView) view.findViewById(R.id.one_support_dialog_message_no_title);
     mItemLayout = (LinearLayout) view.findViewById(R.id.one_support_dialog_item_layout);
+    mClose = view.findViewById(R.id.one_support_dialog_close);
+    mClose.setOnClickListener(this);
+  }
 
+  @Override
+  public void onClick(View v) {
+    int id = v.getId();
+    if (id == R.id.one_support_dialog_close) {
+      dismiss();
+    }
   }
 
   public void setDialogTitle(String title) {
@@ -211,6 +225,25 @@ public class SupportDialogFragment extends DialogFragment {
     }
   }
 
+  public void setPositiveBackground(int bgRes) {
+    if (bgRes != -1) {
+      confirmLinearLayout.setBackgroundResource(bgRes);
+    }
+  }
+
+  public void setBottomCloseVisible(boolean visible) {
+    mClose.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+  }
+
+  public void setPositiveBgMargin(int left, int top, int right, int bottom) {
+    LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) confirmLinearLayout.getLayoutParams();
+    params.leftMargin = left;
+    params.topMargin = top;
+    params.rightMargin = right;
+    params.bottomMargin = bottom;
+    confirmLinearLayout.setLayoutParams(params);
+  }
+
   public void setNegativeTextColor(int color) {
 
     if (color != -1 && dialogCancel != null) {
@@ -263,8 +296,6 @@ public class SupportDialogFragment extends DialogFragment {
       params.view = view;
       return this;
     }
-
-
 
     public Builder setCancelable(boolean cancelable) {
       params.cancelable = cancelable;
@@ -322,6 +353,24 @@ public class SupportDialogFragment extends DialogFragment {
 
     public Builder setPositiveButtonTextColor(int color) {
       params.positiveButtonTextColor = color;
+      return this;
+    }
+
+    public Builder setPositiveButtonBackground(int bgRes) {
+      params.positiveButtonBackground = bgRes;
+      return this;
+    }
+
+    public Builder setVisibleClose(boolean visible) {
+      params.bottomCloseVisible = visible;
+      return this;
+    }
+
+    public Builder setPositiveBackgroundMargin(int left, int top, int right, int bottom) {
+      params.positiveLeftMargin = left;
+      params.positiveTopMargin = top;
+      params.positiveRightMargin = right;
+      params.positiveBottomMargin = bottom;
       return this;
     }
 
@@ -385,6 +434,8 @@ public class SupportDialogFragment extends DialogFragment {
     try {
       super.show(manager, tag);
     } catch (Exception e) {
+      e.printStackTrace();
+      Logger.e("ldx", "showDlgFragment Exception");
     }
   }
 
@@ -398,9 +449,18 @@ public class SupportDialogFragment extends DialogFragment {
     return show;
   }
 
+  public void showAllowingStateLoss(FragmentTransaction transaction, String tag) {
+    try {
+      transaction.add(this, tag);
+      transaction.commitAllowingStateLoss();//注意这里使用commitAllowingStateLoss()
+    } catch (Exception e) {
+      Logger.e("ldx", "showAllowingStateLoss Exception");
+    }
+
+  }
+
   @Override
   public void dismiss() {
-
     if (getFragmentManager() == null) {
       return;
     }
@@ -448,6 +508,14 @@ public class SupportDialogFragment extends DialogFragment {
 
     public int positiveButtonTextColor = -1;
     public int negativeButtonTextColor = -1;
+    public int positiveButtonBackground = -1;
+
+    public boolean bottomCloseVisible = false;
+
+    public int positiveLeftMargin;
+    public int positiveTopMargin;
+    public int positiveRightMargin;
+    public int positiveBottomMargin;
 
     public OnDismissListener mOnDismissListener;
     public OnCancelListener mOnCancelListener;
@@ -475,7 +543,9 @@ public class SupportDialogFragment extends DialogFragment {
       fragment.setPositiveTextColor(positiveButtonTextColor);
       fragment.setPositiveClickListener(mPositiveButtonListener);
       fragment.setNegativeClickListener(mNegativeButtonListener);
-
+      fragment.setPositiveBackground(positiveButtonBackground);
+      fragment.setPositiveBgMargin(positiveLeftMargin, positiveTopMargin, positiveRightMargin, positiveBottomMargin);
+      fragment.setBottomCloseVisible(bottomCloseVisible);
     }
 
   }

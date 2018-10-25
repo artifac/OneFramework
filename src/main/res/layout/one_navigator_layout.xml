@@ -7,8 +7,7 @@
     android:id="@+id/one_navigator_header_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_alignParentTop="true"
-    android:background="#e5e5e5"/>
+    android:layout_alignParentTop="true"/>
 
   <com.one.framework.app.widget.PullScrollRelativeLayout
     android:id="@+id/one_nav_pull_view_root"
@@ -33,6 +32,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_below="@id/one_navigator_header_view"
+    android:clickable="true"
+    android:visibility="gone"
     android:background="#f5f5f5">
 
     <ImageView

@@ -1,0 +1,129 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@android:color/white"
+  android:orientation="vertical">
+  <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbars="none">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@android:color/white"
+      android:clipChildren="false"
+      android:orientation="vertical">
+
+      <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp">
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="20dp"
+          android:layout_alignParentLeft="true"
+          android:text="@string/emergent_contact_auto_share_trip"
+          android:textColor="#373c43"
+          android:textSize="14sp"/>
+
+        <com.one.framework.app.widget.OptionsView
+          android:id="@+id/emergent_auto_share_toggle"
+          android:layout_width="50dp"
+          android:layout_height="30dp"
+          android:layout_marginRight="20dp"
+          android:layout_alignParentRight="true"
+          android:layout_centerVertical="true"
+          android:background="#ffffff"
+          app:options_background_color="#f4f4f4"
+          app:options_bg_inner_radius="10dp"
+          app:options_bg_outer_radius="10dp"
+          app:options_default_select="1"
+          app:options_foreground_color="#ffffff"
+          app:options_min_height="20dp"
+          app:options_min_width="20dp"
+          app:options_op_key="emergent_auto_share"
+          app:options_toggle="true"
+          app:options_toggle_off_bg="#f4f4f4"
+          app:options_toggle_on_bg="#FF1665FF"/>
+      </RelativeLayout>
+
+      <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="#f0f0f0"/>
+
+      <com.one.framework.app.widget.ListItemWithRightArrowLayout
+        android:id="@+id/emergent_auto_time"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"/>
+
+      <LinearLayout
+        android:id="@+id/emergent_add_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:orientation="vertical"/>
+
+      <RelativeLayout
+        android:id="@+id/one_add_emergent_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp">
+
+        <ImageView
+          android:id="@+id/one_add_emergent"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="30dp"
+          android:layout_marginRight="20dp"
+          android:layout_alignParentLeft="true"
+          android:src="@drawable/one_add_emergent_contact"/>
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_toRightOf="@id/one_add_emergent"
+          android:orientation="vertical">
+
+          <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="添加紧急联系人"
+            android:textColor="#373c43"
+            android:textSize="16sp"/>
+
+          <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="最多可添加 5 位紧急联系人"
+            android:textColor="#999ba1"
+            android:textSize="12sp"/>
+        </LinearLayout>
+      </RelativeLayout>
+
+    </LinearLayout>
+
+  </ScrollView>
+
+  <TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:paddingBottom="20dp"
+    android:paddingLeft="38dp"
+    android:paddingRight="38dp"
+    android:gravity="center"
+    android:lineSpacingExtra="8dp"
+    android:text="@string/emergent_information"
+    android:textColor="#373c43"/>
+</FrameLayout>

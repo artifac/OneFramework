@@ -17,7 +17,6 @@ import com.one.framework.app.model.IBusinessContext;
 import com.one.framework.app.navigation.INavigator;
 import com.one.framework.log.Logger;
 import com.one.framework.manager.FragmentDelegateManager;
-import com.onecore.core.anim.FragmentAnimator;
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +30,7 @@ import java.util.Vector;
 
 public final class Navigator implements INavigator {
 
+  private static final String TAG = Navigator.class.getSimpleName();
   private SoftReference<Context> mSoftReference;
   private FragmentDelegateManager mPageManager;
   private FragmentManager mFragmentManager;
@@ -58,13 +58,13 @@ public final class Navigator implements INavigator {
   }
 
   @Override
-  public Fragment startFragment(Intent intent, IBusinessContext businessContext, FragmentAnimator animator) {
+  public Fragment startFragment(Intent intent, IBusinessContext businessContext/*, FragmentAnimator animator*/) {
     final Fragment fragment = getFragment(intent, businessContext);
     if (fragment != null) {
       final FragmentTransaction transaction = mFragmentManager.beginTransaction();
-      if (animator != null) {
-        transaction.setCustomAnimations(animator.getEnter(), animator.getExit(), animator.getPopEnter(), animator.getPopExit());
-      }
+//      if (animator != null) {
+//        transaction.setCustomAnimations(animator.getEnter(), animator.getExit(), animator.getPopEnter(), animator.getPopExit());
+//      }
       String fragmentTag = getFragmentTag(fragment.getClass());
       boolean isAddToBackStack = intent.getBooleanExtra(BUNDLE_ADD_TO_BACK_STACK, true);
       if (isAddToBackStack) {
@@ -115,7 +115,55 @@ public final class Navigator implements INavigator {
   }
 
   @Override
+  public boolean isRootFragment() {
+    int backStackCount = mFragmentManager.getBackStackEntryCount();
+    return backStackCount == 0;
+  }
+
+  /**
+   *
+   * @param fragmentMgr
+   * @param index 1 表示栈顶页，2 表示栈顶的前一页，以此类推。
+   * @return
+   */
+  @Override
+  public Fragment getLastIndexFragment(FragmentManager fragmentMgr, int index) {
+    int backEntryCount = fragmentMgr.getBackStackEntryCount();
+    if (backEntryCount <= index - 1) {
+      return null;
+    }
+
+    BackStackEntry backStackEntry = fragmentMgr.getBackStackEntryAt(backEntryCount - index);
+    String fragmentTag = backStackEntry.getName();
+
+    return fragmentMgr.findFragmentByTag(fragmentTag);
+  }
+
+  @Override
   public Fragment getPreFragment(Fragment fragment) {
+    FragmentManager fragmentManager = fragment.getFragmentManager();
+    if (fragmentManager == null) return null;
+
+    int backStackCount = fragmentManager.getBackStackEntryCount();
+    if (backStackCount == 0) {
+      return null;
+    }
+
+    int curPosition = 0;
+    for (int i = backStackCount - 1; i >= 0; i--) {
+      BackStackEntry entry = fragmentManager.getBackStackEntryAt(i);
+      String tag = entry.getName();
+      Fragment f = fragmentManager.findFragmentByTag(tag);
+      if (f == fragment) {
+        curPosition = i;
+        break;
+      }
+    }
+
+    if (curPosition > 0) {
+      BackStackEntry entry = fragmentManager.getBackStackEntryAt(curPosition - 1);
+      return fragmentManager.findFragmentByTag(entry.getName());
+    }
     return null;
   }
 
@@ -191,7 +239,7 @@ public final class Navigator implements INavigator {
      * Resume the handler
      */
     final void resume() {
-      Logger.i("ldx", "resume and consume");
+      Logger.i(TAG, "resume and consume");
 
       isPaused = false;
       //处理 MainActivity#onResume ----> MainActivity#onStop 空档期 isPaused置为true
@@ -224,7 +272,7 @@ public final class Navigator implements INavigator {
      * Pause the handler
      */
     final void pause() {
-      Logger.e("ldx", "pause");
+      Logger.e(TAG, "pause");
       isPaused = true;
     }
 
@@ -240,7 +288,7 @@ public final class Navigator implements INavigator {
      * @param message the message to be handled
      */
     protected void processMessage(Message message) {
-      Logger.i("ldx", "processMessage");
+      Logger.i(TAG, "processMessage");
 
       // 这里如果给message设置了callback 则handler就不会调用handleMessage方法
       // 而会直接调用message的callback去处理了

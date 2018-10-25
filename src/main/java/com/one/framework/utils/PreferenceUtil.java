@@ -60,7 +60,7 @@ public class PreferenceUtil {
   }
   
   public int getInt(String key) {
-    return mPreference.getInt(key, 0);
+    return mPreference.getInt(key, -1);
   }
 
   public boolean getBoolean(String key) {

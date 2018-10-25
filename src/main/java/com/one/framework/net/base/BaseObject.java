@@ -17,6 +17,8 @@ public class BaseObject implements Serializable, Cloneable {
   public String message;
   public int timeoffset;
   public String data;
+  public int dataInt;
+  public boolean dataBoolean;
   public String object;
 
   public static boolean isAvailable(BaseObject obj) {
@@ -102,9 +104,16 @@ public class BaseObject implements Serializable, Cloneable {
       }
 
       if (obj.has(NetConstant.DATA)) {
-        JSONObject dataObj = obj.optJSONObject(NetConstant.DATA);
-        if (dataObj != null) {
-          setParseData(dataObj.toString());
+        Object object = obj.opt(NetConstant.DATA);
+        if (object instanceof Integer) {
+          setParseData(((Integer) object).intValue());
+        } else if (object instanceof Boolean) {
+          setParseData(((Boolean) object).booleanValue());
+        } else {
+          JSONObject dataObj = obj.optJSONObject(NetConstant.DATA);
+          if (dataObj != null) {
+            setParseData(dataObj.toString());
+          }
         }
       }
 
@@ -121,12 +130,29 @@ public class BaseObject implements Serializable, Cloneable {
     data = dataString;
   }
 
+  private void setParseData(Boolean flag) {
+    dataBoolean = flag;
+  }
+
+  private void setParseData(int value) {
+    dataInt = value;
+  }
+
   private void setParseObject(String objectString) {
     object = objectString;
   }
 
+  @Override
   public String toString() {
-    return "BaseObject [code=" + this.code + ", message=" + this.message +  " data >>> " + data +"]";
+    return "BaseObject{" +
+        "code=" + code +
+        ", message='" + message + '\'' +
+        ", timeoffset=" + timeoffset +
+        ", data='" + data + '\'' +
+        ", dataInt=" + dataInt +
+        ", dataBoolean=" + dataBoolean +
+        ", object='" + object + '\'' +
+        '}';
   }
 
   public BaseObject clone() {

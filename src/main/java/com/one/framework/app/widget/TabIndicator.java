@@ -13,6 +13,7 @@ import com.one.framework.R;
 import com.one.framework.app.model.TabItem;
 import com.one.framework.app.widget.base.AbsTabIndicatorScrollerView;
 import com.one.framework.app.widget.base.ITabIndicatorListener;
+import com.one.framework.utils.UIUtils;
 import java.util.List;
 
 /**
@@ -20,6 +21,8 @@ import java.util.List;
  */
 
 public class TabIndicator extends AbsTabIndicatorScrollerView implements ITabIndicatorListener {
+
+  private static final int BIZ_COUNT = 3;
 
   private LinearLayout mTabContainer;
   private ITabItemListener mTabItemListener;
@@ -62,7 +65,7 @@ public class TabIndicator extends AbsTabIndicatorScrollerView implements ITabInd
       redPoint.setVisibility(tab.isRedPoint ? View.VISIBLE : View.GONE);
       LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
           LayoutParams.WRAP_CONTENT);
-      if (i != items.size() - 1) {
+      if (i != items.size() - 1 && items.size() >= BIZ_COUNT) {
         params.rightMargin = 30;
       }
       mTabContainer.addView(view, tab.position, params);
@@ -93,15 +96,33 @@ public class TabIndicator extends AbsTabIndicatorScrollerView implements ITabInd
   }
 
   @Override
+  public int getBizType(int position) {
+    if (mTabContainer != null && position < mTabContainer.getChildCount()) {
+      View view = mTabContainer.getChildAt(position);
+      TextView tab = view.findViewById(R.id.one_tab_item);
+      if (tab != null && tab.getTag() != null && tab.getTag() instanceof  TabItem) {
+        TabItem item = (TabItem) tab.getTag();
+        return item.tabBizType;
+      }
+    }
+    return 0;
+  }
+
+  @Override
   public int getViewHeight() {
     return getMeasuredHeight();
   }
 
   private void setChildViewGravity(int size) {
-    int width = getWidth();
-    FrameLayout.LayoutParams params = (ScrollView.LayoutParams)mTabContainer.getLayoutParams();
-    params.gravity = size <= 5 ? Gravity.CENTER : Gravity.NO_GRAVITY;
-    mTabContainer.setLayoutParams(params);
+    FrameLayout.LayoutParams params = (ScrollView.LayoutParams) mTabContainer.getLayoutParams();
+    if (size <= BIZ_COUNT) {
+      params.leftMargin = params.rightMargin = 0;
+    } else {
+      params.leftMargin = UIUtils.dip2pxInt(getContext(), 20);
+      params.rightMargin = UIUtils.dip2pxInt(getContext(), 32);
+    }
+    params.gravity = size <= BIZ_COUNT ? Gravity.CENTER : Gravity.NO_GRAVITY;
+    setLayoutParams(params);
   }
 
   @Override

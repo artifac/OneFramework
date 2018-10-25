@@ -1,0 +1,131 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@android:color/white"
+  android:fitsSystemWindows="true"
+  android:orientation="vertical">
+
+  <com.one.framework.app.widget.TopTitleLayout
+    android:id="@+id/oneLoginTitle"
+    android:layout_width="match_parent"
+    android:layout_height="52dp"/>
+
+  <TextView
+    android:textStyle="bold"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="20dp"
+    android:layout_marginBottom="42dp"
+    android:layout_marginLeft="20dp"
+    android:text="请输入您的手机号"
+    android:textColor="#373c43"
+    android:textSize="20sp"/>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="20dp"
+    android:orientation="horizontal">
+    <TextView
+      android:id="@+id/oneLoginPhoneArea"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_vertical"
+      android:text="+86"
+      android:textColor="#373c43"
+      android:textSize="16sp"/>
+
+    <View
+      android:layout_width="2dp"
+      android:layout_height="28dp"
+      android:layout_marginLeft="10dp"
+      android:layout_marginRight="10dp"
+      android:background="#f0f0f0"/>
+
+    <EditText
+      android:id="@+id/oneLoginPhone"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_vertical"
+      android:background="@null"
+      android:hint="请输入您的常用手机号"
+      android:inputType="phone"
+      android:maxLength="11"
+      android:textColor="#02040d"
+      android:textColorHint="#babfca"
+      android:textCursorDrawable="@drawable/edittext_cursor_color_bg"
+      android:textSize="16sp"/>
+  </LinearLayout>
+
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:layout_margin="20dp"
+    android:background="#f0f0f0"/>
+
+  <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp"
+    android:orientation="horizontal">
+
+    <EditText
+      android:id="@+id/oneLoginCode"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentLeft="true"
+      android:layout_gravity="center_vertical"
+      android:background="@null"
+      android:hint="请输入6位验证码"
+      android:inputType="number"
+      android:maxLength="6"
+      android:textColor="#02040d"
+      android:textColorHint="#babfca"
+      android:textCursorDrawable="@drawable/edittext_cursor_color_bg"
+      android:textSize="16sp"/>
+
+    <TextView
+      android:id="@+id/oneObtainCode"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentRight="true"
+      android:text="@string/one_login_verify_code"
+      android:textColor="#1665ff"
+      android:textSize="16sp"/>
+  </RelativeLayout>
+
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:layout_marginTop="20dp"
+    android:layout_marginBottom="10dp"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp"
+    android:background="#f0f0f0"/>
+
+  <TextView
+    android:id="@+id/oneLoginCheck"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="20dp"
+    android:text="请输入正确手机号"
+    android:textColor="#babfca"
+    android:textSize="12sp"
+    android:visibility="gone"/>
+
+  <com.one.framework.app.widget.TripButton
+    android:id="@+id/oneLoginBtn"
+    android:layout_width="match_parent"
+    android:layout_height="44dp"
+    android:layout_marginTop="65dp"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp"
+    app:btn_radius="6dp"
+    app:disable_color="#babfca"
+    app:enable_color="#1364ff"
+    app:text="登录"
+    app:text_color="#ffffff"
+    app:text_size="18sp"/>
+</LinearLayout>

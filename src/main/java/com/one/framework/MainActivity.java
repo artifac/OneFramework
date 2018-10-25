@@ -6,16 +6,26 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.DrawerLayout.DrawerListener;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.KeyEvent.Callback;
+import android.view.View;
+import android.widget.Toast;
 import com.igexin.sdk.PushManager;
+import com.netease.nim.uikit.api.NimUIKit;
+import com.one.framework.app.ads.AdsBean;
+import com.one.framework.app.ads.AdsModel;
+import com.one.framework.app.ads.AdsPopup;
+import com.one.framework.app.ads.IAdsPopup;
 import com.one.framework.app.base.BaseActivity;
 import com.one.framework.app.common.SrcCarType;
 import com.one.framework.app.login.ILogin;
@@ -42,19 +52,19 @@ import com.one.framework.app.widget.base.ITopTitleView.ITopTitleListener;
 import com.one.framework.log.Logger;
 import com.one.framework.manager.ActivityDelegateManager;
 import com.one.framework.net.Api;
+import com.one.framework.net.model.Entrance;
 import com.one.framework.net.model.OrderDetail;
 import com.one.framework.net.model.OrderTravelling;
 import com.one.framework.net.response.IResponseListener;
 import com.one.framework.provider.HomeDataProvider;
-import com.one.framework.utils.ToastUtils;
 import com.one.map.IMap;
 import com.one.map.MapFragment;
 import com.one.map.model.Address;
 import com.one.map.view.IMapDelegate.CenterLatLngParams;
-import com.tencent.bugly.crashreport.CrashReport;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by ludexiang on 2018/3/26.
@@ -89,6 +99,10 @@ public class MainActivity extends BaseActivity implements ITabItemListener, ILog
    * 当前业务线 入口 Fragment
    */
   private Fragment mCurrentFragment;
+
+  private IAdsPopup mAdsPop;
+  private boolean isShowAd;
+  private AdsModel mAdsModel;
 
   private ITopTitleListener mTopTitleListener = new ITopTitleListener() {
     @Override
@@ -132,7 +146,7 @@ public class MainActivity extends BaseActivity implements ITabItemListener, ILog
     mDelegateManager.notifyOnCreate();
 
     mBusinessContext = new BusinessContext(this, mNavigatorFragment, mMapFragment, mTopbarFragment, mNavigator, mMapPinView);
-    mBusinessEntrance = testTabItems();
+    mBusinessEntrance = addEntrances();
     mTopbarFragment.setTabItems(mBusinessEntrance);
     mTopbarFragment.setAllBusiness(mBusinessEntrance);
     mMapFragment.setMapListener(this);
@@ -144,7 +158,7 @@ public class MainActivity extends BaseActivity implements ITabItemListener, ILog
     UserProfile.getInstance(this).setILogin(mLogin);
     lockDrawerLayout(!mLogin.isLogin());
     mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
-    obtainAllProjects();
+    mAdsPop = new AdsPopup(this, null);
 
     PackageManager pkgManager = getPackageManager();
 
@@ -169,6 +183,40 @@ public class MainActivity extends BaseActivity implements ITabItemListener, ILog
     // 检查 so 是否存在
     File file = new File(this.getApplicationInfo().nativeLibraryDir + File.separator + "libgetuiext2.so");
     Logger.e("ldx", "libgetuiext2.so exist = " + file.exists());
+
+    NimUIKit.init(this);
+
+    String userId = UserProfile.getInstance(this).getUserId();
+    String userToken = UserProfile.getInstance(this).getTokenValue();
+    if (!TextUtils.isEmpty(userId) || !TextUtils.isEmpty(userToken)) {
+      loginSuccess();
+    }
+
+    obtainAds();
+
+    mDrawerLayout.addDrawerListener(new DrawerListener() {
+      @Override
+      public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
+
+      }
+
+      @Override
+      public void onDrawerOpened(@NonNull View drawerView) {
+
+      }
+
+      @Override
+      public void onDrawerClosed(@NonNull View drawerView) {
+        Logger.e("ldx", "onDrawerLayout closed >>>>");
+        mNavigatorFragment.recoveryDefault();
+      }
+
+      @Override
+      public void onDrawerStateChanged(int newState) {
+
+      }
+    });
+
   }
 
   private void requestPermission() {
@@ -195,6 +243,12 @@ public class MainActivity extends BaseActivity implements ITabItemListener, ILog
   @Override
   protected void onNewIntent(Intent intent) {
     super.onNewIntent(intent);
+    Fragment currentFragment = mNavigator.getCurrentFragment();
+    if (currentFragment != null && currentFragment instanceof IComponent) {
+      IComponent component = (IComponent) currentFragment;
+      component.onNewIntent(intent);
+    }
+
   }
 
   @Override
@@ -225,6 +279,7 @@ public class MainActivity extends BaseActivity implements ITabItemListener, ILog
     HomeDataProvider.getInstance().saveCurAddress(address);
     // notify observer
 
+    Logger.e("ldx", "reverse geo success send broadcast");
     // todo current use LocalBroadcastManager
     Intent intent = new Intent("INTENT_CURRENT_LOCATION_ADDRESS");
     intent.putExtra("current_location_address", address);
@@ -265,7 +320,7 @@ public class MainActivity extends BaseActivity implements ITabItemListener, ILog
     intent.setData(uri);
     intent.putExtra(INavigator.BUNDLE_ADD_TO_BACK_STACK, false);
 
-    Fragment rootFragment = mNavigator.startFragment(intent, mBusinessContext, null);
+    Fragment rootFragment = mNavigator.startFragment(intent, mBusinessContext);
     if (rootFragment == null) {
       // todo
     }
@@ -276,6 +331,20 @@ public class MainActivity extends BaseActivity implements ITabItemListener, ILog
     }
 //    loadRootFragment(R.id.content_view_container, (ISupportFragment) mCurrentFragment);
     mCurrentFragment.setUserVisibleHint(true);
+
+    if (mAdsModel != null) {
+      List<AdsBean> ads = mAdsModel.getAds();
+      if (ads != null && !ads.isEmpty()) {
+        for (AdsBean adsBean : ads) {
+          if (item.tabBizType == adsBean.getBizType()) {
+            showAdsPop(adsBean);
+            break;
+          }
+          continue;
+        }
+      }
+
+    }
   }
 
   private String constructUriString(TabItem tab) {
@@ -285,14 +354,23 @@ public class MainActivity extends BaseActivity implements ITabItemListener, ILog
 
   @Override
   public void onLoginSuccess() {
+    loginSuccess();
+  }
+
+  private void loginSuccess() {
+    EventBus.getDefault().post(true);
+    requestAppConfig();
     obtainAllProjects();
   }
 
   @Override
-  public void onLoginFail() {
+  public void onLoginFail(String message) {
 
   }
 
+  /**
+   * 获取是否有行程中订单
+   */
   private void obtainAllProjects() {
     Api.allTravelling(new IResponseListener<OrderTravelling>() {
       @Override
@@ -318,7 +396,7 @@ public class MainActivity extends BaseActivity implements ITabItemListener, ILog
       }
 
       @Override
-      public void onFail(int errCode, OrderTravelling travelling) {
+      public void onFail(int errCode, String message) {
 
       }
 
@@ -327,6 +405,45 @@ public class MainActivity extends BaseActivity implements ITabItemListener, ILog
 
       }
     });
+  }
+
+  /**
+   * 包含多业务线的运行广告位
+   */
+  private void obtainAds() {
+    Api.bizAds(new IResponseListener<AdsModel>() {
+      @Override
+      public void onSuccess(AdsModel adsModel) {
+        mAdsModel = adsModel;
+        List<AdsBean> ads = mAdsModel.getAds();
+        if (ads != null && !ads.isEmpty()) {
+          for (AdsBean adsBean : ads) {
+            if (mTopbarFragment.getBizType(mCurrentPosition) == adsBean.getBizType()) {
+              showAdsPop(adsBean);
+              break;
+            }
+            continue;
+          }
+        }
+      }
+
+      @Override
+      public void onFail(int errCod, String message) {
+        Logger.e("ldx", "ads >>>>>>> fail");
+      }
+
+      @Override
+      public void onFinish(AdsModel adsModel) {
+        Logger.e("ldx", "ads >>>>>>> finish " + adsModel);
+      }
+    });
+  }
+
+  private void showAdsPop(AdsBean model) {
+    if (mAdsPop != null && (mAdsPop.isShowing() || mAdsPop.giftShowing())) {
+      return;
+    }
+    mAdsPop.show(model);
   }
 
   @Override
@@ -353,12 +470,25 @@ public class MainActivity extends BaseActivity implements ITabItemListener, ILog
         return;
       }
     }
+//    if (adsPop != null && adsPop.isShowing) {
+//      adsPop.dismiss()
+//      return
+//    }
+//    if (adsPop != null) {
+//      adsPop.release()
+//    }
+//
+//    trip_gift_view.release()
     if (System.currentTimeMillis() - TOUCH_TIME < WAIT_TIME) {
       // TODO: 2018/6/29 do release job
       finish();
     } else {
       TOUCH_TIME = System.currentTimeMillis();
-      ToastUtils.toast(getApplicationContext(), getString(R.string.one_press_again_exit));
+//      try {
+//        ToastUtils.toast(this, getString(R.string.one_press_again_exit));
+//      } catch (Exception e) {
+//      }
+      Toast.makeText(this, getString(R.string.one_press_again_exit), Toast.LENGTH_SHORT).show();
     }
   }
 
@@ -415,21 +545,26 @@ public class MainActivity extends BaseActivity implements ITabItemListener, ILog
     mDelegateManager.notifyOnDestroy();
   }
 
-  /////////////////////// test //////
-  private List<TabItem> testTabItems() {
+  /**
+   * 添加入口
+   * @return
+   */
+  private List<TabItem> addEntrances() {
     List<TabItem> items = new ArrayList<>();
-
-    TabItem tab4 = new TabItem();
-    tab4.tab = "出租车";
-    tab4.position = 0;
-    tab4.tabBiz = "taxi";
-    tab4.isRedPoint = false;
-    tab4.tabBizType = 3;
-    tab4.tabIconResId = R.drawable.one_tab_business_bike;
-    tab4.isSelected = true;
-
-    items.add(tab4);
+    List<Entrance> entrances = HomeDataProvider.getInstance().obtainEntrance();
+    for (Entrance entrance: entrances) {
+      TabItem tab = new TabItem();
+      tab.tab = entrance.getEntranceTab();
+      tab.position = entrance.getEntranceTabPosition();
+      tab.tabBiz = entrance.getEntranceTabBiz();
+      tab.isRedPoint = entrance.isRedPoint();
+      tab.tabBizType = entrance.getEntranceTabBizType();
+      tab.tabIconResId = R.drawable.one_tab_business_bike;
+      tab.isSelected = entrance.getEntranceTabSelected();
+      items.add(tab);
+    }
 
     return items;
   }
+
 }

@@ -10,6 +10,16 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <com.one.framework.app.widget.LoadingView
+      android:id="@+id/one_my_trips_refresh_loading"
+      android:layout_width="match_parent"
+      android:layout_height="5dp"
+      app:loading_type="progress"
+      app:loading_progress_color="#f05b48"
+      app:loading_progress_type="line"
+      app:loading_progress_width="5dp"
+      app:loading_line_start="center"/>
+
     <com.one.framework.app.widget.PullListView
       android:id="@android:id/list"
       android:layout_width="match_parent"

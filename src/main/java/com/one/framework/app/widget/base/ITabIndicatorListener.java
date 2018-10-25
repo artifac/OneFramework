@@ -19,6 +19,8 @@ public interface ITabIndicatorListener {
 
   int getViewHeight();
 
+  int getBizType(int position);
+
   @Keep
   interface ITabItemListener {
     void onItemClick(TabItem item);

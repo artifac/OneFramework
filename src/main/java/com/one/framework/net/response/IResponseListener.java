@@ -8,6 +8,6 @@ import com.one.framework.net.base.BaseObject;
 
 public interface IResponseListener<T extends BaseObject> {
   void onSuccess(T t);
-  void onFail(int errCod, T t);
+  void onFail(int errCod, String message);
   void onFinish(T t);
 }

@@ -11,6 +11,7 @@ import com.one.framework.app.widget.wheelview.TimeRange;
 import com.one.framework.app.widget.wheelview.WheelView;
 import com.one.framework.utils.TimeUtils;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -23,9 +24,15 @@ public class DataPickerDialog extends BottomSheetDialog {
   private WheelView mHour;
   private WheelView mMinute;
 
+  private static int timePosition;
+  private static int hourPosition;
+  private static int minutePosition;
+  private static boolean isSameDay = true;
+  private static boolean isSameHour = true;
+
   private int mTimeRangeDays;
 
-  private ISelectResultListener mListener;
+
 
   public DataPickerDialog(@NonNull Context context, int timeRange) {
     super(context);
@@ -57,6 +64,10 @@ public class DataPickerDialog extends BottomSheetDialog {
       @Override
       public void onClick(View v) {
         dismiss();
+        timePosition = mTime.getSelectedPosition();
+        hourPosition = mHour.getSelectedPosition();
+        minutePosition = mMinute.getSelectedPosition();
+
         int timePosition = mTime.getSelectedPosition();
         String hourSelected = mHour.getSelectedItem();
         int hourIndex = hourSelected.lastIndexOf(getContext().getString(R.string.one_dialog_data_picker_hour));
@@ -66,7 +77,11 @@ public class DataPickerDialog extends BottomSheetDialog {
         int hour = Integer.parseInt(hourSelected.substring(0, hourIndex));
         int minute = Integer.parseInt(minuteSelected.substring(0, minuteIndex));
         long time = getLongTime(timePosition, hour, minute);
-        String showTime = new StringBuffer().append(mTime.getSelectedItem()).append(" ").append(hour).append(":").append(minute).toString();
+        Date currTime = new Date(System.currentTimeMillis());
+        Date selectTime = new Date(time);
+        isSameDay = TimeUtils.isInSameDay(currTime, selectTime);
+        isSameHour = TimeUtils.isInSameHour(currTime, selectTime);
+        String showTime = new StringBuffer().append(mTime.getSelectedItem()).append(" ").append("{").append(hour).append(":").append(minuteSelected.substring(0, minuteIndex)).append("}").toString();
         if (mListener != null) {
           mListener.onTimeSelect(time, showTime);
         }
@@ -77,14 +92,12 @@ public class DataPickerDialog extends BottomSheetDialog {
   }
 
   private void setItems() {
-    final TimeRange timeRange = getTimeRange();
-    mTime.setItems(CommonWheelView.buildDays(getContext(), timeRange), 0);
-    mHour.setItems(CommonWheelView.buildHourListStart(getContext(), timeRange), 0);
-    /**
-     * 10 表示间隔10分钟
-     */
     long bookingTime = 20 * 60 * 1000;
-    mMinute.setItems(CommonWheelView.buildMinuteListStart(getContext(), timeRange, 10, bookingTime), 0);
+    final TimeRange timeRange = getTimeRange();
+    mTime.setItems(CommonWheelView.buildDays(getContext(), timeRange), timePosition);
+    mHour.setItems(CommonWheelView.buildHourListStart(getContext(), timeRange, bookingTime, isSameDay), hourPosition);
+    /** 10 表示间隔10分钟 */
+    mMinute.setItems(CommonWheelView.buildMinuteListStart(getContext(), timeRange, 10, bookingTime, isSameDay, isSameHour), minutePosition);
 
     //联动逻辑效果
     mTime.setOnItemSelectedListener(new WheelView.OnItemSelectedListener() {
@@ -137,12 +150,11 @@ public class DataPickerDialog extends BottomSheetDialog {
     return TimeUtils.stringToLong(time, "");
   }
 
-  public DataPickerDialog setSelectResultListener(ISelectResultListener listener) {
-    mListener = listener;
-    return this;
-  }
-
-  public interface ISelectResultListener {
-    void onTimeSelect(long time, String showTime);
+  public static void reset() {
+    timePosition = 0;
+    hourPosition = 0;
+    minutePosition = 0;
+    isSameDay = true;
+    isSameHour = true;
   }
 }

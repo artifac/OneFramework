@@ -1,0 +1,34 @@
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@drawable/one_trip_bg_selector">
+
+  <TextView
+    android:id="@+id/one_contact_header"
+    android:layout_width="45dp"
+    android:layout_height="45dp"
+    android:textSize="20sp"
+    android:textColor="@android:color/white"
+    android:textStyle="bold"
+    android:layout_margin="10dp"
+    android:gravity="center"
+    android:background="@drawable/one_contact_header_bg"/>
+
+  <TextView
+    android:id="@+id/one_contact_name"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textSize="18sp"
+    android:textColor="#333333"
+    android:layout_centerVertical="true"
+    android:layout_toRightOf="@id/one_contact_header"/>
+
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="0.5dp"
+    android:background="#f3f3f3"
+    android:layout_alignParentBottom="true"
+    android:layout_marginLeft="30dp"/>
+
+</RelativeLayout>

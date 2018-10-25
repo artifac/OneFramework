@@ -44,7 +44,7 @@ public class HeaderParams implements IHeaderParams {
     mHeaderParams.put(ServerParams.PARAM_TOKEN, UserProfile.getInstance(mContext).getTokenValue());
     mHeaderParams.put(ServerParams.PARAM_VERSION, SystemUtils.getVersion());
     mHeaderParams.put(ServerParams.PARAM_OS, VERSION.RELEASE);
-    mHeaderParams.put(ServerParams.PARAM_SCREEN_PIXELS, SystemUtils.getScreenWidth() + "*" + SystemUtils.getScreenWidth());
+    mHeaderParams.put(ServerParams.PARAM_SCREEN_PIXELS, SystemUtils.getScreenWidth() + "*" + SystemUtils.getScreenHeight());
     mHeaderParams.put(ServerParams.PARAM_CLIENT_ID, "android");
     mHeaderParams.put(ServerParams.PARAM_APP, "0");
     mHeaderParams.put(ServerParams.PARAM_PLATFORM, "1");

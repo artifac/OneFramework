@@ -4,6 +4,7 @@ import static com.one.framework.app.navigation.INavigator.BUNDLE_ADD_TO_BACK_STA
 import static com.one.framework.app.navigation.INavigator.BUNDLE_FORWARD_FRAGMENT_STYLE;
 import static com.one.framework.model.NavigatorModel.CUSTOMER_SERVICE;
 import static com.one.framework.model.NavigatorModel.MY_TRAVEL;
+import static com.one.framework.model.NavigatorModel.MY_WALLET;
 import static com.one.framework.model.NavigatorModel.SETTING;
 
 import android.animation.ValueAnimator;
@@ -22,6 +23,7 @@ import com.one.framework.adapter.impl.NavigatorOptionsGridAdapter;
 import com.one.framework.app.base.BaseFragment;
 import com.one.framework.app.page.ISlideDrawer;
 import com.one.framework.app.slide.MyTripsFragment;
+import com.one.framework.app.slide.MyWalletFragment;
 import com.one.framework.app.slide.SettingsFragment;
 import com.one.framework.app.widget.PullGridView;
 import com.one.framework.app.widget.PullListView;
@@ -156,7 +158,7 @@ public class NavigatorFragment extends BaseFragment implements IMovePublishListe
         Bundle bundle = new Bundle();
         bundle.putBoolean(BUNDLE_FORWARD_FRAGMENT_STYLE, true);
         bundle.putBoolean(BUNDLE_ADD_TO_BACK_STACK, true);
-        forward(MyTripsFragment.class, null);
+        forward(MyTripsFragment.class, bundle);
         break;
       }
       case CUSTOMER_SERVICE: {
@@ -166,7 +168,14 @@ public class NavigatorFragment extends BaseFragment implements IMovePublishListe
         Bundle bundle = new Bundle();
         bundle.putBoolean(BUNDLE_FORWARD_FRAGMENT_STYLE, true);
         bundle.putBoolean(BUNDLE_ADD_TO_BACK_STACK, true);
-        forward(SettingsFragment.class, null);
+        forward(SettingsFragment.class, bundle);
+        break;
+      }
+      case MY_WALLET: { // 我的钱包
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(BUNDLE_FORWARD_FRAGMENT_STYLE, true);
+        bundle.putBoolean(BUNDLE_ADD_TO_BACK_STACK, true);
+        forward(MyWalletFragment.class, bundle);
         break;
       }
     }
@@ -180,6 +189,11 @@ public class NavigatorFragment extends BaseFragment implements IMovePublishListe
     myOrders.optionsType = MY_TRAVEL;
     myOrders.optionsIconId = R.drawable.one_slide_my_trips;
 
+    NavigatorModel myWallet = new NavigatorModel();
+    myWallet.optionsInfo = getString(R.string.one_slide_my_wallet);
+    myWallet.optionsType = MY_WALLET;
+    myWallet.optionsIconId = R.drawable.one_slide_my_wallet;
+
     NavigatorModel customerService = new NavigatorModel();
     customerService.optionsInfo = getString(R.string.one_slide_customer_service);
     customerService.optionsType = CUSTOMER_SERVICE;
@@ -191,8 +205,14 @@ public class NavigatorFragment extends BaseFragment implements IMovePublishListe
     general.optionsIconId = R.drawable.one_slide_setting;
 
     models.add(myOrders);
+    models.add(myWallet);
     models.add(customerService);
     models.add(general);
     return models;
+  }
+
+  @Override
+  public void recoveryDefault() {
+    onUp(false, true);
   }
 }

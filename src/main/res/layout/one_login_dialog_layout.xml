@@ -5,8 +5,8 @@
   android:layout_marginLeft="50dp"
   android:layout_marginRight="50dp"
   android:layout_gravity="center"
-  android:clipChildren="false"
   android:background="@android:color/white"
+  android:clipChildren="false"
   android:orientation="vertical">
 
   <ImageView
@@ -35,11 +35,11 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="30dp"
     android:layout_marginLeft="30dp"
+    android:layout_below="@id/one_login_dlg_title"
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
-    android:textSize="14sp"
-    android:layout_below="@id/one_login_dlg_title"
-    android:text="+86"/>
+    android:text="+86"
+    android:textSize="14sp"/>
 
   <EditText
     android:id="@+id/one_login_input"
@@ -53,6 +53,7 @@
     android:hint="请输入手机号码"
     android:inputType="phone"
     android:maxLength="13"
+    android:textCursorDrawable="@drawable/edittext_cursor_color_bg"
     android:textSize="14sp"/>
 
   <View
@@ -69,16 +70,15 @@
     android:id="@+id/one_login_btn_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_below="@id/one_login_input_line"
-    android:layout_marginTop="40dp">
+    android:layout_marginTop="40dp"
+    android:layout_below="@id/one_login_input_line">
     <com.one.framework.app.widget.TripButton
       android:id="@+id/one_login_next"
       android:layout_width="match_parent"
       android:layout_height="40dp"
-
       app:disable_color="#ffffff"
       app:enable_color="#343d4a"
-      app:radius="0dp"
+      app:btn_radius="0dp"
       app:text="@string/one_login_next"
       app:text_color="#ffffff"
       app:text_size="14sp"/>
@@ -97,13 +97,13 @@
     android:id="@+id/one_login_verification_code_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_below="@id/one_login_dlg_title"
     android:layout_marginTop="10dp"
     android:layout_marginBottom="10dp"
+    android:layout_below="@id/one_login_dlg_title"
     android:clipChildren="false"
     android:gravity="center_horizontal"
-    android:visibility="gone"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:visibility="gone">
 
     <TextView
       android:id="@+id/one_login_input_verification_code"
@@ -131,11 +131,11 @@
     android:id="@+id/one_login_dlg_login_loading_layout"
     android:layout_width="match_parent"
     android:layout_height="176.5dp"
-    android:clipChildren="false"
     android:layout_centerInParent="true"
+    android:layout_gravity="center_horizontal"
     android:background="#cdffffff"
-    android:visibility="gone"
-    android:layout_gravity="center_horizontal">
+    android:clipChildren="false"
+    android:visibility="gone">
     <com.one.framework.app.widget.LoadingView
       android:id="@+id/one_login_loading_view"
       android:layout_width="80dp"
@@ -148,12 +148,12 @@
       app:loading_type="progress"/>
 
     <TextView
-      android:id="@+id/taxi_wait_count_down"
+      android:id="@+id/one_login_count_down"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_centerInParent="true"
       android:layout_gravity="center"
       android:gravity="center"
-      android:text="@string/one_logining"
-      android:layout_centerInParent="true"/>
+      android:text="@string/one_logining"/>
   </RelativeLayout>
 </com.one.framework.app.login.LoginDialogView>

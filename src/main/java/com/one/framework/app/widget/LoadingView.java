@@ -1,5 +1,7 @@
 package com.one.framework.app.widget;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
@@ -15,6 +17,8 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 import com.one.framework.R;
+import com.one.framework.log.Logger;
+import com.one.framework.utils.UIUtils;
 
 /**
  * Created by ludexiang on 2018/6/5.
@@ -22,10 +26,15 @@ import com.one.framework.R;
 
 public class LoadingView extends View {
 
+  private static final int CIRCLE = 360;
+
   private static final int LOADING_POINT = 0;
   private static final int LOADING_PROGRESS = 1;
   private static final int LOADING_PROGRESS_CIRCLE = 2;
   private static final int LOADING_PROGRESS_LINE = 3;
+  private static final int LOADING_LINE_START_POSITION_LEFT = 0;
+  private static final int LOADING_LINE_START_POSITION_CENTER = 1;
+  private static final int LOADING_LINE_START_POSITION_RIGHT = 2;
 
   private int mLoadingType;
   private int mLoadingColor;
@@ -36,14 +45,16 @@ public class LoadingView extends View {
   private int mLoadingProgressType;
   private int mLoadingProgressColor;
   private int mLoadingProgressWidth;
+  private int mLoadingProgressLineStart;
+  private float mLineLeftEnd;
+  private float mLineCenter2Left;
+  private float mLineCenter2Right;
 
   private int mLoadingPointId;
   private ValueAnimator mLoadingAnimator;
   private Thread mProgressAnimator;
   private final float mPointSpace;
 
-
-  private boolean isRunning = false;
   private RectF mProgressRectF = new RectF();
   private float mProgressSweep = 0f;
   private byte[] lock = new byte[0];
@@ -52,7 +63,18 @@ public class LoadingView extends View {
   private int animationCount = 0;
   private int mWaitConfigTime;
 
+  private int[] lineColors = {Color.parseColor("#f05b48"), Color.parseColor("#6beff4")};
+  private boolean lineProgressBegin = false;
+  private ValueAnimator mLineAnimator;
+  private int mScreenWidth;
+
+  private int mCurrentPaintColor;
+  private int mLastPaintColor = -1;
+
+  private int lineColorPosition = 1;
+
   private Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+  private Paint mLastPaint = null;
 
   public LoadingView(Context context) {
     this(context, null);
@@ -73,10 +95,19 @@ public class LoadingView extends View {
     mLoadingProgressType = a.getInt(R.styleable.LoadingView_loading_progress_type, LOADING_PROGRESS_LINE);
     mLoadingProgressColor = a.getColor(R.styleable.LoadingView_loading_progress_color, Color.parseColor("#f05b48"));
     mLoadingProgressWidth = a.getDimensionPixelOffset(R.styleable.LoadingView_loading_progress_width, 5);
+    mLoadingProgressLineStart = a.getInt(R.styleable.LoadingView_loading_line_start, LOADING_LINE_START_POSITION_LEFT);
     a.recycle();
 
     mPointSpace = TypedValue
         .applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, context.getResources().getDisplayMetrics());
+
+    mScreenWidth = UIUtils.getScreenWidth(getContext());
+
+    mLineCenter2Left = mLineCenter2Right = mScreenWidth / 2;
+    mLastPaint = new Paint();
+    mLastPaint.setAntiAlias(true);
+    mLastPaint.setStyle(Paint.Style.FILL);
+    mLastPaint.setStrokeWidth(mLoadingProgressWidth);
   }
 
   @Override
@@ -90,34 +121,91 @@ public class LoadingView extends View {
     super.onDraw(canvas);
 
     mPaint.setStrokeCap(Cap.ROUND);
-    if (mLoadingType == LOADING_POINT) {
-      mPaint.setColor(mLoadingColor);
-      float x =
-          (getWidth() - mLoadingSelectorSize - (mLoadingCount - 1) * mLoadingNormalSize) * 1f / 2
-              - mLoadingSelectorSize;
-      float y = (getHeight() - mLoadingSelectorSize) * 1f / 2;
-
-      for (int i = 0; i < mLoadingCount; i++) {
-        float radius = mLoadingNormalSize;
-        if (i == mLoadingPointId) {
-          mPaint.setStrokeWidth(mLoadingSelectorSize);
-          radius = mLoadingSelectorSize;
-        } else {
-          mPaint.setStrokeWidth(mLoadingNormalSize);
+    switch (mLoadingType) {
+      case LOADING_POINT: {
+        mPaint.setColor(mLoadingColor);
+        drawLoadingPoint(canvas);
+        break;
+      }
+      case LOADING_PROGRESS: {
+        // progress
+        if (mLoadingProgressType == LOADING_PROGRESS_CIRCLE) { // 圆形进度条
+          drawLoadingCircle(canvas);
+        } else { // 线性进度条
+          drawLoadingLine(canvas);
         }
-        canvas.drawCircle(x + i * mPointSpace * 2, y, radius, mPaint);
+        break;
       }
-    } else {
-      // progress
-      if (mLoadingProgressType == LOADING_PROGRESS_CIRCLE) {
-        mPaint.setStrokeWidth(mLoadingProgressWidth);
-        mPaint.setColor(mLoadingProgressColor);
-        mPaint.setStyle(Style.STROKE);
-        canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 2, mPaint);
-        canvas.save();
-        mPaint.setColor(Color.parseColor("#f05b48"));
-        canvas.drawArc(mProgressRectF, 270, mProgressSweep, false, mPaint);
+    }
+  }
+
+  private void drawLoadingLine(Canvas canvas) {
+    if (mLastPaintColor != -1) {
+      canvas.drawLine(0,0, mScreenWidth, 0, mLastPaint);
+    }
+
+    mPaint.setColor(lineProgressBegin ? lineColors[lineColorPosition] : mLoadingProgressColor);
+    mPaint.setStyle(Style.FILL);
+    mPaint.setAntiAlias(true);
+    mPaint.setStrokeWidth(mLoadingProgressWidth);
+    switch (mLoadingProgressLineStart) {
+      case LOADING_LINE_START_POSITION_LEFT: {
+        canvas.drawLine(0, 0, mLineLeftEnd, 0, mPaint);
+        break;
       }
+      case LOADING_LINE_START_POSITION_CENTER: {
+        int centerX = UIUtils.getScreenWidth(getContext()) / 2;
+        canvas.drawLine(centerX, 0, mLineCenter2Left, 0, mPaint);
+        canvas.drawLine(centerX, 0, mLineCenter2Right, 0, mPaint);
+        break;
+      }
+      case LOADING_LINE_START_POSITION_RIGHT: {
+        // 暂时先不实现
+        break;
+      }
+    }
+  }
+
+  public synchronized void updateProgressLine(float linePosition) {
+    switch (mLoadingProgressLineStart) {
+      case LOADING_LINE_START_POSITION_LEFT: {
+        mLineLeftEnd = linePosition;
+        postInvalidate();
+        break;
+      }
+      case LOADING_LINE_START_POSITION_CENTER: {
+        float centerX = UIUtils.getScreenWidth(getContext()) / 2;
+        mLineCenter2Left = centerX - linePosition;
+        mLineCenter2Right = centerX + linePosition;
+        postInvalidate();
+      }
+    }
+  }
+
+  private void drawLoadingCircle(Canvas canvas) {
+    mPaint.setStrokeWidth(mLoadingProgressWidth);
+    mPaint.setColor(mLoadingProgressColor);
+    mPaint.setStyle(Style.STROKE);
+    canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 2, mPaint);
+    canvas.save();
+    mPaint.setColor(Color.parseColor("#f05b48"));
+    canvas.drawArc(mProgressRectF, 270, mProgressSweep, false, mPaint);
+  }
+
+  private void drawLoadingPoint(Canvas canvas) {
+    float x = (getWidth() - mLoadingSelectorSize - (mLoadingCount - 1) * mLoadingNormalSize) * 1f / 2
+            - mLoadingSelectorSize;
+    float y = (getHeight() - mLoadingSelectorSize) * 1f / 2;
+
+    for (int i = 0; i < mLoadingCount; i++) {
+      float radius = mLoadingNormalSize;
+      if (i == mLoadingPointId) {
+        mPaint.setStrokeWidth(mLoadingSelectorSize);
+        radius = mLoadingSelectorSize;
+      } else {
+        mPaint.setStrokeWidth(mLoadingNormalSize);
+      }
+      canvas.drawCircle(x + i * mPointSpace * 2, y, radius, mPaint);
     }
   }
 
@@ -137,7 +225,6 @@ public class LoadingView extends View {
     });
     mLoadingAnimator.setDuration(600);
     mLoadingAnimator.start();
-    isRunning = true;
   }
 
   @Override
@@ -152,24 +239,85 @@ public class LoadingView extends View {
     super.setVisibility(visibility);
   }
 
-  private void stop() {
+  public void stop() {
     if (mLoadingAnimator != null && mLoadingAnimator.isRunning()) {
       mLoadingAnimator.cancel();
       mLoadingAnimator.removeAllUpdateListeners();
       mLoadingAnimator = null;
     }
 
-    isRunning = false;
+    if (mLineAnimator != null && mLineAnimator.isRunning()) {
+      mLineAnimator.cancel();
+      mLineAnimator.removeAllUpdateListeners();
+      mLineAnimator = null;
+    }
     mLoadingPointId = 0;
+    lineProgressBegin = false;
+    mLastPaintColor = -1;
   }
 
+  /**
+   * 线性progress
+   */
+  public void startLineProgress() {
+    if (mLineAnimator != null && mLineAnimator.isRunning()) {
+      return;
+    }
+
+    lineProgressBegin = true;
+    float to = 0f;
+    if (mLoadingProgressLineStart == LOADING_LINE_START_POSITION_LEFT) {
+      to = mScreenWidth;
+    } else if (mLoadingProgressLineStart == LOADING_LINE_START_POSITION_CENTER) {
+      to = mScreenWidth * 1f / 2;
+    }
+    mLineAnimator = ValueAnimator.ofFloat(0, to);
+    mLineAnimator.setRepeatCount(ValueAnimator.INFINITE);
+    mLineAnimator.setDuration(500);
+    mLineAnimator.addUpdateListener(new AnimatorUpdateListener() {
+      @Override
+      public void onAnimationUpdate(ValueAnimator animation) {
+        float value = (float) animation.getAnimatedValue();
+        if (mLoadingProgressLineStart == LOADING_LINE_START_POSITION_LEFT) {
+          mLineLeftEnd = value;
+        } else if (mLoadingProgressLineStart == LOADING_LINE_START_POSITION_CENTER) {
+          mLineCenter2Left = mScreenWidth / 2 - value;
+          mLineCenter2Right = mScreenWidth / 2 + value;
+        }
+        postInvalidate();
+      }
+    });
+    mLineAnimator.addListener(new AnimatorListenerAdapter() {
+      @Override
+      public void onAnimationRepeat(Animator animation) {
+        super.onAnimationRepeat(animation);
+        mLastPaintColor = lineColorPosition;
+        mLastPaint.setColor(lineColors[mLastPaintColor]);
+        lineColorPosition = lineColorPosition == 1 ? 0 : 1;
+      }
+
+      @Override
+      public void onAnimationEnd(Animator animation) {
+        super.onAnimationEnd(animation);
+
+      }
+    });
+    mLineAnimator.start();
+  }
+
+  /**
+   * 设置等待时长 120s | 180s
+   * @param time
+   */
   public synchronized void setConfigWaitTime(int time) {
     mWaitConfigTime = time;
+    isProgressFlag = true;
     progress();
   }
 
   public LoadingView setRepeatCount(int count) {
     repeatCount = count;
+    isProgressFlag = true;
     return this;
   }
 
@@ -178,24 +326,24 @@ public class LoadingView extends View {
       return;
     }
 
-    float allStep = 360 / mWaitConfigTime; // waitConfigTime 走360
+    float allStep = CIRCLE / mWaitConfigTime; // waitConfigTime 走360
     final float oneInterval = 1000 / allStep; // 因为step = 1 则 1s/allStep
 
     mProgressAnimator = new Thread(new Runnable() {
       @Override
       public void run() {
-        while (mProgressSweep <= 360 && isProgressFlag) {
+        while (mProgressSweep <= CIRCLE && isProgressFlag) {
           mProgressSweep += 1;
           postInvalidate();
 
           if (repeatCount == -1) {
             // INFINITE
-            if (mProgressSweep >= 360) {
+            if (mProgressSweep >= CIRCLE) {
               mProgressSweep = 0;
             }
           } else {
             if (animationCount < repeatCount) {
-              if (mProgressSweep >= 360) {
+              if (mProgressSweep >= CIRCLE) {
                 mProgressSweep = 0;
                 animationCount++;
               }
@@ -213,6 +361,11 @@ public class LoadingView extends View {
     });
 
     mProgressAnimator.start();
+  }
+
+  public synchronized void updateProgressSweep(int progressSweep) {
+    mProgressSweep = progressSweep * CIRCLE / mWaitConfigTime;
+    postInvalidate();
   }
 
   public void release() {

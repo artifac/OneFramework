@@ -2,16 +2,17 @@
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:layout_gravity="center_vertical"
-  android:clipChildren="false"
-  android:background="@drawable/one_navigator_options_selector">
+  android:background="@drawable/one_navigator_options_selector"
+  android:clipChildren="false">
 
   <ImageView
     android:id="@+id/one_options_icon"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="20dp"
-    android:layout_centerInParent="true"
-    android:layout_alignParentLeft="true"/>
+    android:layout_marginLeft="27dp"
+    android:layout_marginRight="14dp"
+    android:layout_alignParentLeft="true"
+    android:layout_centerInParent="true"/>
 
   <TextView
     android:id="@+id/one_options_extra"
@@ -20,17 +21,18 @@
     android:layout_marginRight="20dp"
     android:layout_alignParentRight="true"
     android:gravity="center_vertical"
-    android:textColor="#333333"
+    android:textColor="#20240d"
     android:textSize="14sp"/>
 
   <TextView
     android:id="@+id/one_options"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:padding="10dp"
+    android:layout_marginTop="17dp"
+    android:layout_marginBottom="17dp"
     android:layout_alignParentRight="true"
     android:layout_toRightOf="@id/one_options_icon"
     android:gravity="center_vertical"
-    android:textColor="#333333"
+    android:textColor="#02040d"
     android:textSize="16sp"/>
 </RelativeLayout>

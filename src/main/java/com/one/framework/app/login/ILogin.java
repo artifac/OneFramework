@@ -24,9 +24,28 @@ public interface ILogin {
   @IntDef({PAGE, DIALOG})
   @interface LoginType {}
 
+  /**
+   * 登录接口
+   */
   interface ILoginListener {
     void onLoginSuccess();
-    void onLoginFail();
+    void onLoginFail(String message);
+  }
+
+  /**
+   * 验证码
+   */
+  interface ILoginVerifyCode {
+    void onSuccess();
+    void onFail();
+  }
+
+  /**
+   * 倒计时
+   */
+  interface ILoginCountDownTimer {
+    void onTick(long millisUntilFinished);
+    void onFinish();
   }
 
   void setLoginListener(ILoginListener listener);

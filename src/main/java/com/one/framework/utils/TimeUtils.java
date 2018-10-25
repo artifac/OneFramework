@@ -11,7 +11,7 @@ import java.util.TimeZone;
 
 public class TimeUtils {
 
-  private static final String PATTERN = "yyyy-MM-dd HH:mm:ss";
+  public static final String PATTERN = "yyyy-MM-dd HH:mm:ss";
   static final int TIME_CHANGE = 3600000;   //60*60*1000 用于把毫秒转换成小时
   static final int DAY_HOURS = 24;
 
@@ -94,6 +94,37 @@ public class TimeUtils {
 
   public static String convertMillisToString(Context context, long time, boolean forceBeijingZone) {
     return convertMillisToString(context, time, forceBeijingZone, true);
+  }
+
+  //判断两个日期是否在同一天
+  public static boolean isInSameDay(Calendar calendar1, Calendar calendar2) {
+    return calendar1.get(Calendar.YEAR) == calendar2.get(Calendar.YEAR)
+        && calendar1.get(Calendar.MONTH) == calendar2.get(Calendar.MONTH)
+        && calendar1.get(Calendar.DAY_OF_MONTH) == calendar2.get(Calendar.DAY_OF_MONTH);
+  }
+
+  public static boolean isInSameDay(Date date1, Date date2) {
+    Calendar calendar1 = Calendar.getInstance();
+    calendar1.setTime(date1);
+    Calendar calendar2 = Calendar.getInstance();
+    calendar2.setTime(date2);
+    return isInSameDay(calendar1, calendar2);
+  }
+
+  //判断两个日期是否位于同一小时
+  public static boolean isInSameHour(Calendar calendar1, Calendar calendar2) {
+    return calendar1.get(Calendar.YEAR) == calendar2.get(Calendar.YEAR)
+        && calendar1.get(Calendar.MONTH) == calendar2.get(Calendar.MONTH)
+        && calendar1.get(Calendar.DAY_OF_MONTH) == calendar2.get(Calendar.DAY_OF_MONTH)
+        && calendar1.get(Calendar.HOUR_OF_DAY) == calendar2.get(Calendar.HOUR_OF_DAY);
+  }
+
+  public static boolean isInSameHour(Date date1, Date date2) {
+    Calendar calendar1 = Calendar.getInstance();
+    calendar1.setTime(date1);
+    Calendar calendar2 = Calendar.getInstance();
+    calendar2.setTime(date2);
+    return isInSameHour(calendar1, calendar2);
   }
 
   /**

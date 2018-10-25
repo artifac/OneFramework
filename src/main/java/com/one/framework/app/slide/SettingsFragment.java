@@ -15,7 +15,6 @@ import com.one.framework.app.widget.PullScrollRelativeLayout;
 import com.one.framework.app.widget.PullScrollView;
 import com.one.framework.app.widget.TripButton;
 import com.one.framework.dialog.SupportDialogFragment;
-import com.one.framework.net.model.Trip;
 
 /**
  * Created by ludexiang on 2018/6/29.
@@ -26,7 +25,6 @@ public class SettingsFragment extends BaseFragment implements ISettingView, OnCl
   private PullScrollRelativeLayout mRootView;
   private PullScrollView mScrollView;
   private ListItemWithRightArrowLayout mAccount;
-  private ListItemWithRightArrowLayout mNormalAddress;
   private ListItemWithRightArrowLayout mUrgentConnect;
   private ListItemWithRightArrowLayout mClearCache;
   private ListItemWithRightArrowLayout mUserEdu;
@@ -47,12 +45,11 @@ public class SettingsFragment extends BaseFragment implements ISettingView, OnCl
   }
 
   private void initView(View view) {
-    mPresenter = new SettingPresenter(getContext(),this);
+    mPresenter = new SettingPresenter(getContext(), this);
 
     mRootView = (PullScrollRelativeLayout) view.findViewById(R.id.settings_root_layout);
     mScrollView = (PullScrollView) view.findViewById(R.id.settings_scroll_view);
     mAccount = (ListItemWithRightArrowLayout) view.findViewById(R.id.one_account_safe);
-    mNormalAddress = (ListItemWithRightArrowLayout) view.findViewById(R.id.one_normal_address);
     mUrgentConnect = (ListItemWithRightArrowLayout) view.findViewById(R.id.one_urgent_connect);
     mClearCache = (ListItemWithRightArrowLayout) view.findViewById(R.id.one_clear_cache);
     mUserEdu = (ListItemWithRightArrowLayout) view.findViewById(R.id.one_user_edu);
@@ -62,7 +59,6 @@ public class SettingsFragment extends BaseFragment implements ISettingView, OnCl
     mLogout = (TripButton) view.findViewById(R.id.one_logout);
 
     mAccount.setItemTitle(R.string.one_settings_account);
-    mNormalAddress.setItemTitle(R.string.one_settings_normal_adr);
     mUrgentConnect.setItemTitle(R.string.one_settings_urgent_connect);
     mClearCache.setItemTitle(R.string.one_settings_clear_cache);
     mUserEdu.setItemTitle(R.string.one_settings_user_edu);
@@ -70,6 +66,7 @@ public class SettingsFragment extends BaseFragment implements ISettingView, OnCl
     mLawer.setItemTitle(R.string.one_settings_lawer_private);
     mAbout.setItemTitle(R.string.one_settings_about);
 
+    mTopbarView.setTitleBarBackground(Color.WHITE);
     mTopbarView.setLeft(R.drawable.one_top_bar_back_selector);
     mTopbarView.setTitle(R.string.one_settings);
 
@@ -77,7 +74,7 @@ public class SettingsFragment extends BaseFragment implements ISettingView, OnCl
     mRootView.setMoveListener(mScrollView);
 
     mLogout.setOnClickListener(this);
-    mNormalAddress.setOnClickListener(this);
+    mUrgentConnect.setOnClickListener(this);
   }
 
   @Override
@@ -92,8 +89,8 @@ public class SettingsFragment extends BaseFragment implements ISettingView, OnCl
     int id = v.getId();
     if (id == R.id.one_logout) {
       showLogoutDlg();
-    } else if (id == R.id.one_normal_address) {
-
+    } else if (id == R.id.one_urgent_connect) { // 紧急联系人
+      forward(EmergentFragment.class);
     }
   }
 

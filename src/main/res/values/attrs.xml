@@ -1,4 +1,9 @@
 <resources>
+  <declare-styleable name="GiftView">
+    <attr name="width" format="dimension"/>
+    <attr name="height" format="dimension"/>
+    <attr name="gift_text_size" format="dimension"/>
+  </declare-styleable>
   <declare-styleable name="ShapeImageView">
     <attr name="imageType">
       <enum name="none" value="0"/>
@@ -11,7 +16,7 @@
   </declare-styleable>
 
   <declare-styleable name="TripButton">
-    <attr format="dimension" name="radius"/>
+    <attr format="dimension" name="btn_radius"/>
     <attr format="color" name="enable_color"/>
     <attr format="color" name="disable_color"/>
     <attr format="color" name="text_color"/>
@@ -21,8 +26,21 @@
       <enum name="normal" value="0"/>
       <enum name="body" value="1"/>
     </attr>
+    <attr name="btn_background" format="reference"/>
     <attr format="color" name="stroke_color"/>
     <attr format="dimension" name="stroke_width"/>
+  </declare-styleable>
+
+  <declare-styleable name="PageIndexPoint">
+    <attr name="point_normal_color" format="color"/>
+    <attr name="point_select_color" format="color"/>
+    <attr name="point_type">
+      <enum name="cycle" value="0"/>
+      <enum name="rect" value="1"/>
+    </attr>
+    <attr name="point_width" format="dimension"/>
+    <attr name="point_height" format="dimension"/>
+    <attr name="point_padding" format="dimension"/>
   </declare-styleable>
 
   <declare-styleable name="PullView">
@@ -36,6 +54,10 @@
     <attr name="resolve_conflict" format="boolean"/>
     <attr name="have_footer_view" format="boolean"/>
     <attr name="have_header_view" format="boolean"/>
+    <attr name="have_refresh_view" format="boolean"/>
+    <attr name="refresh_view_id" format="reference"/>
+    <attr name="have_load_more_view" format="boolean"/>
+    <attr name="load_more_view_id" format="reference"/>
   </declare-styleable>
 
   <declare-styleable name="MapCenterPinView">
@@ -60,6 +82,12 @@
     <attr name="loading_progress_type">
       <enum name="circle" value="2"/>
       <enum name="line" value="3"/>
+    </attr>
+    <!--loading line 起始位置-->
+    <attr name="loading_line_start">
+      <enum name="left" value="0"/>
+      <enum name="center" value="1"/>
+      <enum name="right" value="2"/>
     </attr>
     <attr name="loading_progress_color" format="color|reference"/>
     <attr name="loading_progress_width" format="dimension|reference"/>
@@ -128,6 +156,17 @@
     <attr name="vcv_et_cursor" format="reference" />
   </declare-styleable>
 
+  <declare-styleable name="XEditText">
+    <attr name="x_separator" format="string"/>
+    <attr name="x_disableClear" format="boolean"/>
+    <attr name="x_clearDrawable" format="reference"/>
+    <attr name="x_showPwdDrawable" format="reference"/>
+    <attr name="x_hidePwdDrawable" format="reference"/>
+    <attr name="x_disableEmoji" format="boolean"/>
+    <attr name="x_togglePwdDrawableEnable" format="boolean"/>
+    <attr name="x_pattern" format="string"/>
+  </declare-styleable>
+
   <declare-styleable name="ProgressView">
     <attr name="progress_from" format="integer"/>
     <attr name="progress_to" format="integer"/>
@@ -143,5 +182,27 @@
     <attr name="blk_blurRadius" format="integer" />
     <attr name="blk_fps" format="integer" />
     <attr name="blk_cornerRadius" format="dimension" />
+  </declare-styleable>
+
+  <declare-styleable name="OptionsView">
+    <attr name="options_type">
+      <enum name="rect" value="0"/>
+      <enum name="oval" value="1"/>
+    </attr>
+    <attr name="options_op" format="reference"/>
+    <attr name="options_toggle" format="boolean"/>
+    <attr name="options_toggle_on_bg" format="color"/>
+    <attr name="options_toggle_off_bg" format="color"/>
+    <attr name="options_min_height" format="dimension"/>
+    <attr name="options_min_width" format="dimension"/>
+    <attr name="options_bg_outer_radius" format="dimension"/>
+    <attr name="options_bg_inner_radius" format="dimension"/>
+    <attr name="options_background_color" format="color"/>
+    <attr name="options_foreground_color" format="color"/>
+    <attr name="options_text_default_color" format="color"/>
+    <attr name="options_text_selected_color" format="color"/>
+    <attr name="options_text_size" format="dimension"/>
+    <attr name="options_op_key" format="string"/>
+    <attr name="options_default_select" format="integer"/>
   </declare-styleable>
 </resources>

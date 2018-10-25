@@ -29,15 +29,15 @@ data class OrderDetail(
         @field:SerializedName("planEndLng")
         val endLng: Double,
         @field:SerializedName("cityCode")
-        val cityCode: String,
+        val cityCode: String ? = null,
         @field:SerializedName("driverInfo")
         val driver: OrderDriverInfo? = null,
         @field:SerializedName("taxiInfo")
         val carInfo: CarInfo? = null,
         @field:SerializedName("feeInfo")
-        val feeInfo: FeeInfo,
+        val feeInfo: FeeInfo? = null,
         @field:SerializedName("status")
-        val orderStatus: Int,
+        var orderStatus: Int,
         @field:SerializedName("carType")
         val carType: Int,
         @field:SerializedName("vendorId")
@@ -53,7 +53,15 @@ data class OrderDetail(
         @field:SerializedName("waitConfigTime")
         val waitConfigTime: Int,
         @field:SerializedName("currentServerTime")
-        val currentServerTime: Long
+        val currentServerTime: Long,
+        @field:SerializedName("cancelType")
+        val cancelType: Int = -1,
+        @field:SerializedName("cancelReason")
+        val cancelReason: String? = null,
+        @field:SerializedName("driverImAccount")
+        val driverIMUserName: String? = null,
+        @field:SerializedName("passengerImAccount")
+        val passengerIMUserName: String? = null
 ) : BaseObject()
 
 data class OrderDriverInfo(
@@ -63,19 +71,25 @@ data class OrderDriverInfo(
         val driverName: String,
         @field:SerializedName("driverIcon")
         val driverIcon: String,
-        @field:SerializedName("driverReceivedCount")
-        val driverReceiveOrderCount: Long,
+        @field:SerializedName("carpoolTimes") // 司机服务次数
+        val driverReceiveOrderCount: Int? = 0,
         @field:SerializedName("driverRate")
-        val driverStar: Float? = null,
+        val driverStar: Float = 4f,
         @field:SerializedName("phoneNo")
         val driverTel: String,
-        @field:SerializedName("driverCar")
-        val driverCar: String,
+        @field:SerializedName("modelName")
+        val driverCar: String? = null,
         @field:SerializedName("driverCarColor")
-        val driverCarColor: String,
-        @field:SerializedName("driverCompany")
-        val driverCompany: String
-)
+        val driverCarColor: String? = null,
+        @field:SerializedName("company")
+        val driverCompany: String? = null,
+        @field:SerializedName("licenseNo")
+        val driverCarNo: String? = null,
+        @field:SerializedName("realDriveAge") // 驾龄
+        val driverDrivingAge: Int = 0,
+        @field:SerializedName("carType")
+        val driverCarType: String? = null
+) : BaseObject()
 
 data class FeeInfo(
         @field:SerializedName("actualTime")
@@ -92,28 +106,28 @@ data class FeeInfo(
         val discountMoney: Int,// 券
         @field:SerializedName("refundMoney")
         val refundMoney: Int
-)
+) : BaseObject()
 
 data class CarInfo(
         @field:SerializedName("payForPickUp")
-        val pay4PickUp : Int,
+        val pay4PickUp: Int,
         @field:SerializedName("riderTags")
         val marks: List<String>,
         @field:SerializedName("dispatchFee")
-        val tip : Int,
+        val tip: Int,
         @field:SerializedName("feedback")
         val feedback: Int,
         @field:SerializedName("driverComment")
-        val evaluate: Evaluate
-)
+        val evaluate: Evaluate?
+) : BaseObject()
 
 data class Evaluate(
         @field:SerializedName("userId")
-        val userId : String,
+        val userId: String,
         @field:SerializedName("bizType")
-        val bizType : Int,
+        val bizType: Int,
         @field:SerializedName("driverId")
-        val driverId : String,
+        val driverId: String,
         @field:SerializedName("orderId")
         val orderId: String,
         @field:SerializedName("content")
@@ -121,5 +135,5 @@ data class Evaluate(
         @field:SerializedName("tags")
         val tags: String?,
         @field:SerializedName("star")
-        val star : Int
-)
+        val star: Int
+) : BaseObject()

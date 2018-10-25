@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_centerVertical="true"
+    android:layout_gravity="center"
     android:gravity="center"
-    android:text="@string/app_name"
     android:textColor="#000"
     android:textSize="17sp"/>
 
@@ -20,11 +20,50 @@
     android:clickable="true"
     android:scaleType="center"/>
 
+  <ImageView
+    android:id="@+id/one_top_close"
+    android:layout_width="50dp"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="5dp"
+    android:layout_centerVertical="true"
+    android:layout_toRightOf="@id/one_top_left"
+    android:padding="10dp"
+    android:clickable="true"
+    android:scaleType="center"
+    android:src="@drawable/one_top_bar_close"
+    android:visibility="gone"/>
+
+  <TextView
+    android:id="@+id/one_top_left_title"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_toRightOf="@id/one_top_left"
+    android:layout_centerVertical="true"
+    android:clickable="true"
+    android:textColor="#191d21"
+    android:textSize="16sp"
+    android:textStyle="bold"
+    android:gravity="center"
+    android:visibility="gone"/>
+
   <TextView
     android:id="@+id/one_top_right"
     style="@style/TextButtonStyle"
     android:layout_alignParentRight="true"
     android:layout_centerVertical="true"
+    android:textColor="#02040d"
+    android:textSize="14sp"
+    android:clickable="true"
     android:gravity="center"
-    android:clickable="true"/>
+    android:visibility="gone"/>
+
+  <ImageView
+    android:id="@+id/one_top_right_icon"
+    android:layout_width="50dp"
+    android:layout_height="match_parent"
+    android:layout_alignParentRight="true"
+    android:layout_centerVertical="true"
+    android:padding="10dp"
+    android:clickable="true"
+    android:scaleType="center"/>
 </merge>

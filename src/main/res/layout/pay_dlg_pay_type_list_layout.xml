@@ -1,0 +1,49 @@
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/pay_list_switch_layout"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:clickable="true"
+  android:layout_marginBottom="5dp">
+  <ImageView
+    android:id="@+id/pay_icon"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentLeft="true"
+    android:layout_centerVertical="true"
+    android:layout_marginLeft="10dp"
+    android:src="@drawable/pay_type_wechat"
+    android:scaleType="center"/>
+
+  <TextView
+    android:id="@+id/pay_title"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="微信支付"
+    android:textSize="12sp"
+    android:textColor="#666666"
+    android:layout_marginLeft="10dp"
+    android:layout_centerVertical="true"
+    android:layout_toRightOf="@id/pay_icon"/>
+
+  <ImageView
+    android:id="@+id/pay_radio"
+    android:layout_width="30dp"
+    android:layout_height="30dp"
+    android:layout_alignParentRight="true"
+    android:layout_centerVertical="true"
+    android:layout_marginRight="10dp"
+    android:scaleType="center"
+    android:src="@drawable/pay_list_item_radio"/>
+
+  <ImageView
+    android:id="@+id/pay_progress"
+    android:layout_width="30dp"
+    android:layout_height="30dp"
+    android:layout_alignParentRight="true"
+    android:layout_centerVertical="true"
+    android:layout_marginRight="10dp"
+    android:scaleType="center"
+    android:visibility="gone"
+    android:src="@drawable/pay_item_choose"/>
+</RelativeLayout>

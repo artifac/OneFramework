@@ -14,23 +14,35 @@
   <string name="one_dialog_data_picker_minute">分</string>
 
   <string name="one_dialog_data_picker_hour_format">%1d时</string>
-  <string name="one_dialog_data_picker_minute_format">%1d分</string>
+  <string name="one_dialog_data_picker_minute_format">%02d</string>
 
   <string name="one_dialog_data_today_format">M月d日 今天</string>
   <string name="one_dialog_data_day_format">M月d日 EEEE</string>
 
   <string name="one_confirm">确定</string>
   <string name="one_cancel">取消</string>
+  <string name="one_sure">确认</string>
+  <string name="one_yes">是</string>
+  <string name="one_no">否</string>
+  <string name="one_i_know">我知道了</string>
+
+  <string name="one_dlg_cancel_order">取消订单</string>
+  <string name="one_dlg_wait_goon">继续等待</string>
+  <string name="one_dlg_positive">暂不取消</string>
 
   <string name="one_login">登录</string>
   <string name="one_login_input_phone_hint">请输入手机号码</string>
+  <string name="one_login_input_right_phone">请输入正确的手机号</string>
   <string name="one_login_next">下一步</string>
+  <string name="one_login_verify_code">获取验证码</string>
   <string name="one_login_input_verification_code">输入验证码</string>
   <string name="one_login_verification_confirm">验证码已发送到:{%1$s}</string>
   <string name="one_login_reobtain_verificode_count_down">重新获取验证码(%1ds)</string>
+  <string name="one_login_recode_count_down">重新获取%1ds</string>
   <string name="one_login_verificode_fail">获取验证码失败</string>
   <string name="one_login_reobtain_verificode">重新获取验证码</string>
   <string name="one_login_verificode_error">校验验证码错误</string>
+  <string name="one_login_skip">跳过</string>
 
   <string name="one_slide_my_trips">我的行程</string>
   <string name="one_slide_setting">通用设置</string>
@@ -39,6 +51,15 @@
   <string name="one_press_again_exit">再按一次退出</string>
   <string name="one_logining">登录中</string>
 
+  <string name="one_slide_my_wallet">我的钱包</string>
+  <string name="one_wallet_balance">账户余额</string>
+  <string name="one_wallet_red_bag">我的红包</string>
+  <string name="one_wallet_wechat_no_pwd">微信免密</string>
+  <string-array name="one_wallet_options_toggle">
+    <item>开</item>
+    <item>关</item>
+  </string-array>
+  <string name="one_wallet_detail">明细</string>
   <string name="one_slide_customer_service">客服</string>
 
   <string name="one_settings">设置</string>
@@ -51,8 +72,39 @@
   <string name="one_settings_lawer_private">法律条款与隐私政策</string>
   <string name="one_settings_about">关于我们</string>
 
+  <string name="one_normal_adr_home">家</string>
+  <string name="one_normal_home_address">家的地址</string>
+  <string name="one_normal_adr_company">公司</string>
+  <string name="one_normal_company_address">公司的地址</string>
+
   <string name="one_logout">退出登录</string>
   <string name="one_logout_message">确认退出?</string>
+
+  <string-array name="one_photos">
+    <item>图库</item>
+    <item>相机</item>
+  </string-array>
+
+  <string name="crop_image_to_use">使用</string>
+  <string name="crop_image_too_small">剪切的图片太小,请重新选择</string>
+  <string name="crop_image_argument_fail">剪切图片参数错误</string>
+  <string name="webview_error_notfound">页面未发现</string>
+  <string name="image_uploading">上传中...</string>
+  <string name="emergent_contact_auto_share_trip">自动分享行程</string>
+  <string name="emergent_contact_auto_share_trip_time">生效时间段</string>
+  <string name="emergent_information">为了保证您的行程安全，紧急联系人将用于自动分享行程及一键报警功能</string>
+  <string name="emergent_enter_contact">通讯录</string>
+  <string name="one_add_emergent">添加紧急联系人</string>
+  <string name="one_update_emergent">编辑紧急联系人</string>
+  <string name="one_delete_emergent">删除</string>
+  <string name="one_del_emergent_title">确认删除</string>
+  <string name="one_del_emergent_msg">删除紧急联系人后使用一键报警功能行程将无法自动发送给TA</string>
+  <string name="one_del_emergent_confirm">确认</string>
+  <string name="one_emergent_validate_time">生效时间段</string>
+  <string name="one_emergent_validate_time_setting">设置生效时间段</string>
+  <string name="one_emergent_validate_time_information">该时间段的行程信息会通过短信息自动分享给您的紧急联系人</string>
+  <string name="one_emergent_time_to">到</string>
+  <string name="one_time_picker_format">%02d</string>
 
   <!--个推 begin -->
   <string name="bind_alias">绑定别名</string>
@@ -88,4 +140,13 @@
   <string name="add_tag_error_exceed">已存 tag 超过限制</string>
   <string name="push_transmission_data">收到一条透传测试消息</string>
   <!--个推 end-->
+
+  <!-- pay begin -->
+  <string name="pay_dlg_title">支付</string>
+  <string name="pay_dlg_cur_trip">行程费用</string>
+  <string name="pay_dlg_cur_trip_total">共 </string>
+  <string name="pay_dlg_cur_trip_fee_unit"> 元</string>
+  <string name="pay_dlg_cur_trip_fee_detail">费用明细</string>
+  <string name="pay_dlg_pay_fee_confirm">确认支付%1$s元</string>
+  <!-- pay end -->
 </resources>

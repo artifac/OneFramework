@@ -28,6 +28,7 @@ public class BottomSheetDialog extends Dialog {
   private String mPositiveTxt;
   private int mPositiveColor;
   private View.OnClickListener mPositiveClickListener;
+  protected ISelectResultListener mListener;
 
   public BottomSheetDialog(@NonNull Context context) {
     this(context, R.style.ActionSheetDialogStyle);
@@ -199,5 +200,14 @@ public class BottomSheetDialog extends Dialog {
       this.text = text;
       this.clickListener = clickListener;
     }
+  }
+
+  public <T> T setSelectResultListener(ISelectResultListener listener) {
+    mListener = listener;
+    return (T) this;
+  }
+
+  public interface ISelectResultListener {
+    void onTimeSelect(long time, String ...showTime);
   }
 }

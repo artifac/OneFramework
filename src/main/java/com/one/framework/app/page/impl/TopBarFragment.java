@@ -6,6 +6,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -96,9 +97,24 @@ public class TopBarFragment extends Fragment implements ITopbarFragment, IScaleL
   }
 
   @Override
+  public void setTitleBarBackground(int color) {
+    mTopTitleView.setTitleBarBackground(color);
+  }
+
+  @Override
+  public void setTitleBarBackgroundResources(int resId) {
+    mTopTitleView.setTitleBarBackgroundResources(resId);
+  }
+
+  @Override
   public void setTabItemListener(ITabItemListener listener) {
     mTabItemListener = listener;
     mTabIndicator.setTabItemListener(mTabItemListener);
+  }
+
+  @Override
+  public int getBizType(int position) {
+    return mTabIndicator.getBizType(position);
   }
 
   @Override
@@ -219,8 +235,33 @@ public class TopBarFragment extends Fragment implements ITopbarFragment, IScaleL
   }
 
   @Override
+  public void setTitle(String title, int sizeSp, Typeface typeface) {
+    mTopTitleView.setTitle(title, sizeSp, typeface);
+  }
+
+  @Override
+  public void setTitleWithPosition(String title, int position) {
+    mTopTitleView.setTitleWithPosition(title, position);
+  }
+
+  @Override
+  public void setTitleWithPosition(int titleResId, int position) {
+    mTopTitleView.setTitleWithPosition(getString(titleResId), position);
+  }
+
+  @Override
+  public void hideRightImage(boolean hide) {
+    mTopTitleView.hideRightImage(hide);
+  }
+
+  @Override
   public void setLeft(int resId) {
     mTopTitleView.setLeftImage(resId);
+  }
+
+  @Override
+  public void setRight(int resId) {
+    mTopTitleView.setRightImage(resId);
   }
 
   @Override
@@ -241,6 +282,11 @@ public class TopBarFragment extends Fragment implements ITopbarFragment, IScaleL
   @Override
   public void setTitleRight(String right) {
     mTopTitleView.setRightText(right);
+  }
+
+  @Override
+  public void setTitleRight(int textResId, int color) {
+    mTopTitleView.setRightResId(textResId, color);
   }
 
   @Override
@@ -293,11 +339,10 @@ public class TopBarFragment extends Fragment implements ITopbarFragment, IScaleL
     AnimatorSet set = new AnimatorSet();
     // 1dip 是阴影高度
     float fromY = show ? -mTabParentView.getMeasuredHeight() : 0f;
-    float toY = show ? 0f : -mTabParentView.getMeasuredHeight() /*+ TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getResources().getDisplayMetrics())*/;
+    float toY = show ? 0f : -mTabParentView.getMeasuredHeight();
     ObjectAnimator translationY = ObjectAnimator.ofFloat(mTabParentView, "translationY", fromY, toY);
-//    ObjectAnimator alpha = ObjectAnimator.ofFloat(mTabParentView, "alpha", show ? 0f : 1f, show ? 1f : 0f);
     set.setDuration(300);
-    set.playTogether(translationY/*, alpha*/);
+    set.playTogether(translationY);
     set.addListener(new AnimatorListenerAdapter() {
       @Override
       public void onAnimationEnd(Animator animation) {

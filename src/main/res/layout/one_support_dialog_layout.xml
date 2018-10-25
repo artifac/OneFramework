@@ -1,124 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
-  android:layout_height="match_parent"
+  android:layout_height="wrap_content"
   android:layout_gravity="center"
-  android:background="@drawable/one_support_dialog_shape_bg"
   android:gravity="center">
 
-  <LinearLayout
-    android:id="@+id/echo_dialog_top"
+  <RelativeLayout
+    android:id="@+id/one_support_dialog_body"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="27dp"
-    android:layout_marginRight="27dp"
-    android:orientation="vertical">
-
-    <TextView
-      android:id="@+id/one_support_dialog_title"
-      android:textStyle="bold"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:paddingTop="22dp"
-      android:gravity="center"
-      android:text="title"
-      android:textColor="#3a3a48"
-      android:textSize="17sp"/>
-
-    <TextView
-      android:id="@+id/one_support_dialog_message"
-      android:textStyle="bold"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:paddingTop="15dp"
-      android:gravity="center"
-      android:text="message"
-      android:textColor="#6b6b76"
-      android:textSize="13sp"/>
-
-    <TextView
-      android:id="@+id/one_support_dialog_message_no_title"
-      android:textStyle="bold"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:paddingTop="22dp"
-      android:gravity="center"
-      android:text="message"
-      android:textColor="#6b6b76"
-      android:textSize="13sp"
-      android:visibility="gone"/>
-
-  </LinearLayout>
-
-  <View
-    android:id="@+id/one_support_dialog_line_separator"
-    android:layout_width="match_parent"
-    android:layout_height="1px"
-    android:layout_marginTop="22dp"
-    android:layout_below="@id/echo_dialog_top"
-    android:background="#d3d3d3"/>
-
-  <LinearLayout
-    android:id="@+id/one_support_dialog_item_layout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_below="@id/one_support_dialog_line_separator"
-    android:orientation="vertical"
-    android:visibility="gone">
-
-  </LinearLayout>
-
-  <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_below="@id/one_support_dialog_item_layout"
-    android:orientation="horizontal">
+    android:layout_gravity="center"
+    android:background="@drawable/one_support_dialog_shape_bg"
+    android:gravity="center">
 
     <LinearLayout
-      android:id="@+id/one_support_dialog_cancel_layout"
-      android:layout_width="0dp"
+      android:id="@+id/echo_dialog_top"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_weight="1"
-      android:background="@drawable/one_support_dialog_button_selector"
-      android:gravity="center">
+      android:layout_marginLeft="27dp"
+      android:layout_marginRight="27dp"
+      android:orientation="vertical">
 
       <TextView
-        android:id="@+id/one_support_dialog_cancel"
+        android:id="@+id/one_support_dialog_title"
         android:textStyle="bold"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="15dp"
+        android:paddingTop="22dp"
         android:gravity="center"
-        android:text="cancel"
-        android:textColor="#6b6b76"
-        android:textSize="15sp"/>
+        android:text="title"
+        android:textColor="#02040d"
+        android:textSize="16sp"/>
+
+      <TextView
+        android:id="@+id/one_support_dialog_message"
+        android:textStyle="bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="15dp"
+        android:gravity="center"
+        android:text="message"
+        android:textColor="#999ba1"
+        android:textSize="14sp"/>
+
+      <TextView
+        android:id="@+id/one_support_dialog_message_no_title"
+        android:textStyle="bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="22dp"
+        android:gravity="center"
+        android:text="message"
+        android:textColor="#999ba1"
+        android:textSize="14sp"
+        android:visibility="gone"/>
+
     </LinearLayout>
 
     <View
-      android:id="@+id/one_support_dialog_line"
-      android:layout_width="1px"
-      android:layout_height="match_parent"
-      android:background="#d3d3d3"/>
+      android:id="@+id/one_support_dialog_line_separator"
+      android:layout_width="match_parent"
+      android:layout_height="1px"
+      android:layout_marginTop="22dp"
+      android:layout_below="@id/echo_dialog_top"
+      android:background="#d3d3d3"
+      android:visibility="invisible"/>
 
     <LinearLayout
-      android:id="@+id/one_support_dialog_confirm_layout"
-      android:layout_width="0dp"
+      android:id="@+id/one_support_dialog_item_layout"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_weight="1"
-      android:background="@drawable/one_support_dialog_button_selector"
-      android:gravity="center">
-
-      <TextView
-        android:id="@+id/one_support_dialog_confirm"
-        android:textStyle="bold"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:gravity="center"
-        android:text="confirm"
-        android:textColor="#6b6b76"
-        android:textSize="15sp"/>
+      android:layout_below="@id/one_support_dialog_line_separator"
+      android:orientation="vertical"
+      android:visibility="gone">
 
     </LinearLayout>
-  </LinearLayout>
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/one_support_dialog_item_layout"
+      android:orientation="horizontal">
+
+      <LinearLayout
+        android:id="@+id/one_support_dialog_cancel_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@drawable/one_support_dialog_button_selector"
+        android:gravity="center">
+
+        <TextView
+          android:id="@+id/one_support_dialog_cancel"
+          android:textStyle="bold"
+          android:layout_width="wrap_content"
+          android:layout_height="40dp"
+          android:gravity="center"
+          android:text="cancel"
+          android:textColor="#999999"
+          android:textSize="14sp"/>
+      </LinearLayout>
+
+      <View
+        android:id="@+id/one_support_dialog_line"
+        android:layout_width="1px"
+        android:layout_height="20dp"
+        android:layout_gravity="center"
+        android:background="#f0f0f0"/>
+
+      <LinearLayout
+        android:id="@+id/one_support_dialog_confirm_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@drawable/one_support_dialog_button_selector"
+        android:gravity="center">
+
+        <TextView
+          android:id="@+id/one_support_dialog_confirm"
+          android:textStyle="bold"
+          android:layout_width="wrap_content"
+          android:layout_height="40dp"
+          android:gravity="center"
+          android:text="confirm"
+          android:textColor="#ffffff"
+          android:textSize="14sp"/>
+
+      </LinearLayout>
+    </LinearLayout>
+  </RelativeLayout>
+
+  <ImageView
+    android:id="@+id/one_support_dialog_close"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="91dp"
+    android:layout_centerHorizontal="true"
+    android:layout_below="@id/one_support_dialog_body"
+    android:layout_gravity="center_horizontal"
+    android:src="@drawable/one_support_dlg_close"/>
 </RelativeLayout>
+
+
+

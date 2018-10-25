@@ -5,10 +5,19 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import com.one.framework.app.style.ThemeStyles;
+import com.one.framework.net.Api;
+import com.one.framework.net.model.AppConfig;
+import com.one.framework.net.model.Entrance;
+import com.one.framework.net.response.IResponseListener;
+import com.one.framework.provider.HomeDataProvider;
+import com.one.map.model.Address;
+import com.one.map.view.IMapDelegate.CenterLatLngParams;
 import com.one.map.view.IMapDelegate.IMapListener;
+import java.util.List;
 
 /**
  * Created by ludexiang on 2018/5/2.
@@ -80,6 +89,29 @@ public abstract class BaseActivity extends FragmentActivity implements IMapListe
     outState.remove("android:support:request_fragment_who");
   }
 
+  protected void requestAppConfig() {
+    Log.e("ldx", "AppDelegates >>>> appConfig ");
+    Api.appConfig(new IResponseListener<AppConfig>() {
+      @Override
+      public void onSuccess(AppConfig appConfig) {
+        com.one.framework.log.Logger.e("ldx", "appConfig success " + appConfig);
+        HomeDataProvider.getInstance().saveCarType(appConfig.getCarTypes());
+        List<Entrance> entrances = appConfig.getEntrance();
+        HomeDataProvider.getInstance().saveEntrances(entrances);
+      }
+
+      @Override
+      public void onFail(int errCod, String message) {
+        com.one.framework.log.Logger.e("ldx", "appConfig fail ");
+      }
+
+      @Override
+      public void onFinish(AppConfig appConfig) {
+        com.one.framework.log.Logger.e("ldx", "appConfig finish ");
+      }
+    });
+  }
+
   @Override
   public void onMapLoaded() {
 
@@ -90,4 +122,18 @@ public abstract class BaseActivity extends FragmentActivity implements IMapListe
 
   }
 
+  @Override
+  public void onMapMoveFinish(CenterLatLngParams params) {
+
+  }
+
+  @Override
+  public void onMapGeo2Address(Address address) {
+
+  }
+
+  @Override
+  public void onMapPoiAddresses(int type, List<Address> addresses) {
+
+  }
 }

@@ -39,10 +39,10 @@ public class PullScrollView extends ScrollView implements IPullView, IMovePublis
     mScroller = a.getInt(R.styleable.PullView_scroll_view, 1);
     mMaxHeight = a.getDimensionPixelSize(R.styleable.PullView_scroll_max_height, 0);
     mHeaderViewId = a.getResourceId(R.styleable.PullView_header_view_id, 0);
+    a.recycle();
     if (mScroller == 0 && mMaxHeight == 0) {
       throw new IllegalArgumentException("ScrollMaxHeight is 0");
     }
-    a.recycle();
 
     setFillViewport(true);
   }
@@ -61,6 +61,25 @@ public class PullScrollView extends ScrollView implements IPullView, IMovePublis
     } else {
       // dynamic add
     }
+  }
+
+  @Override
+  public void setHaveHeaderView(boolean flag) {
+  }
+
+  @Override
+  public void setHaveFooterView(boolean flag) {
+
+  }
+
+  @Override
+  public void setHeaderView(View view) {
+
+  }
+
+  @Override
+  public void setHeaderView(int layout) {
+
   }
 
   /**
@@ -151,6 +170,11 @@ public class PullScrollView extends ScrollView implements IPullView, IMovePublis
 
   @Override
   public void setItemClickListener(IItemClickListener listener) {
+
+  }
+
+  @Override
+  public void setPullCallback(IPullCallback listener) {
 
   }
 }

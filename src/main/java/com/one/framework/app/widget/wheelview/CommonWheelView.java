@@ -122,7 +122,7 @@ public class CommonWheelView {
 
   public static ArrayList buildHoursByDay(Context context, WheelView wheelViewDay, TimeRange timeRange) {
     if (wheelViewDay.getSelectedPosition() == 0) {
-      return buildHourListStart(context, timeRange);
+      return buildHourListStart(context, timeRange, BOOK_TIME, true);
     } else if (wheelViewDay.getSelectedPosition() == wheelViewDay.getSize() - 1) {
       return buildHourListEnd(context, timeRange);
     } else {
@@ -133,7 +133,7 @@ public class CommonWheelView {
   public static ArrayList buildMinutesByDayHour(Context context, WheelView wheelViewDay, WheelView wheelViewHour,
       TimeRange timeRange) {
     if (wheelViewDay.getSelectedPosition() == 0 && wheelViewHour.getSelectedPosition() == 0) {
-      return buildMinuteListStart(context, timeRange, 10, BOOK_TIME);
+      return buildMinuteListStart(context, timeRange, 10, BOOK_TIME, true, true);
     } else if (wheelViewDay.getSelectedPosition() == wheelViewDay.getSize() - 1 &&
         wheelViewHour.getSelectedPosition() == wheelViewHour.getSize() - 1) {
       return buildMinuteListEnd(context, timeRange);
@@ -143,8 +143,8 @@ public class CommonWheelView {
 
   }
 
-  public static ArrayList buildHourListStart(Context context, TimeRange timeRange) {
-    Date dateStart = timeRange.getStartTime();
+  public static ArrayList buildHourListStart(Context context, TimeRange timeRange, long bookingTimeSpace, boolean isSameDay) {
+    Date dateStart = timeRange.getBookingMinuteStart(bookingTimeSpace);
     Calendar calendarStart = Calendar.getInstance();
     calendarStart.setTime(dateStart);
     calendarStart.add(Calendar.MINUTE, 10);//分钟需要取整，5.55则从6:00开始
@@ -164,8 +164,12 @@ public class CommonWheelView {
       hourEnd = 23;
     }
 
-    for (int i = hourStart; i <= hourEnd; i++) {
-      hourList.add(String.format(context.getString(R.string.one_dialog_data_picker_hour_format), i));
+    if (isSameDay) {
+      for (int i = hourStart; i <= hourEnd; i++) {
+        hourList.add(String.format(context.getString(R.string.one_dialog_data_picker_hour_format), i));
+      }
+    } else {
+      return buildNormalHourList(context);
     }
 
     return hourList;
@@ -197,6 +201,16 @@ public class CommonWheelView {
     return hourList;
   }
 
+  public static ArrayList buildHourList(Context context) {
+    ArrayList hourList = new ArrayList<>();
+
+    for (int i = 0; i <= 23; i++) {
+      hourList.add(String.format(context.getString(R.string.one_time_picker_format), i) + ":00");
+    }
+
+    return hourList;
+  }
+
   /**
    *
    * @param context
@@ -204,7 +218,7 @@ public class CommonWheelView {
    * @param minuteSpace 分钟间隔
    * @return
    */
-  public static ArrayList buildMinuteListStart(Context context, TimeRange timeRange, int minuteSpace, long bookingTimeSpace) {
+  public static ArrayList buildMinuteListStart(Context context, TimeRange timeRange, int minuteSpace, long bookingTimeSpace, boolean isSameDay, boolean isSameHour) {
     Date dateStart = timeRange.getBookingMinuteStart(bookingTimeSpace);
     Calendar calendarStart = Calendar.getInstance();
     calendarStart.setTime(dateStart);
@@ -223,8 +237,13 @@ public class CommonWheelView {
     }
     ArrayList minList = new ArrayList<>();
 
-    for (int i = minStart; i <= minEnd; i += minuteSpace) {
-      minList.add(String.format(context.getString(R.string.one_dialog_data_picker_minute_format), i));
+    if (isSameDay && isSameHour) {
+      for (int i = minStart; i <= minEnd; i += minuteSpace) {
+        minList.add(String.format(context.getString(R.string.one_dialog_data_picker_minute_format), i)
+                + context.getString(R.string.one_dialog_data_picker_minute));
+      }
+    } else {
+      return buildNormalMinuteList(context);
     }
 
     return minList;
@@ -236,7 +255,8 @@ public class CommonWheelView {
     int minEnd = (calendar.get(Calendar.MINUTE) / 10) * 10;
     ArrayList minList = new ArrayList<>();
     for (int i = 0; i <= minEnd; i += 10) {
-      minList.add(String.format(context.getString(R.string.one_dialog_data_picker_minute_format), i));
+      minList.add(String.format(context.getString(R.string.one_dialog_data_picker_minute_format), i)
+        + context.getString(R.string.one_dialog_data_picker_minute));
     }
     return minList;
   }
@@ -244,7 +264,8 @@ public class CommonWheelView {
   public static ArrayList buildNormalMinuteList(Context context) {
     ArrayList minuteList = new ArrayList<>();
     for (int i = 0; i < 60; i += 10) {
-      minuteList.add(String.format(context.getString(R.string.one_dialog_data_picker_minute_format), i));
+      minuteList.add(String.format(context.getString(R.string.one_dialog_data_picker_minute_format), i)
+        + context.getString(R.string.one_dialog_data_picker_minute));
     }
     return minuteList;
   }

@@ -1,5 +1,6 @@
 package com.one.framework.app.widget.base;
 
+import android.support.annotation.LayoutRes;
 import android.view.View;
 
 /**
@@ -12,5 +13,8 @@ public interface IHeaderView {
   int getHeaderHeight();
   int getScrollHeaderHeight();
   boolean isNeedScroll();
+  void setHeaderView(@LayoutRes int layout);
+  void setHeaderView(View view);
+  void updateView(View view);
   View getView();
 }

@@ -1,0 +1,124 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@android:color/white">
+
+  <ImageView
+    android:id="@+id/one_emergent_name_icon"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="20dp"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="10dp"
+    android:scaleType="fitXY"
+    android:src="@drawable/one_emergent_name"/>
+
+  <EditText
+    android:id="@+id/one_emergent_name"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignBottom="@id/one_emergent_name_icon"
+    android:layout_alignTop="@id/one_emergent_name_icon"
+    android:layout_toRightOf="@id/one_emergent_name_icon"
+    android:background="@null"
+    android:hint="请输入姓名"
+    android:textColor="#02040d"
+    android:textColorHint="#999ba1"
+    android:textSize="16sp"/>
+
+  <TextView
+    android:id="@+id/one_add"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="20.35dp"
+    android:layout_alignBottom="@id/one_emergent_name_icon"
+    android:layout_alignParentRight="true"
+    android:layout_alignTop="@id/one_emergent_name_icon"
+    android:drawablePadding="10dp"
+    android:drawableRight="@drawable/one_contacts_list_arrow"
+    android:gravity="center_vertical"
+    android:text="@string/emergent_enter_contact"/>
+
+  <View
+    android:id="@+id/one_name_phone_separator"
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:layout_marginTop="28dp"
+    android:layout_marginBottom="28dp"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp"
+    android:layout_below="@id/one_emergent_name_icon"
+    android:background="#f0f0f0"/>
+
+  <ImageView
+    android:id="@+id/one_emergent_phone_icon"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="10dp"
+    android:layout_alignLeft="@id/one_emergent_name_icon"
+    android:layout_below="@id/one_name_phone_separator"
+    android:scaleType="fitXY"
+    android:src="@drawable/one_emergent_phone"/>
+
+  <EditText
+    android:id="@+id/one_emergent_phone"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignBottom="@id/one_emergent_phone_icon"
+    android:layout_alignTop="@id/one_emergent_phone_icon"
+    android:layout_below="@id/one_name_phone_separator"
+    android:layout_toRightOf="@id/one_emergent_phone_icon"
+    android:background="@null"
+    android:hint="请输入手机号"
+    android:inputType="phone"
+    android:maxLength="11"
+    android:textColor="#02040d"
+    android:textColorHint="#999ba1"
+    android:textSize="16sp"/>
+
+  <com.one.framework.app.widget.TripButton
+    android:id="@+id/one_add_emergent_save"
+    android:layout_width="match_parent"
+    android:layout_height="44dp"
+    android:layout_marginTop="281dp"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp"
+    app:btn_radius="6dp"
+    app:disable_color="#babfca"
+    app:enable_color="#1364ff"
+    app:text="保存"
+    app:text_color="#ffffff"
+    app:text_size="18sp"/>
+
+  <com.one.framework.app.widget.PullScrollRelativeLayout
+    android:id="@+id/one_contact_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:background="@drawable/one_contact_list_bg"
+    android:visibility="gone">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical">
+      <com.one.framework.app.widget.PullListView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:cacheColorHint="@android:color/transparent"
+        android:divider="@null"
+        android:listSelector="@android:color/transparent"/>
+
+      <com.one.framework.app.widget.EmptyView
+        android:id="@+id/one_contact_empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"/>
+    </LinearLayout>
+
+  </com.one.framework.app.widget.PullScrollRelativeLayout>
+
+</RelativeLayout>

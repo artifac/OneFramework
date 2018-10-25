@@ -1,0 +1,94 @@
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/ads_popup_layout"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <ImageView
+    android:id="@+id/pop_close"
+    android:layout_width="36dp"
+    android:layout_height="36dp"
+    android:layout_alignParentBottom="true"
+    android:layout_centerHorizontal="true"
+    android:layout_marginBottom="56dp"
+    android:layout_marginTop="60dp"
+    android:src="@drawable/white_close" />
+
+  <RelativeLayout
+    android:id="@+id/pop_content"
+    android:layout_width="match_parent"
+    android:layout_height="390dp"
+    android:layout_marginRight="44dp"
+    android:layout_marginLeft="44dp"
+    android:orientation="vertical"
+    android:background="@drawable/ads_popup_background"
+    android:layout_above="@id/pop_close"
+    android:layout_centerHorizontal="true">
+
+    <LinearLayout
+      android:id="@+id/ad_share_parent_layout"
+      android:layout_width="match_parent"
+      android:layout_height="110dp"
+      android:layout_gravity="bottom"
+      android:layout_alignParentBottom="true"
+      android:background="@drawable/ads_pop_bottom_bg"
+      android:orientation="vertical">
+
+      <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <TextView
+          android:id="@+id/ads_pop_info"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="25dp"
+          android:layout_marginRight="25dp"
+          android:textColor="#343d4a"
+          android:textSize="12sp" />
+
+        <View
+          android:layout_width="47.5dp"
+          android:layout_height="0.5dp"
+          android:layout_centerVertical="true"
+          android:layout_marginLeft="44dp"
+          android:layout_toLeftOf="@id/ads_pop_info"
+          android:background="#ececec" />
+
+        <View
+          android:layout_width="47.5dp"
+          android:layout_height="0.5dp"
+          android:layout_centerVertical="true"
+          android:layout_marginRight="44dp"
+          android:layout_toRightOf="@id/ads_pop_info"
+          android:background="#ececec" />
+      </RelativeLayout>
+
+      <LinearLayout
+        android:id="@+id/ads_pop_share_channel"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal" />
+    </LinearLayout>
+
+    <com.one.framework.app.widget.ShapeImageView
+      android:id="@+id/ads_pop_display"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:scaleType="fitXY"
+      android:layout_above="@id/ad_share_parent_layout"
+      app:imageType="round"
+      app:rectRoundRadius="8dp" />
+  </RelativeLayout>
+
+</RelativeLayout>

@@ -47,7 +47,7 @@ public class Status {
     CANCELED("已取消", 9), //订单取消（终态）
     FINISH("已完成", 10), //未支付（到达终点或者取消需要支付取消费用）？？
     REASSIGN("重新派单", 11),  // 重新派单
-    CANCELED_UNPAID("未支付", 12), // 取消未支付
+    CANCELED_UNPAID("待支付", 12), // 取消未支付
     CANCELED_AUTOPAID("待支付", 13), // 取消待支付
     CANCELED_PAID("已支付", 14), // 乘客取消已支付
     REFUNDING("退款中", 15), // 退款中

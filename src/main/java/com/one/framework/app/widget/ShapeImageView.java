@@ -19,15 +19,17 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.Keep;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatImageView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.one.framework.R;
 import com.one.framework.log.Logger;
 import com.one.framework.utils.UIUtils;
@@ -79,8 +81,10 @@ public class ShapeImageView extends AppCompatImageView {
     TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ShapeImageView);
     mType = a.getInt(R.styleable.ShapeImageView_imageType, DEFAULT_TYPE);
     mBorderColor = a.getColor(R.styleable.ShapeImageView_borderColor, DEFAULT_BORDER_COLOR);
-    mBorderWidth = a.getDimensionPixelSize(R.styleable.ShapeImageView_borderWidth, UIUtils.dip2pxInt(mContext, DEFAULT_BORDER_WIDTH));
-    mRectRoundRadius = a.getDimensionPixelSize(R.styleable.ShapeImageView_rectRoundRadius, UIUtils.dip2pxInt(mContext, DEFAULT_RECT_ROUND_RADIUS));
+    mBorderWidth = a.getDimensionPixelSize(R.styleable.ShapeImageView_borderWidth,
+        UIUtils.dip2pxInt(mContext, DEFAULT_BORDER_WIDTH));
+    mRectRoundRadius = a.getDimensionPixelSize(R.styleable.ShapeImageView_rectRoundRadius,
+        UIUtils.dip2pxInt(mContext, DEFAULT_RECT_ROUND_RADIUS));
     a.recycle();
 
     mSpecialRadii = new float[]{
@@ -120,11 +124,8 @@ public class ShapeImageView extends AppCompatImageView {
       Canvas canvas = new Canvas(bitmap);
       canvas.drawARGB(Color.alpha(color), Color.red(color), Color.green(color), Color.blue(color));
       return bitmap;
-    } else if (drawable instanceof GlideBitmapDrawable) {
-      return ((GlideBitmapDrawable) drawable).getBitmap();
-    } else {
-      return null;
     }
+    return null;
   }
 
   private Bitmap round(Bitmap bitmap, int width, int height, int radius, boolean recycleSource) {
@@ -275,6 +276,11 @@ public class ShapeImageView extends AppCompatImageView {
   }
 
   public void loadImageByUrl(final ViewGroup parent, final String imgUrl, final String schema) {
+    loadImageByUrl(parent, imgUrl, schema, true);
+  }
+
+  public void loadImageByUrl(final ViewGroup parent, final String imgUrl, final String schema,
+      final boolean clickable) {
     if (TextUtils.isEmpty(imgUrl) || TextUtils.isEmpty(schema)) {
       return;
     }
@@ -291,23 +297,34 @@ public class ShapeImageView extends AppCompatImageView {
         return;
       }
       try {
-        Glide.with(mContext).load(imgUrl).asBitmap().into(new SimpleTarget<Bitmap>() {
+        Glide.with(mContext).load(imgUrl).listener(new RequestListener<Drawable>() {
           @Override
-          public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-            if (resource != null) {
-              setImageBitmap(resource);
-            }
-            setEnabled(true);
-            setOnClickListener(new OnClickListener() {
-              @Override
-              public void onClick(View view) {
-                if (mListener != null) {
-//                  mListener.onClick(WebUtils.link(schema));
-                }
-              }
-            });
+          public boolean onLoadFailed(@Nullable GlideException e, Object model,
+              Target<Drawable> target,
+              boolean isFirstResource) {
+            return false;
           }
-        });
+
+          @Override
+          public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target,
+              DataSource dataSource, boolean isFirstResource) {
+            if (resource != null) {
+              setImageDrawable(resource);
+            }
+            if (clickable) {
+              setEnabled(true);
+              setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                  if (mListener != null) {
+//                  mListener.onClick(WebUtils.link(schema));
+                  }
+                }
+              });
+            }
+            return true;
+          }
+        }).into(this);
       } catch (Exception e) {
         Logger.e("ldx", "occur exception");
       }
@@ -321,6 +338,7 @@ public class ShapeImageView extends AppCompatImageView {
 
   @Keep
   public interface IClickListener {
+
     void onClick(String schema);
   }
 

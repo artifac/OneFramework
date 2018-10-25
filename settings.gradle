@@ -1,7 +1,10 @@
-include ':app', ':onemap', ':onecore'
+include ':app', ':onemap', ':uikit'/*, ':pay'*/
 
 def map = project(':onemap')
 map.projectDir = new File('../OneMap')
 
-def onecore = project(':onecore')
-onecore.projectDir = new File('../OneFrameworkCore')
+def uikit = project(':uikit')
+uikit.projectDir = new File('../uikit')
+
+//def pay = project(':pay')
+//pay.projectDir = new File('../Pay')

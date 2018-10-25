@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <RelativeLayout
+    android:id="@+id/bts_upload_rela"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="7dp"
+    android:background="#660a0b0d">
+
+    <TextView
+      android:id="@+id/cancel_text"
+      android:layout_width="match_parent"
+      android:layout_height="40dp"
+      android:layout_alignParentBottom="true"
+      android:background="@drawable/one_photo_round_edittext"
+      android:gravity="center"
+      android:text="@string/one_cancel"
+      android:textColor="#666666"
+      android:textSize="18sp"/>
+
+    <ListView
+      android:id="@+id/pic_menu_list"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="25dp"
+      android:layout_above="@id/cancel_text"
+      android:paddingTop="7dp"
+      android:paddingBottom="7dp"
+      android:background="@drawable/one_photo_round_edittext"
+      android:cacheColorHint="#000000"
+      android:divider="#ebebeb"
+      android:dividerHeight="1dp"/>
+  </RelativeLayout>
+
+</RelativeLayout>

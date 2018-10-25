@@ -56,7 +56,7 @@ public class OneApplication extends MultiDexApplication {
     super.onCreate();
     MultiDex.install(this);
     SystemUtils.init(this);
-    BlurKit.init(this);
+//    BlurKit.init(this); // 去掉
     try {
       CrashReport.initCrashReport(getApplicationContext(), "69923719cb", BuildConfig.DEBUG);
       checkAppDelegate();

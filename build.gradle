@@ -13,7 +13,7 @@ bugly {
 }
 
 buildscript {
-    ext.kotlin_version = '1.2.50'
+    ext.kotlin_version = '1.2.51'
     repositories {
         jcenter()
         mavenCentral()
@@ -40,13 +40,13 @@ allprojects {
 }
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "27.0.3"
+    compileSdkVersion 27
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
         buildConfigField 'String', 'AAR_MODE', "\"${project.VERSION.endsWith('-SNAPSHOT') ? 'debug' : 'release'}\""
         minSdkVersion 15
-        targetSdkVersion 25
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
 
@@ -64,7 +64,7 @@ android {
         ]
 
         ndk {
-            abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
+            abiFilters "armeabi"
         }
     }
 
@@ -94,6 +94,10 @@ android {
         javaMaxHeapSize "4g"
         preDexLibraries = false
     }
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
 }
 
 
@@ -105,25 +109,29 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:multidex:1.0.2'
-    testImplementation 'junit:junit:4.12'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:multidex:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    compile 'com.android.support:appcompat-v7:26.1.0'
-    compile 'com.android.support:recyclerview-v7:26.1.0'
-    compile 'com.android.support:transition:26.1.0'
-    compile 'com.github.bumptech.glide:glide:3.7.0'
+    implementation 'com.android.support:appcompat-v7:27.+'
+    implementation 'com.android.support:recyclerview-v7:27.+'
+    implementation 'com.android.support:transition:27.+'
+    implementation 'com.github.bumptech.glide:glide:4.7.1'
     // 地图
-    compile project(':onemap')
+    api project(':onemap')
+    api project(':uikit')
+//    api project(':pay')
+
     //    implementation 'com.one.map:the-one-map:1.0.4'
-    compile project(':onecore')
-    compile 'com.getui:sdk:2.12.4.0'
-    compile 'com.squareup.okhttp3:okhttp:3.10.0'
-    compile 'com.squareup.okio:okio:1.14.0'
-    compile 'com.google.code.gson:gson:2.2.4'
-    compile 'org.greenrobot:eventbus:3.0.0'
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    compile 'com.tencent.bugly:crashreport:latest.release'
+    implementation 'com.getui:sdk:2.12.4.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+    implementation 'com.squareup.okio:okio:1.15.0'
+    api 'com.google.code.gson:gson:2.8.5'
+    api 'org.greenrobot:eventbus:3.1.1'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.tencent.bugly:crashreport:latest.release'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
+    implementation files('libs/alipaySdk-20180601.jar')
 }
 
 //为支持aar动态更新，在build.gradle里添加如下代码

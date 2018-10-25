@@ -2,6 +2,7 @@ package com.one.framework.net.request;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.one.framework.log.Logger;
 import com.one.framework.net.NetConstant;
@@ -32,11 +33,15 @@ public final class RequestHelper {
 
   private static RequestHelper sRequestHelper;
   private INetworkConfig mConfig;
+  private String errMsg = "";
+  private int errCode = -1;
 
   private static ConcurrentHashMap<Integer, Call> requestQueue = new ConcurrentHashMap<Integer, Call>();
+  private OkHttpClient mHttpClient;
 
   private RequestHelper(INetworkConfig config) {
     mConfig = config;
+    mHttpClient = beforeRequest(mConfig);
   }
 
   public static RequestHelper getRequest(INetworkConfig config) {
@@ -59,7 +64,7 @@ public final class RequestHelper {
 
   public <T extends BaseObject> int requestPost(String url, HashMap<String, Object> params,
       final IResponseListener<T> listener, final Class<T> clazz) {
-    OkHttpClient mHttpClient = beforeRequest(mConfig);
+
     Builder bodyBuilder = new FormBody.Builder();
     if (params != null) {
       Set<String> keys = params.keySet();
@@ -81,7 +86,6 @@ public final class RequestHelper {
   public <T extends BaseObject> int requestGet(String url, HashMap<String, Object> urlParams,
       final IResponseListener<T> listener, final Class<T> clazz) {
     StringBuilder params = new StringBuilder();
-    OkHttpClient mHttpClient = beforeRequest(mConfig);
     int pos = 0;
     for (String key : urlParams.keySet()) {
       if (pos > 0) {
@@ -105,93 +109,108 @@ public final class RequestHelper {
     /**
      * 异步请求
      */
-    call.enqueue(new Callback() {
-      @Override
-      public void onFailure(Call call, IOException e) {
-        requestQueue.remove(requestCode);
+    try {
+      call.enqueue(new Callback() {
+        @Override
+        public void onFailure(Call call, IOException e) {
+          requestQueue.remove(requestCode);
 
-        T t = null;
-        try {
-          t = clazz.newInstance();
-        } catch (InstantiationException e1) {
-          e1.printStackTrace();
-        } catch (IllegalAccessException e1) {
-          e1.printStackTrace();
-        }
-
-        if (t != null) {
-          t.setErrorCode(NetConstant.MSG_ERROR);
-          t.setErrorMsg("error...");
-        }
-        if (listener == null) {
-          return;
-        }
-        final UIHandler<T> uiHandler = new UIHandler<>(Looper.getMainLooper(), t);
-        uiHandler.post(new Runnable() {
-          @Override
-          public void run() {
-            T t = uiHandler.t();
-             /* 非法数据 */
-            listener.onFail(t != null ? t.code : NetConstant.NO_DATA, t);
-            listener.onFinish(t);
-          }
-        });
-      }
-
-      @Override
-      public void onResponse(Call call, Response response) throws IOException {
-        requestQueue.remove(requestCode);
-        boolean isSuccess = response.isSuccessful();
-        T t = null;
-        if (isSuccess) {
-          ResponseBody responseBody = response.body();
-          String result = responseBody.string();
-          Gson gson = new Gson();
-          BaseObject base = new BaseObject();
-          base.parse(result);
-        if (base != null && base.isAvailable()) {
-            if (base.data != null) {
-              t = gson.fromJson(base.data, clazz);
-            } else if (base.object != null) {
-              t = gson.fromJson(base.object, clazz);
-            }
-            if (base.data == null && clazz == BaseObject.class) {
-              // 后端有可能返回 data: null 无返回值但是请求成功
-              t = (T) base;
-            }
-          }
-        } else {
+          T t = null;
           try {
             t = clazz.newInstance();
-          } catch (InstantiationException e) {
-            e.printStackTrace();
-          } catch (IllegalAccessException e) {
-            e.printStackTrace();
+          } catch (InstantiationException e1) {
+            e1.printStackTrace();
+          } catch (IllegalAccessException e1) {
+            e1.printStackTrace();
           }
-        }
-        /* 自动校验结果 */
-        if (listener == null) {
-          return;
-        }
-        final UIHandler<T> uiHandler = new UIHandler<T>(Looper.getMainLooper(), t);
-        uiHandler.post(new Runnable() {
-          @Override
-          public void run() {
-            T t = uiHandler.t();
-//            Logger.e("ldx", " t >> " + t);
-             /* 非法数据 */
-            if (t != null && t.isAvailable()) {
-              /* 合法数据 */
-              listener.onSuccess(t);
+
+          if (t != null) {
+            t.setErrorCode(NetConstant.MSG_ERROR);
+            t.setErrorMsg("error...");
+          }
+          if (listener == null) {
+            return;
+          }
+          final UIHandler<T> uiHandler = new UIHandler<>(Looper.getMainLooper(), t);
+          uiHandler.post(new Runnable() {
+            @Override
+            public void run() {
+              T t = uiHandler.t();
+              /* 非法数据 */
+              listener.onFail(t != null ? t.code : NetConstant.NO_DATA, "服务开小差,请稍后再试!");
               listener.onFinish(t);
-              return;
             }
-            listener.onFail(t != null ? t.code : NetConstant.NO_DATA, t);
-            listener.onFinish(t);
+          });
+        }
+
+        @Override
+        public void onResponse(Call call, Response response) throws IOException {
+          requestQueue.remove(requestCode);
+          boolean isSuccess = response.isSuccessful();
+
+          T t = null;
+          if (isSuccess) {
+            ResponseBody responseBody = response.body();
+            String result = responseBody.string();
+            Gson gson = new Gson();
+            BaseObject base = new BaseObject();
+            base.parse(result);
+            if (base != null && base.isAvailable()) {
+              if (base.data != null) {
+                t = gson.fromJson(base.data, clazz);
+              } else if (base.object != null) {
+                t = gson.fromJson(base.object, clazz);
+              }
+              if (base.data == null && clazz == BaseObject.class) {
+                // 后端有可能返回 data: null 无返回值但是请求成功
+                t = (T) base;
+              }
+            } else {
+              errCode = base.code;
+              errMsg = base.message;
+            }
+          } else {
+            try {
+              t = clazz.newInstance();
+            } catch (InstantiationException e) {
+              e.printStackTrace();
+            } catch (IllegalAccessException e) {
+              e.printStackTrace();
+            }
           }
-        });
-      }
-    });
+
+          /* 自动校验结果 */
+          if (listener == null) {
+            return;
+          }
+          final UIHandler<T> uiHandler = new UIHandler<T>(Looper.getMainLooper(), t);
+          uiHandler.post(new Runnable() {
+            @Override
+            public void run() {
+              T t = uiHandler.t();
+//              if (t != null) {
+//                Logger.e("ldx", " t >> " + t.code + " " + t);
+//              }
+              /* 非法数据 */
+              if (t != null && t.isAvailable()) {
+                /* 合法数据 */
+                listener.onSuccess(t);
+                listener.onFinish(t);
+                return;
+              }
+              if (errCode != -1 && !TextUtils.isEmpty(errMsg)) {
+                listener.onFail(errCode, errMsg);
+              } else {
+                listener.onFail(t != null ? t.code : NetConstant.NO_DATA, "服务开小差,请稍后再试!");
+              }
+              listener.onFinish(t);
+            }
+          });
+        }
+      });
+    } catch (Exception e) {
+
+    }
   }
 
   /**

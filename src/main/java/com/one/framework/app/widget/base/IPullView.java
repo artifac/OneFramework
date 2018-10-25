@@ -1,5 +1,6 @@
 package com.one.framework.app.widget.base;
 
+import android.support.annotation.LayoutRes;
 import android.view.View;
 
 /**
@@ -33,4 +34,19 @@ public interface IPullView {
   void setItemClickListener(IItemClickListener listener);
 
   View getView();
+
+  void setHaveHeaderView(boolean flag);
+
+  void setHeaderView(View view);
+
+  void setHeaderView(@LayoutRes int layout);
+
+  void setHaveFooterView(boolean flag);
+
+  interface IPullCallback {
+    void move(float x, float y);
+    void up(float y);
+  }
+
+  void setPullCallback(IPullCallback listener);
 }

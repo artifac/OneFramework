@@ -49,7 +49,7 @@ public class ToastUtils {
   }
 
 
-  public static void toast(Context context, String text, int iconResId) {
+  private static void toast(Context context, String text, int iconResId) {
     if (TextUtils.isEmpty(text)) { //如果传入的是空，则不用弹toast，直接返回
       return;
     }

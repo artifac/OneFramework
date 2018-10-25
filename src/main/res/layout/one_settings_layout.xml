@@ -21,14 +21,7 @@
         layout="@layout/one_list_item_with_right_arrow"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"/>
-
-      <include
-        android:id="@+id/one_normal_address"
-        layout="@layout/one_list_item_with_right_arrow"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"/>
+        android:layout_marginTop="10dp"/>
 
       <include
         android:id="@+id/one_urgent_connect"
@@ -80,7 +73,7 @@
         android:gravity="center"
         app:disable_color="#e3e3e3"
         app:enable_color="#ffffff"
-        app:radius="0dp"
+        app:btn_radius="0dp"
         app:text="@string/one_logout"
         app:text_color="#f05b48"
         app:text_size="14sp"/>

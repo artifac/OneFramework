@@ -11,16 +11,27 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+import com.netease.nim.uikit.api.NimUIKit;
+import com.netease.nim.uikit.business.uinfo.UserInfoHelper;
+import com.netease.nimlib.sdk.NIMClient;
+import com.netease.nimlib.sdk.RequestCallback;
+import com.netease.nimlib.sdk.auth.AuthService;
+import com.netease.nimlib.sdk.auth.LoginInfo;
 import com.one.framework.R;
+import com.one.framework.app.login.ILogin.ILoginCountDownTimer;
 import com.one.framework.app.login.UserProfile.User;
 import com.one.framework.app.login.VerificationCodeView.OnCodeFinishListener;
 import com.one.framework.app.widget.LoadingView;
 import com.one.framework.app.widget.TripButton;
 import com.one.framework.dialog.LoginDialog;
+import com.one.framework.log.Logger;
 import com.one.framework.net.Api;
 import com.one.framework.net.base.BaseObject;
+import com.one.framework.net.model.IMLoginInfo;
 import com.one.framework.net.model.UserInfo;
 import com.one.framework.net.response.IResponseListener;
+import com.one.framework.utils.PreferenceUtil;
 import com.one.framework.utils.ToastUtils;
 import com.one.framework.utils.UIUtils;
 
@@ -30,13 +41,17 @@ import com.one.framework.utils.UIUtils;
 
 public class Login implements ILogin {
 
-  private CountDownTimer countDown;
+
   private Context mContext;
   private String mobilePhone;
+
+  private LoginProxy mLoginProxy;
+
   private ILoginListener mLoginListener;
 
   public Login(Context context) {
     mContext = context;
+    mLoginProxy = new LoginProxy(context);
   }
 
   @Override
@@ -67,8 +82,10 @@ public class Login implements ILogin {
     final LoadingView loading = view.findViewById(R.id.one_login_dlg_loading);
     final LinearLayout verifiLayout = view.findViewById(R.id.one_login_verification_code_layout);
     final TextView verifiCode = view.findViewById(R.id.one_login_input_verification_code);
-    final VerificationCodeView verificationCodeView = view.findViewById(R.id.one_login_verification_code);
-    final RelativeLayout loginLoading = (RelativeLayout) view.findViewById(R.id.one_login_dlg_login_loading_layout);
+    final VerificationCodeView verificationCodeView = view
+        .findViewById(R.id.one_login_verification_code);
+    final RelativeLayout loginLoading = (RelativeLayout) view
+        .findViewById(R.id.one_login_dlg_login_loading_layout);
     final LoadingView loginLoadingView = view.findViewById(R.id.one_login_loading_view);
     verificationCodeView.setOnCodeFinishListener(new OnCodeFinishListener() {
       @Override
@@ -76,35 +93,23 @@ public class Login implements ILogin {
         loginLoading.setVisibility(View.VISIBLE);
         loginLoadingView.setRepeatCount(-1).setConfigWaitTime(5);
 
-        Api.doLogin(mobilePhone, content, new IResponseListener<UserInfo>() {
+        mLoginProxy.doLogin(mobilePhone, content, new ILoginListener() {
           @Override
-          public void onSuccess(UserInfo userInfo) {
+          public void onLoginSuccess() {
             loginDialog.dismiss();
-            if (countDown != null) {
-              countDown.cancel();
-            }
-            UserProfile profile = UserProfile.getInstance(mContext);
-            User user = profile.new User(userInfo.getMobileNo(), userInfo.getUserId(),
-                userInfo.getToken());
-            profile.sync(user);
-
             if (mLoginListener != null) {
               mLoginListener.onLoginSuccess();
             }
           }
 
           @Override
-          public void onFail(int errCode, UserInfo userInfo) {
-            ToastUtils.toast(mContext, mContext.getString(R.string.one_login_verificode_error));
-            if (mLoginListener != null) {
-              mLoginListener.onLoginFail();
-            }
-          }
-
-          @Override
-          public void onFinish(UserInfo userInfo) {
+          public void onLoginFail(String message) {
+            Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
             loginLoadingView.release();
             loginLoading.setVisibility(View.GONE);
+            if (mLoginListener != null) {
+              mLoginListener.onLoginFail(message);
+            }
           }
         });
       }
@@ -130,15 +135,15 @@ public class Login implements ILogin {
   }
 
   private void sendSms(final TextView title, final LinearLayout verifiLayout,
-      final TextView verifiCode, final EditText input, final TripButton next,
+      final TextView verifyCode, final EditText input, final TripButton next,
       final LoadingView loading, final TextView phoneArea) {
-    Api.sendSms(mobilePhone, new IResponseListener<BaseObject>() {
+    mLoginProxy.doSms(mobilePhone, new ILoginVerifyCode() {
       @Override
-      public void onSuccess(BaseObject baseObject) {
+      public void onSuccess() {
         title.setText(R.string.one_login_input_verification_code);
         verifiLayout.setVisibility(View.VISIBLE);
         phoneArea.setVisibility(View.INVISIBLE);
-        verifiCode.setText(UIUtils.highlight(
+        verifyCode.setText(UIUtils.highlight(
             String.format(mContext.getString(R.string.one_login_verification_confirm), mobilePhone),
             Color.parseColor("#f05b48")));
         input.setVisibility(View.INVISIBLE);
@@ -147,12 +152,12 @@ public class Login implements ILogin {
             .format(mContext.getString(R.string.one_login_reobtain_verificode_count_down), 10));
         next.setEnabled(false);
         next.setRippleColor(Color.parseColor("#d3d3d3"), Color.WHITE);
-        countDown = new CountDownTimer(60000, 1000) {
+
+        mLoginProxy.countDown(new ILoginCountDownTimer() {
           @Override
-          public void onTick(long millisUntilFinished) {
-            next.setTripButtonText(
-                String.format(mContext.getString(R.string.one_login_reobtain_verificode_count_down),
-                    millisUntilFinished / 1000));
+          public void onTick(long countDownTime) {
+            String time = String.format(mContext.getString(R.string.one_login_reobtain_verificode_count_down), countDownTime / 1000);
+            next.setTripButtonText(time);
           }
 
           @Override
@@ -161,18 +166,19 @@ public class Login implements ILogin {
             next.setTripButtonText(R.string.one_login_reobtain_verificode);
             next.setRippleColor(Color.parseColor("#343d4a"), Color.WHITE);
           }
-        };
-        countDown.start();
+        });
       }
 
       @Override
-      public void onFail(int errCode, BaseObject baseObject) {
-        ToastUtils.toast(mContext, mContext.getString(R.string.one_login_verificode_fail));
-      }
-
-      @Override
-      public void onFinish(BaseObject baseObject) {
-
+      public void onFail() {
+//        try {
+//          ToastUtils.toast(mContext, mContext.getString(R.string.one_login_verificode_fail));
+//        } catch (Exception e) {
+//        }
+        Toast.makeText(mContext, mContext.getString(R.string.one_login_verificode_fail),
+            Toast.LENGTH_SHORT).show();
+        loading.setVisibility(View.GONE);
+        next.setTripButtonText(R.string.one_login_next);
       }
     });
   }
@@ -183,7 +189,7 @@ public class Login implements ILogin {
   }
 
   private void loginPage() {
-
+    // start Login Activity
   }
 
 }

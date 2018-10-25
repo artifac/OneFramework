@@ -16,12 +16,6 @@ import android.widget.Button;
 import com.one.framework.R;
 import com.one.framework.utils.UIUtils;
 
-
-/**
- * Init (planning)
- * Created by vermouth on 2017/8/30.
- */
-
 @SuppressLint("AppCompatCustomView")
 public class TripButton extends Button {
   
@@ -42,6 +36,7 @@ public class TripButton extends Button {
   private int mStrokeColor;
   private float mStokeWidth;
   private int mStyle;
+  private int mBackground;
   
   public TripButton(Context context) {
     this(context, null);
@@ -55,7 +50,8 @@ public class TripButton extends Button {
     super(context, attrs, defStyleAttr);
     mContext = context;
     TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.TripButton);
-    mRadius = array.getDimensionPixelOffset(R.styleable.TripButton_radius, 6);
+    mRadius = array.getDimensionPixelOffset(R.styleable.TripButton_btn_radius, 6);
+    mBackground = array.getResourceId(R.styleable.TripButton_btn_background, 0);
     mEnableColor = array.getColor(R.styleable.TripButton_enable_color, 0);
     mDisableColor = array.getColor(R.styleable.TripButton_disable_color, 0);
     mTextColor = array.getColor(R.styleable.TripButton_text_color, Color.WHITE);
@@ -92,20 +88,28 @@ public class TripButton extends Button {
     setMeasuredDimension(widthSize, heightSize);
     mRectF = new RectF(0, 0, getMeasuredWidth(), getMeasuredHeight());
   }
-  
+
   @Override
   public void setEnabled(boolean enabled) {
     super.setEnabled(enabled);
-    if (enabled) {
-      setRippleColor(mEnableColor, mDisableColor);
+    if (mEnableColor != 0 && mDisableColor != 0) {
+      if (enabled) {
+        setRippleColor(mEnableColor, mDisableColor);
+      } else {
+        setRippleColor(mDisableColor, mDisableColor);
+      }
     } else {
-      setRippleColor(mDisableColor, mDisableColor);
+      setBackgroundResource(mBackground);
     }
 //    invalidate();
   }
   
   public void setRippleColor(int color, int maskColor) {
-    setBackgroundDrawable(UIUtils.rippleDrawableRounded(color, maskColor, intAArray));
+    if (color != 0 && maskColor != 0) {
+      setBackgroundDrawable(UIUtils.rippleDrawableRounded(color, maskColor, intAArray));
+    } else {
+      setBackgroundResource(mBackground);
+    }
   }
   
   public void setTripButtonTextColor(int textColor) {

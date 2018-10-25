@@ -1,6 +1,8 @@
 package com.one.framework.app.widget;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -11,9 +13,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.one.framework.R;
+import com.one.framework.app.page.ITopbarFragment;
 import com.one.framework.app.widget.base.ITopTitleView;
 import com.one.framework.log.Logger;
 import com.one.map.location.LocationProvider;
+import com.one.map.model.Address;
 import java.util.Stack;
 
 /**
@@ -24,11 +28,16 @@ public class TopTitleLayout extends RelativeLayout implements ITopTitleView, OnC
 
   private TextView mTitle;
   private ImageView mLeft;
+  private ImageView mClose;
   private TextView mRight;
+  private ImageView mRightIcon;
 
+  private TextView mLeftTitle;
   private int mLeftDefaultResId;
+  private int mRightDefaultResId;
 
   private int mLeftResId;
+  private int mRightResId;
 
   /**
    * Listener 通过栈 FILO
@@ -57,14 +66,18 @@ public class TopTitleLayout extends RelativeLayout implements ITopTitleView, OnC
     mTitle = (TextView) findViewById(R.id.one_top_title);
     mLeft = (ImageView) findViewById(R.id.one_top_left);
     mRight = (TextView) findViewById(R.id.one_top_right);
+    mClose = (ImageView) findViewById(R.id.one_top_close);
+    mRightIcon = findViewById(R.id.one_top_right_icon);
+    mLeftTitle = findViewById(R.id.one_top_left_title);
 
     mLeftResId = mLeftDefaultResId = R.drawable.one_top_bar_my_center;
-
+    mRightDefaultResId = R.drawable.one_top_bar_message;
 
     mTitle.setOnClickListener(this);
     mLeft.setOnClickListener(this);
     mRight.setOnClickListener(this);
     mLeft.setImageResource(mLeftDefaultResId);
+    mRightIcon.setImageResource(mRightDefaultResId);
   }
 
   @Override
@@ -74,7 +87,7 @@ public class TopTitleLayout extends RelativeLayout implements ITopTitleView, OnC
 
   @Override
   public void setTitle(String title) {
-    setTitle(title, sTitleSize);
+    setTitle(title, sTitleSize, ITopbarFragment.CENTER);
   }
 
   @Override
@@ -84,8 +97,41 @@ public class TopTitleLayout extends RelativeLayout implements ITopTitleView, OnC
 
   @Override
   public void setTitle(String title, int sizeSp) {
-    mTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, sizeSp);
+    setTitle(title, sizeSp, ITopbarFragment.CENTER);
+  }
+
+  @Override
+  public void setTitle(String title, int sizeSp, Typeface typeface) {
     mTitle.setText(title);
+    mTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, sizeSp);
+    mTitle.setTypeface(typeface);
+    setBackgroundResource(R.drawable.one_top_bar_gradient_bg);
+  }
+
+  @Override
+  public void setTitleWithPosition(String title, int position) {
+    switch (position) {
+      case ITopbarFragment.LEFT: {
+        mLeftTitle.setVisibility(View.VISIBLE);
+        mTitle.setVisibility(View.GONE);
+        mLeftTitle.setText(title);
+        setBackgroundResource(R.drawable.one_top_bar_gradient_bg);
+        break;
+      }
+      case ITopbarFragment.CENTER: {
+        mTitle.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
+        mTitle.setVisibility(View.VISIBLE);
+        mLeftTitle.setVisibility(View.GONE);
+        mTitle.setText(title);
+        setBackgroundColor(Color.WHITE);
+        break;
+      }
+    }
+  }
+
+  private void setTitle(String title, int sizeSp, int position) {
+    mTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, sizeSp);
+    setTitleWithPosition(title, position);
   }
 
   @Override
@@ -97,6 +143,47 @@ public class TopTitleLayout extends RelativeLayout implements ITopTitleView, OnC
     } else {
       mLeft.setVisibility(View.GONE);
     }
+  }
+
+  @Override
+  public void setRightImage(int resId) {
+    if (resId != 0) {
+      mRightResId = resId;
+      mRightIcon.setImageResource(resId);
+      mRightIcon.setVisibility(View.VISIBLE);
+    } else {
+      mRightIcon.setVisibility(View.GONE);
+    }
+  }
+
+  @Override
+  public void hideRightImage(boolean hide) {
+    mRightIcon.setVisibility(!hide ? View.VISIBLE : View.GONE);
+  }
+
+  /**
+   * 左上角返回listener
+   * @param listener
+   */
+  public void setLeftClickListener(View.OnClickListener listener) {
+    mLeft.setOnClickListener(listener);
+  }
+
+  @Override
+  public void setCloseVisible(boolean visible) {
+    mClose.setVisibility(visible ? View.VISIBLE : View.GONE);
+  }
+
+  public void setCloseClickListener(View.OnClickListener listener) {
+    mClose.setOnClickListener(listener);
+  }
+
+  public void setRightClickListener(View.OnClickListener listener) {
+    mRight.setOnClickListener(listener);
+  }
+
+  public void setRightVisible(boolean visible) {
+    mRight.setVisibility(visible ? View.VISIBLE : View.GONE);
   }
 
   @Override
@@ -114,21 +201,24 @@ public class TopTitleLayout extends RelativeLayout implements ITopTitleView, OnC
       mRight.setVisibility(View.VISIBLE);
       mRight.setText(txtBtn);
       mRight.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-      mRight.setOnClickListener(this);
     } else {
       mRight.setVisibility(View.INVISIBLE);
-      mRight.setOnClickListener(null);
     }
   }
 
   @Override
   public void setRightResId(int txtResId) {
-    if (txtResId != 0) {
+    setRightResId(txtResId, Color.parseColor("#999999"));
+  }
+
+  @Override
+  public void setRightResId(int txtResId, int color) {
+    if (txtResId > 0) {
       mRight.setVisibility(View.VISIBLE);
       setRightText(getContext().getString(txtResId));
+      mRight.setTextColor(color);
     } else {
       mRight.setVisibility(View.INVISIBLE);
-      mRight.setOnClickListener(null);
     }
   }
 
@@ -142,12 +232,32 @@ public class TopTitleLayout extends RelativeLayout implements ITopTitleView, OnC
   public void titleReset() {
     // 在首页但是处理不同的逻辑
     setLeftImage(mLeftDefaultResId);
+    setRightImage(mRightDefaultResId);
     setRightResId(0);
-    setTitle(LocationProvider.getInstance().getLocation().mCity, 14);
+    mLeftTitle.setVisibility(View.GONE);
+    mTitle.setVisibility(View.VISIBLE);
+    Address curLoc = LocationProvider.getInstance().getLocation();
+    if (curLoc != null) {
+      setTitle(curLoc.mCity, 14, Typeface.defaultFromStyle(Typeface.BOLD));
+    }
+    setBackgroundResource(R.drawable.one_top_bar_gradient_bg);
+  }
+
+  @Override
+  public void setTitleBarBackground(int color) {
+    setBackgroundColor(color);
+  }
+
+  @Override
+  public void setTitleBarBackgroundResources(int res) {
+    setBackgroundResource(res);
   }
 
   @Override
   public void onClick(View v) {
+    if (mClickListenerStack.size() == 0) {
+      return;
+    }
     boolean onlyOne = mClickListenerStack.size() == 1;
     // 若是root Fragment 直接获取 Listener 不弹出栈 左上角默认🔙故直接pop
     ITopTitleListener listener;
@@ -180,7 +290,6 @@ public class TopTitleLayout extends RelativeLayout implements ITopTitleView, OnC
     } else {
       mClickListenerStack.pop();
     }
-    Logger.e("ldx", "Topbar LeftBackStack >>>> " + mClickListenerStack);
   }
 
   @Override

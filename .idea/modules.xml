@@ -3,9 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/TheOne.iml" filepath="$PROJECT_DIR$/TheOne.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../OneFrameworkCore/onecore.iml" filepath="$PROJECT_DIR$/../OneFrameworkCore/onecore.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../OneMap/onemap.iml" filepath="$PROJECT_DIR$/../OneMap/onemap.iml" />
     </modules>
   </component>
 </project>

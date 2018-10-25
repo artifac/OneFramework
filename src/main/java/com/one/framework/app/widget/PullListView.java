@@ -1,5 +1,7 @@
 package com.one.framework.app.widget;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.TargetApi;
@@ -8,6 +10,7 @@ import android.content.res.TypedArray;
 import android.os.Build.VERSION_CODES;
 import android.util.AttributeSet;
 import android.util.SparseArray;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
@@ -38,7 +41,14 @@ public class PullListView extends ListView implements IMovePublishListener, IPul
   private boolean isHaveFooterView;
   private boolean isHaveHeaderView;
   private boolean isResolveConflict;
+  private boolean isHaveRefreshView;
+  private int mRefreshLayoutId;
+  private boolean isHaveLoadMoreView;
+  private int mLoadMoreLayoutId;
   private IItemClickListener mItemClickListener;
+  private IPullCallback mPullListener;
+
+  private int upTranslateY;
 
   public PullListView(Context context) {
     this(context, null);
@@ -58,16 +68,45 @@ public class PullListView extends ListView implements IMovePublishListener, IPul
     isHaveFooterView = a.getBoolean(R.styleable.PullView_have_footer_view, true);
     isHaveHeaderView = a.getBoolean(R.styleable.PullView_have_header_view, true);
     isResolveConflict = a.getBoolean(R.styleable.PullView_resolve_conflict, false);
+    isHaveRefreshView = a.getBoolean(R.styleable.PullView_have_refresh_view, false);
+    mRefreshLayoutId = a.getResourceId(R.styleable.PullView_refresh_view_id, -1);
+    isHaveLoadMoreView = a.getBoolean(R.styleable.PullView_have_load_more_view, false);
+    mLoadMoreLayoutId = a.getResourceId(R.styleable.PullView_load_more_view_id, -1);
+    a.recycle();
 
     if (mScroller == 0 && mMaxHeight == 0) {
       throw new IllegalArgumentException("ScrollMaxHeight is 0");
     }
-    a.recycle();
 
-    mHeaderView = new HeaderView(context, mMaxHeight);
-    addHeaderView(mHeaderView.getView());
+    if (isHaveRefreshView && mRefreshLayoutId == -1) {
+      throw new IllegalArgumentException("Please set RefreshViewLayout");
+    }
+
+    if (isHaveLoadMoreView && mLoadMoreLayoutId == -1) {
+      throw new IllegalArgumentException("Please set LoadMoreViewLayout");
+    }
+
+    mHeaderView = new HeaderView(getContext(), mMaxHeight);
     setOnScrollListener(this);
     setOnItemClickListener(this);
+
+    inflate();
+  }
+
+  @Override
+  public void setHaveHeaderView(boolean flag) {
+    isHaveHeaderView = flag;
+    if (isHaveHeaderView) {
+      addHeaderView(mHeaderView.getView());
+    }
+  }
+
+  @Override
+  public void setHaveFooterView(boolean flag) {
+    isHaveFooterView = flag;
+    if (isHaveFooterView) {
+//      addFooterView();
+    }
   }
 
   @Override
@@ -77,11 +116,26 @@ public class PullListView extends ListView implements IMovePublishListener, IPul
     }
   }
 
-
   @Override
   public void addFooterView(View v) {
     if (isHaveFooterView) {
       super.addFooterView(v);
+    }
+  }
+
+  @Override
+  public void setHeaderView(View view) {
+    mHeaderView.setHeaderView(view);
+  }
+
+  @Override
+  public void setHeaderView(int layout) {
+    mHeaderView.setHeaderView(layout);
+  }
+
+  private void inflate() {
+    if (mRefreshLayoutId != -1) {
+      addHeaderView(LayoutInflater.from(getContext()).inflate(mRefreshLayoutId, null));
     }
   }
 
@@ -166,7 +220,7 @@ public class PullListView extends ListView implements IMovePublishListener, IPul
     if (mScroller == 0 && flag && !isScrollBottom()) {
       mHeaderView.onMove(offsetX, offsetY);
     } else {
-      selfScrollerMove(offsetY);
+      selfScrollerMove(offsetX, offsetY);
     }
   }
 
@@ -179,13 +233,16 @@ public class PullListView extends ListView implements IMovePublishListener, IPul
     }
   }
 
-  private void selfScrollerMove(float offsetY) {
+  private void selfScrollerMove(float offsetX, float offsetY) {
     int translateY = (int) (getTranslationY() + offsetY + 0.5);
     setTranslationY(translateY);
+    if (mPullListener != null) {
+     mPullListener.move(offsetX, translateY);
+    }
   }
 
   private void selfScrollerUp(boolean bottom2Up, boolean isFling) {
-    int tranlationY = (int) getTranslationY();
+    int tranlationY = upTranslateY = (int) getTranslationY();
     goonMove(200);
   }
 
@@ -197,7 +254,20 @@ public class PullListView extends ListView implements IMovePublishListener, IPul
       public void onAnimationUpdate(ValueAnimator animation) {
         float animValue = animation.getAnimatedFraction();
         float fraction = 1f - animValue;
-        setTranslationY(fraction * getTranslationY());
+        float translationY = fraction * getTranslationY();
+        setTranslationY(translationY);
+        if (mPullListener != null) { // 没满的时候自动回缩
+          mPullListener.move(0, translationY);
+        }
+      }
+    });
+    translate.addListener(new AnimatorListenerAdapter() {
+      @Override
+      public void onAnimationEnd(Animator animation) {
+        super.onAnimationEnd(animation);
+        if (mPullListener != null) {
+          mPullListener.up(upTranslateY);
+        }
       }
     });
     translate.start();
@@ -223,5 +293,10 @@ public class PullListView extends ListView implements IMovePublishListener, IPul
   @Override
   public void setItemClickListener(IItemClickListener listener) {
     mItemClickListener = listener;
+  }
+
+  @Override
+  public void setPullCallback(IPullCallback listener) {
+    mPullListener = listener;
   }
 }

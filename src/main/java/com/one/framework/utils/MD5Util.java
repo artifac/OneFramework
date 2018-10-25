@@ -36,7 +36,6 @@ public class MD5Util {
     String resultString = null;
 
     try {
-      new String(strObj);
       MessageDigest md = MessageDigest.getInstance("MD5");
       resultString = byteToString(md.digest(strObj.getBytes()));
     } catch (NoSuchAlgorithmException var3) {

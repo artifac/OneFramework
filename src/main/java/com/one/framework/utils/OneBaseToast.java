@@ -58,7 +58,6 @@ public class OneBaseToast {
    * @param context 上下文
    */
   public OneBaseToast(Context context) {
-    mWdm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
     mContext = context;
     Toast toast = new Toast(context);
     mY = toast.getYOffset();
@@ -73,7 +72,6 @@ public class OneBaseToast {
    * @param duration 显示长短时间类型
    */
   public OneBaseToast(Context context, String text, int duration) {
-    mWdm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
     mContext = context;
     Toast toast = Toast.makeText(context, text, duration);
     mY = toast.getYOffset();
@@ -132,11 +130,7 @@ public class OneBaseToast {
   }
 
   private void handleShow(View view) {
-    Context context = mContext.getApplicationContext();
-    if (context == null) {
-      context = mContext;
-    }
-    mWdm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+    mWdm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
     // We can resolve the Gravity here by using the Locale for getting
     // the layout direction
     final int gravity = mGravity;

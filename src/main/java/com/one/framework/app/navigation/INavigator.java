@@ -1,11 +1,9 @@
 package com.one.framework.app.navigation;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import com.one.framework.app.model.IBusinessContext;
-import com.onecore.SupportFragment;
-import com.onecore.core.anim.FragmentAnimator;
 
 /**
  * Created by ludexiang on 2018/3/28.
@@ -22,7 +20,9 @@ public interface INavigator {
 
   void onPause();
 
-  Fragment startFragment(Intent intent, IBusinessContext businessContext, FragmentAnimator animator);
+  Fragment startFragment(Intent intent, IBusinessContext businessContext/*, FragmentAnimator animator*/);
+
+  Fragment getLastIndexFragment(FragmentManager manager, int index);
 
   void safePost(Runnable runnable);
 
@@ -31,6 +31,8 @@ public interface INavigator {
    * @return
    */
   Fragment getCurrentFragment();
+
+  boolean isRootFragment();
 
   /**
    * 获取Fragment pre Fragment

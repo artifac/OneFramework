@@ -1,6 +1,9 @@
 package com.one.framework.provider;
 
 import android.util.SparseArray;
+import com.one.framework.model.ContactModel;
+import com.one.framework.net.model.CarType;
+import com.one.framework.net.model.Entrance;
 import com.one.framework.net.model.OrderDetail;
 import com.one.map.model.Address;
 import java.util.ArrayList;
@@ -17,9 +20,13 @@ public class HomeDataProvider {
   private Address sCurAddress;
   private Map<String, Address> mAdrMap = new HashMap<String, Address>();
   private SparseArray<List<Address>> mSearchResult = new SparseArray<>();
+  private List<CarType> mCarTypes = new ArrayList<>();
 //  private List<Address> mPoiAddress = new ArrayList<Address>();
 
+  private List<ContactModel> mCurContactModels;
   private OrderDetail mOrderDetail;
+
+  private List<Entrance> mEntrances = new ArrayList<>();
 
   private HomeDataProvider() {
 
@@ -59,6 +66,65 @@ public class HomeDataProvider {
 
   public Address obtionPoiAddress(String key) {
     return mAdrMap.get(key);
+  }
+
+  public void saveCarType(List<CarType> carTypes) {
+    if (!mCarTypes.isEmpty()) {
+      mCarTypes.clear();
+    }
+    if (carTypes != null && !carTypes.isEmpty()) {
+      mCarTypes.addAll(carTypes);
+    }
+  }
+
+  /**
+   * 获取车型
+   * @return
+   */
+  public List<CarType> obtainCarTypes() {
+    return mCarTypes;
+  }
+
+  /**
+   * 服务费
+   * @param entrances
+   */
+  public void saveEntrances(List<Entrance> entrances) {
+    if (!mEntrances.isEmpty()) {
+      mEntrances.clear();
+    }
+    mEntrances.addAll(entrances);
+  }
+
+  public List<Entrance> obtainEntrance() {
+    return mEntrances;
+  }
+
+  public Entrance obtainEntranceByTab(int tabType) {
+    if (!mEntrances.isEmpty()) {
+      for (Entrance entrance : mEntrances) {
+        if (entrance.getEntranceTabBizType() == tabType) {
+          return entrance;
+        }
+      }
+    }
+    return null;
+  }
+
+  /**
+   * 保存紧急联系人
+   * @param models
+   */
+  public void saveContact(List<ContactModel> models) {
+    mCurContactModels = models;
+  }
+
+  /**
+   * 获取当前紧急联系人
+   * @return
+   */
+  public List<ContactModel> getContactModels() {
+    return mCurContactModels;
   }
 
   /**

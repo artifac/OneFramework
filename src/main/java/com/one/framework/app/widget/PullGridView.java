@@ -81,6 +81,16 @@ public class PullGridView extends GridView implements IMovePublishListener, IPul
     setOnItemClickListener(this);
   }
 
+  @Override
+  public void setHaveHeaderView(boolean flag) {
+    isHaveHeaderView = flag;
+  }
+
+  @Override
+  public void setHaveFooterView(boolean flag) {
+    isHaveFooterView = flag;
+  }
+
   public void addHeaderView(View v) {
     if (isHaveHeaderView) {
     }
@@ -90,6 +100,16 @@ public class PullGridView extends GridView implements IMovePublishListener, IPul
   public void addFooterView(View v) {
     if (isHaveFooterView) {
     }
+  }
+
+  @Override
+  public void setHeaderView(View view) {
+
+  }
+
+  @Override
+  public void setHeaderView(int layout) {
+
   }
 
   @Override
@@ -237,5 +257,10 @@ public class PullGridView extends GridView implements IMovePublishListener, IPul
   @Override
   public void setItemClickListener(IItemClickListener listener) {
     mItemClickListener = listener;
+  }
+
+  @Override
+  public void setPullCallback(IPullCallback listener) {
+
   }
 }
