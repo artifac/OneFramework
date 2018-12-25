@@ -15,7 +15,7 @@ import android.support.annotation.Nullable;
  */
 
 public class DBContentProvider extends ContentProvider {
-  public static final String AUTHORITY = "com.one.framework.contentprovider";
+  public static final String AUTHORITY = "com.one.framework.content_provider";
   private DBHelper mDBHelper;
   private static UriMatcher sUriMatcher;
 

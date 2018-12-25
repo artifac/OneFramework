@@ -21,8 +21,10 @@ import com.one.framework.app.widget.base.IListItemView.IClickCallback;
 import com.one.framework.app.widget.base.IOptionView.IOptionChange;
 import com.one.framework.dialog.BottomSheetDialog.ISelectResultListener;
 import com.one.framework.dialog.TimePickerDialog;
+import com.one.framework.log.Logger;
 import com.one.framework.model.ContactModel;
 import com.one.framework.provider.HomeDataProvider;
+import com.one.framework.utils.PreferenceUtil;
 import java.util.List;
 
 /**
@@ -44,6 +46,11 @@ public class EmergentFragment extends BaseFragment implements IContactView,
 
   private String mFromTime = "23:00";
   private String mToTime = "05:00";
+
+  private int normalColor = Color.parseColor("#999ba1");
+
+  private int mFromPosition;
+  private int mToPosition;
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,11 +76,11 @@ public class EmergentFragment extends BaseFragment implements IContactView,
     mAddEmergentRoot = view.findViewById(R.id.one_add_emergent_root);
 
     mAutoShareView.setOptionChange(this);
+    normalColor = mAutoShareView.getPosition() == 1 ? Color.parseColor("#02040d") : Color.parseColor("#999ba1");
     mAutoTimeLayout.setLeftImgVisible(false);
     mAutoTimeLayout.setLRMargin(0);
-    mAutoTimeLayout.setItemTitle(getString(R.string.one_emergent_validate_time), 14,
-        Color.parseColor("#999ba1"));
-//    mAutoTimeLayout.setRightTxt("23:00 - 05:00", 14, Color.parseColor("#999ba1"));
+    mAutoTimeLayout.setItemTitle(getString(R.string.one_emergent_validate_time), 14, normalColor);
+    mAutoTimeLayout.setRightTxt(mFromTime + " - " + mToTime, 14, normalColor);
     mTopbarView.setTitleBarBackground(Color.WHITE);
     mTopbarView.hideRightImage(true);
     mTopbarView.setTitleRight(0);
@@ -90,6 +97,9 @@ public class EmergentFragment extends BaseFragment implements IContactView,
 
   @Override
   public void onChange(String key, int position) {
+    normalColor = position == 1 ? Color.parseColor("#02040d") : Color.parseColor("#999ba1");
+    mAutoTimeLayout.setItemColor(normalColor);
+    mAutoTimeLayout.setRightColor(normalColor);
     switch (position) {
       case 0: {
         // off
@@ -101,10 +111,10 @@ public class EmergentFragment extends BaseFragment implements IContactView,
         // on
         showChooseTime();
         mAutoTimeLayout.setClickCallback(this);
-//        mPresenter.autoShareEnable(mFromTime, mToTime);
         break;
       }
     }
+    mAutoShareView.save();
   }
 
   @Override
@@ -134,8 +144,7 @@ public class EmergentFragment extends BaseFragment implements IContactView,
 
   private void updateContactView(final String name, final String phone, final long contactId) {
     for (int i = 0; i < mEmergentContactList.getChildCount(); i++) {
-      ListItemWithRightArrowLayout view = (ListItemWithRightArrowLayout) mEmergentContactList
-          .getChildAt(i);
+      ListItemWithRightArrowLayout view = (ListItemWithRightArrowLayout) mEmergentContactList.getChildAt(i);
       if (((Long) view.getTag()).longValue() == contactId) {
         view.setItemTitle(name, 16, true, Color.parseColor("#02040d"));
         view.setRightTxt(phone, 14, Color.parseColor("#373c43"));
@@ -156,22 +165,18 @@ public class EmergentFragment extends BaseFragment implements IContactView,
       if (inflater == null) {
         return;
       }
-      final ListItemWithRightArrowLayout view = (ListItemWithRightArrowLayout) inflater
-          .inflate(R.layout.one_emergent_item_layout, null);
+      final ListItemWithRightArrowLayout view = (ListItemWithRightArrowLayout) inflater.inflate(R.layout.one_emergent_item_layout, null);
       view.setItemTitle(name, 16, true, Color.parseColor("#02040d"));
       view.setRightTxt(phone, 14, Color.parseColor("#373c43"));
       view.setVisibility(View.VISIBLE);
       view.setLRMargin(0);
       view.setTag(contactId);
-      view.setOnClickListener(new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-          Bundle bundle = new Bundle();
-          bundle.putLong(AddEmergentFragment.EMERGENT_ID, contactId);
-          bundle.putString(AddEmergentFragment.EMERGENT_NAME, name);
-          bundle.putString(AddEmergentFragment.EMERGENT_PHONE, phone);
-          startFragment(bundle, requestUpdateCode);
-        }
+      view.setOnClickListener(v -> {
+        Bundle bundle = new Bundle();
+        bundle.putLong(AddEmergentFragment.EMERGENT_ID, contactId);
+        bundle.putString(AddEmergentFragment.EMERGENT_NAME, name);
+        bundle.putString(AddEmergentFragment.EMERGENT_PHONE, phone);
+        startFragment(bundle, requestUpdateCode);
       });
       mEmergentContactList.addView(view, mEmergentContactList.getChildCount(), params);
       if (mEmergentContactList.getChildCount() >= 5) {
@@ -189,14 +194,11 @@ public class EmergentFragment extends BaseFragment implements IContactView,
 
   private void showChooseTime() {
     TimePickerDialog dataPickerDialog = new TimePickerDialog(getContext())
-        .setSelectResultListener(new ISelectResultListener() {
-          @Override
-          public void onTimeSelect(long time, String... showTime) {
-            // time == 0 不需要
+        .setSelectResultListener((time, showTime) -> {
+          // time == 0 不需要
 //            mPresenter.autoShareEnable(mFromTime, mToTime);
-            mPresenter.autoShareEnable(showTime[0], showTime[1]);
-            mAutoTimeLayout.setRightTxt(showTime[0] + " - " + showTime[1], 14, Color.parseColor("#999ba1"));
-          }
+          mPresenter.autoShareEnable(showTime[0], showTime[1]);
+          mAutoTimeLayout.setRightTxt(showTime[0] + " - " + showTime[1], 14, normalColor);
         });
     dataPickerDialog.show();
   }
@@ -206,10 +208,17 @@ public class EmergentFragment extends BaseFragment implements IContactView,
     mFromTime = from.substring(0, from.lastIndexOf(":"));
     mToTime = to.substring(0, to.lastIndexOf(":"));
 
+    mFromPosition = Integer.parseInt(mFromTime.split(":")[0]);
+    mToPosition = Integer.parseInt(mToTime.split(":")[0]);
+
+    Logger.e("ldx", "mFromPosition " + mFromPosition + " mToPosition " + mToPosition);
+    TimePickerDialog.sFromPosition = mFromPosition;
+    TimePickerDialog.sToPosition = mToPosition;
+
     if (!TextUtils.isEmpty(mFromTime) && !TextUtils.isEmpty(mToTime)) {
-      mAutoTimeLayout.setRightTxt(mFromTime + " - " + mToTime, 14, Color.parseColor("#999ba1"));
+      mAutoTimeLayout.setRightTxt(mFromTime + " - " + mToTime, 14, normalColor);
     } else {
-      mAutoTimeLayout.setRightTxt("23:00 - 05:00", 14, Color.parseColor("#999ba1"));
+      mAutoTimeLayout.setRightTxt("23:00 - 05:00", 14, normalColor);
     }
   }
 

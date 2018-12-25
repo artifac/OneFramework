@@ -5,4 +5,6 @@ public class Constant {
 
   public static final String PARAM_PHONE = "param_phone";
   public static final String PARAM_TOKEN = "accessToken";
+
+  public static final String APP_DOWNLOAD_FILE = "upgrade";
 }

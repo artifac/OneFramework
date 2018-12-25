@@ -1,14 +1,11 @@
 package com.one.framework;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
@@ -19,8 +16,7 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.KeyEvent.Callback;
 import android.view.View;
-import android.widget.Toast;
-import com.igexin.sdk.PushManager;
+import com.mobike.mocha.base.MqttOptions;
 import com.netease.nim.uikit.api.NimUIKit;
 import com.one.framework.app.ads.AdsBean;
 import com.one.framework.app.ads.AdsModel;
@@ -29,7 +25,6 @@ import com.one.framework.app.ads.IAdsPopup;
 import com.one.framework.app.base.BaseActivity;
 import com.one.framework.app.common.SrcCarType;
 import com.one.framework.app.login.ILogin;
-import com.one.framework.app.login.ILogin.ILoginListener;
 import com.one.framework.app.login.Login;
 import com.one.framework.app.login.UserProfile;
 import com.one.framework.app.model.BusinessContext;
@@ -42,8 +37,6 @@ import com.one.framework.app.page.ISlideDrawer;
 import com.one.framework.app.page.ITopbarFragment;
 import com.one.framework.app.page.impl.NavigatorFragment;
 import com.one.framework.app.page.impl.TopBarFragment;
-import com.one.framework.app.service.GetuiIntentService;
-import com.one.framework.app.service.GetuiService;
 import com.one.framework.app.widget.MapCenterPinView;
 import com.one.framework.app.widget.base.IMapCenterPinView;
 import com.one.framework.app.widget.base.ITabIndicatorListener.ITabItemListener;
@@ -51,12 +44,17 @@ import com.one.framework.app.widget.base.ITopTitleView.ClickPosition;
 import com.one.framework.app.widget.base.ITopTitleView.ITopTitleListener;
 import com.one.framework.log.Logger;
 import com.one.framework.manager.ActivityDelegateManager;
+import com.one.framework.model.ContactLists;
+import com.one.framework.mqtt.MqttConfig;
+import com.one.framework.mqtt.MqttLink;
 import com.one.framework.net.Api;
 import com.one.framework.net.model.Entrance;
 import com.one.framework.net.model.OrderDetail;
 import com.one.framework.net.model.OrderTravelling;
 import com.one.framework.net.response.IResponseListener;
 import com.one.framework.provider.HomeDataProvider;
+import com.one.framework.utils.GlobalUtils;
+import com.one.framework.utils.ToastUtils;
 import com.one.map.IMap;
 import com.one.map.MapFragment;
 import com.one.map.model.Address;
@@ -70,9 +68,10 @@ import org.greenrobot.eventbus.EventBus;
  * Created by ludexiang on 2018/3/26.
  */
 
-public class MainActivity extends BaseActivity implements ITabItemListener, ILoginListener {
+public class MainActivity extends BaseActivity implements ITabItemListener {
 
   private ActivityDelegateManager mDelegateManager;
+  public static final int LOGIN_REQUEST_CODE = 1;
   private IMap mMapFragment;
   private ITopbarFragment mTopbarFragment;
   private INavigator mNavigator;
@@ -87,7 +86,6 @@ public class MainActivity extends BaseActivity implements ITabItemListener, ILog
   // 再点一次退出程序时间设置
   private static final long WAIT_TIME = 2000L;
   private long TOUCH_TIME = 0;
-  private static final int REQUEST_PERMISSION = 0;
 
   /**
    * 是否有行程中订单，订单所属业务线
@@ -104,13 +102,16 @@ public class MainActivity extends BaseActivity implements ITabItemListener, ILog
   private boolean isShowAd;
   private AdsModel mAdsModel;
 
+  private MqttLink mqttLink;
+
   private ITopTitleListener mTopTitleListener = new ITopTitleListener() {
     @Override
     public void onTitleItemClick(ClickPosition position) {
       switch (position) {
         case LEFT: {
           if (!mLogin.isLogin()) {
-            mLogin.showLogin(ILogin.DIALOG);
+//            mLogin.showLogin(ILogin.DIALOG);
+            GlobalUtils.login(MainActivity.this, LOGIN_REQUEST_CODE);
             return;
           }
           mDrawerLayout.openDrawer(Gravity.START);
@@ -154,28 +155,11 @@ public class MainActivity extends BaseActivity implements ITabItemListener, ILog
     mNavigatorFragment.setBusinessContext(mBusinessContext);
 
     mLogin = new Login(this);
-    mLogin.setLoginListener(this);
+//    mLogin.setLoginListener(this);
     UserProfile.getInstance(this).setILogin(mLogin);
     lockDrawerLayout(!mLogin.isLogin());
     mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
     mAdsPop = new AdsPopup(this, null);
-
-    PackageManager pkgManager = getPackageManager();
-
-    // 读写 sd card 权限非常重要, android6.0默认禁止的, 建议初始化之前就弹窗让用户赋予该权限
-    boolean sdCardWritePermission =
-        pkgManager.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, getPackageName()) == PackageManager.PERMISSION_GRANTED;
-
-    // read phone state用于获取 imei 设备信息
-    boolean phoneSatePermission =
-        pkgManager.checkPermission(Manifest.permission.READ_PHONE_STATE, getPackageName()) == PackageManager.PERMISSION_GRANTED;
-
-    if (Build.VERSION.SDK_INT >= 23 && !sdCardWritePermission || !phoneSatePermission) {
-      requestPermission();
-    } else {
-      PushManager.getInstance().initialize(getApplicationContext(), GetuiService.class);
-    }
-    PushManager.getInstance().registerPushIntentService(this.getApplicationContext(), GetuiIntentService.class);
 
     // cpu 架构
     Logger.d("ldx", "cpu arch = " + (Build.VERSION.SDK_INT < 21 ? Build.CPU_ABI : Build.SUPPORTED_ABIS[0]));
@@ -193,6 +177,7 @@ public class MainActivity extends BaseActivity implements ITabItemListener, ILog
     }
 
     obtainAds();
+    GlobalUtils.requestAppVersion(this);
 
     mDrawerLayout.addDrawerListener(new DrawerListener() {
       @Override
@@ -217,38 +202,33 @@ public class MainActivity extends BaseActivity implements ITabItemListener, ILog
       }
     });
 
+    initMqtt();
   }
 
-  private void requestPermission() {
-    ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE},
-        REQUEST_PERMISSION);
-  }
-
-  @Override
-  public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-    if (requestCode == REQUEST_PERMISSION) {
-      if ((grantResults.length == 2 && grantResults[0] == PackageManager.PERMISSION_GRANTED
-          && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
-        PushManager.getInstance().initialize(getApplicationContext(), GetuiService.class);
-      } else {
-        Logger.e("ldx", "We highly recommend that you need to grant the special permissions before initializing the SDK, otherwise some "
-            + "functions will not work");
-        PushManager.getInstance().initialize(this.getApplicationContext(), GetuiService.class);
-      }
-    } else {
-      super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
+  private void initMqtt() {
+    MqttConfig config = new MqttConfig(new MqttOptions(this));
+    mqttLink = MqttLink.INSTANCE;
+    mqttLink.init(this , config);
   }
 
   @Override
   protected void onNewIntent(Intent intent) {
     super.onNewIntent(intent);
     Fragment currentFragment = mNavigator.getCurrentFragment();
+    Logger.e("ldx", "MainActivity onNewIntent >>>>> curFragment > " + currentFragment);
     if (currentFragment != null && currentFragment instanceof IComponent) {
       IComponent component = (IComponent) currentFragment;
       component.onNewIntent(intent);
     }
+  }
 
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    Logger.e("ldx", "onActivityResult >>>>>> "+ requestCode + " resultCode " + resultCode);
+    if (requestCode == LOGIN_REQUEST_CODE && resultCode == RESULT_OK) {
+      loginSuccess();
+    }
   }
 
   @Override
@@ -352,20 +332,13 @@ public class MainActivity extends BaseActivity implements ITabItemListener, ILog
     return uriString;
   }
 
-  @Override
-  public void onLoginSuccess() {
-    loginSuccess();
-  }
-
   private void loginSuccess() {
+    Logger.e("ldx", "MainActivity >>> onLoginSuccess");
+    mNavigatorFragment.refreshHeader();
     EventBus.getDefault().post(true);
     requestAppConfig();
+    queryContact();
     obtainAllProjects();
-  }
-
-  @Override
-  public void onLoginFail(String message) {
-
   }
 
   /**
@@ -376,11 +349,13 @@ public class MainActivity extends BaseActivity implements ITabItemListener, ILog
       @Override
       public void onSuccess(OrderTravelling travelling) {
         List<OrderDetail> lists = travelling.getOrderDetail();
+        HomeDataProvider.getInstance().saveOrderDetails(lists);
+
         if (lists != null && !lists.isEmpty()) {
-          OrderDetail selectBizEntrance = lists.get(0);
+          OrderDetail selectBizEntrance = HomeDataProvider.getInstance().obtainOrderDetail();
           mHaveTrippingOrder = selectBizEntrance.getBizType();
           if (mBusinessEntrance != null && !mBusinessEntrance.isEmpty()) {
-            for (TabItem entrance: mBusinessEntrance) {
+            for (TabItem entrance : mBusinessEntrance) {
               if (entrance.tabBizType == mHaveTrippingOrder) {
                 onItemClick(entrance);
               } else {
@@ -388,7 +363,8 @@ public class MainActivity extends BaseActivity implements ITabItemListener, ILog
               }
             }
           }
-          HomeDataProvider.getInstance().saveOrderDetail(selectBizEntrance);
+
+
           Intent intent = new Intent("INTENT_FROM_RECOVERY_ACTION");
           intent.putExtra("recovery_data", selectBizEntrance);
           mLocalBroadcastManager.sendBroadcast(intent);
@@ -439,6 +415,28 @@ public class MainActivity extends BaseActivity implements ITabItemListener, ILog
     });
   }
 
+  /**
+   * 获取紧急联系人
+   */
+  private void queryContact() {
+    Api.queryContact(new IResponseListener<ContactLists>() {
+      @Override
+      public void onSuccess(ContactLists contactLists) {
+        HomeDataProvider.getInstance().saveContact(contactLists.getContactLists());
+      }
+
+      @Override
+      public void onFail(int errCod, String message) {
+
+      }
+
+      @Override
+      public void onFinish(ContactLists contactLists) {
+
+      }
+    });
+  }
+
   private void showAdsPop(AdsBean model) {
     if (mAdsPop != null && (mAdsPop.isShowing() || mAdsPop.giftShowing())) {
       return;
@@ -475,20 +473,16 @@ public class MainActivity extends BaseActivity implements ITabItemListener, ILog
 //      return
 //    }
 //    if (adsPop != null) {
-//      adsPop.release()
+//      adsPop.noMore()
 //    }
 //
-//    trip_gift_view.release()
+//    trip_gift_view.noMore()
     if (System.currentTimeMillis() - TOUCH_TIME < WAIT_TIME) {
-      // TODO: 2018/6/29 do release job
+      // TODO: 2018/6/29 do noMore job
       finish();
     } else {
       TOUCH_TIME = System.currentTimeMillis();
-//      try {
-//        ToastUtils.toast(this, getString(R.string.one_press_again_exit));
-//      } catch (Exception e) {
-//      }
-      Toast.makeText(this, getString(R.string.one_press_again_exit), Toast.LENGTH_SHORT).show();
+      ToastUtils.toast(this, getString(R.string.one_press_again_exit));
     }
   }
 
@@ -501,7 +495,8 @@ public class MainActivity extends BaseActivity implements ITabItemListener, ILog
     if (currentFragment != null && currentFragment instanceof KeyEvent.Callback) {
       boolean flag = ((Callback) currentFragment).onKeyDown(keyCode, event);
       return !flag ? super.onKeyDown(keyCode, event) : flag;
-    } else if (currentFragment == null && mCurrentFragment != null && mCurrentFragment instanceof IComponent) {
+    } else if (currentFragment == null && mCurrentFragment != null
+        && mCurrentFragment instanceof IComponent) {
       // 在首页
       IComponent component = (IComponent) mCurrentFragment;
       if (component.onBackPressed()) {
@@ -543,16 +538,16 @@ public class MainActivity extends BaseActivity implements ITabItemListener, ILog
   protected void onDestroy() {
     super.onDestroy();
     mDelegateManager.notifyOnDestroy();
+    mqttLink.stop();
   }
 
   /**
    * 添加入口
-   * @return
    */
   private List<TabItem> addEntrances() {
     List<TabItem> items = new ArrayList<>();
     List<Entrance> entrances = HomeDataProvider.getInstance().obtainEntrance();
-    for (Entrance entrance: entrances) {
+    for (Entrance entrance : entrances) {
       TabItem tab = new TabItem();
       tab.tab = entrance.getEntranceTab();
       tab.position = entrance.getEntranceTabPosition();

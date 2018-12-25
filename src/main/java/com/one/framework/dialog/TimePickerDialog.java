@@ -19,8 +19,8 @@ public class TimePickerDialog extends BottomSheetDialog implements OnClickListen
   private WheelView mToTime;
   private Button mConfirm;
 
-  private static int sToPosition = 5;
-  private static int sFromPosition = 20;
+  public static int sFromPosition = 23;
+  public static int sToPosition = 5;
 
   public TimePickerDialog(@NonNull Context context) {
     super(context);
@@ -39,20 +39,17 @@ public class TimePickerDialog extends BottomSheetDialog implements OnClickListen
 
     setContentView(view);
 
-    mConfirm.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        dismiss();
-        sFromPosition = mFromTime.getSelectedPosition();
-        sToPosition = mToTime.getSelectedPosition();
+    mConfirm.setOnClickListener(v -> {
+      dismiss();
+      sFromPosition = mFromTime.getSelectedPosition();
+      sToPosition = mToTime.getSelectedPosition();
 
-        String fromTime = mFromTime.getSelectedItem();
-        String toTime = mToTime.getSelectedItem();
+      String fromTime = mFromTime.getSelectedItem();
+      String toTime = mToTime.getSelectedItem();
 
-        Logger.e("ldx", "mFromTime " + fromTime + " toTime " + toTime);
-        if (mListener != null) {
-          mListener.onTimeSelect(0, fromTime, toTime);
-        }
+      Logger.e("ldx", "mFromTime " + fromTime + " toTime " + toTime);
+      if (mListener != null) {
+        mListener.onTimeSelect(0, fromTime, toTime);
       }
     });
   }

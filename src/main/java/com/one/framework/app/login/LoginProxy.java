@@ -13,11 +13,12 @@ import com.one.framework.app.login.ILogin.ILoginVerifyCode;
 import com.one.framework.app.login.UserProfile.User;
 import com.one.framework.log.Logger;
 import com.one.framework.net.Api;
-import com.one.framework.net.base.BaseObject;
 import com.one.framework.net.model.IMLoginInfo;
+import com.one.framework.net.model.LoginModel;
 import com.one.framework.net.model.UserInfo;
 import com.one.framework.net.response.IResponseListener;
 import com.one.framework.utils.PreferenceUtil;
+import com.one.framework.utils.ToastUtils;
 
 public class LoginProxy {
 
@@ -29,31 +30,31 @@ public class LoginProxy {
   }
 
   public void doSms(String phone, ILoginVerifyCode listener) {
-    Api.sendSms(phone, new IResponseListener<BaseObject>() {
+    Api.sendSms(phone, new IResponseListener<LoginModel>() {
       @Override
-      public void onSuccess(BaseObject baseObject) {
+      public void onSuccess(LoginModel login) {
         if (listener != null) {
-          listener.onSuccess();
+          listener.onSuccess(login.isNewUser());
         }
-
       }
 
       @Override
       public void onFail(int errCode, String message) {
+        ToastUtils.toast(mContext, message);
         if (listener != null) {
           listener.onFail();
         }
       }
 
       @Override
-      public void onFinish(BaseObject baseObject) {
+      public void onFinish(LoginModel login) {
 
       }
     });
   }
 
-  public void doLogin(String phone, String verificationCode, ILoginListener loginListener) {
-    Api.doLogin(phone, verificationCode, new IResponseListener<UserInfo>() {
+  public void doLogin(String phone, String verificationCode, String inviteCode, ILoginListener loginListener) {
+    Api.doLogin(phone, verificationCode, inviteCode, new IResponseListener<UserInfo>() {
       @Override
       public void onSuccess(UserInfo userInfo) {
         if (countDown != null) {

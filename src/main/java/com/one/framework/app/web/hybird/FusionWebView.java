@@ -28,15 +28,21 @@ public class FusionWebView extends WebView {
   private boolean isShowProgressBar;
 
   public FusionWebView(Context context) {
-    this(context, null);
+    super(context);
+    initWebView();
   }
 
   public FusionWebView(Context context, AttributeSet attrs) {
-    this(context, attrs, 0);
+    super(context, attrs);
+    initWebView();
   }
 
   public FusionWebView(Context context, AttributeSet attrs, int defStyle) {
     super(context, attrs, defStyle);
+    initWebView();
+  }
+
+  private void initWebView() {
     this.isShowProgressBar = false;
     WebSettings webSettings = this.getSettings();
     webSettings.setPluginState(PluginState.ON);
@@ -48,7 +54,7 @@ public class FusionWebView extends WebView {
     webSettings.setDomStorageEnabled(true);
     webSettings.setCacheMode(LOAD_DEFAULT);
     webSettings.setJavaScriptCanOpenWindowsAutomatically(false);
-    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+    if(VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
       setWebContentsDebuggingEnabled(true);
     }
     if (VERSION.SDK_INT < 18) {
@@ -62,7 +68,7 @@ public class FusionWebView extends WebView {
     try {
       this.mProgressBar = new ProgressBar(this.getContext());
       this.mProgressBar.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 4, 0, 0));
-      ClipDrawable d = new ClipDrawable(new ColorDrawable(Color.parseColor("#f05b48")), Gravity.TOP, ClipDrawable.HORIZONTAL);
+      ClipDrawable d = new ClipDrawable(new ColorDrawable(Color.parseColor("#1665ff")), Gravity.TOP, ClipDrawable.HORIZONTAL);
       this.mProgressBar.setProgressDrawable(d);
       this.mProgressBar.setVisibility(View.GONE);
       this.addView(this.mProgressBar);

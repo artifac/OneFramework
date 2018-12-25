@@ -1,5 +1,7 @@
 package com.trip.taxi.utils
 
+import android.content.Context
+import com.one.framework.app.login.UserProfile
 import com.one.framework.utils.WebpageQueryHelper
 
 object H5Page {
@@ -9,7 +11,7 @@ object H5Page {
 //    var TRIP_CANCEL = String.format(HOST + "/cancel", ENV)
 
 
-    private var host = "https://%staxi.com"
+    private var host = "https://%staxi.mobike.com"
     private var m2host = "https://%sm2.com"
     fun initEnv(env: String) {
         ENV = env + "-"
@@ -84,5 +86,29 @@ object H5Page {
         var map: MutableMap<String, String> = HashMap()
         map.put("accesstoken", accessToken)
         return WebpageQueryHelper.append(String.format(host + "/api/passenger/taxi/mine/profile", ENV), map)
+    }
+
+    public fun feedback(uid : String, token : String): String {
+        var map: MutableMap<String, String> = HashMap()
+        map.put("userId", uid)
+        map.put("accesstoken", token)
+        return WebpageQueryHelper.append(String.format(host + "/api/passenger/taxi/feedback/feedback", ENV), map)
+    }
+
+    public fun serviceInfo(uid : String, token : String): String {
+        var map: MutableMap<String, String> = HashMap()
+        map.put("userId", uid)
+        map.put("accesstoken", token)
+        return WebpageQueryHelper.append(String.format(host + "/api/passenger/taxi/help/service", ENV), map)
+    }
+
+    /**
+     * deeplink 默认加上 accesstoken and userId
+     */
+    fun createDeeplink(context: Context, deeplink: String): String {
+        var map: MutableMap<String, String> = java.util.HashMap()
+        map.put("accesstoken", UserProfile.getInstance(context).tokenValue)
+        map.put("userId", UserProfile.getInstance(context).userId)
+        return WebpageQueryHelper.append(deeplink, map)
     }
 }

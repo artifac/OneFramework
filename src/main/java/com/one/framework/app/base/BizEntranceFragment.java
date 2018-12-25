@@ -58,6 +58,7 @@ public abstract class BizEntranceFragment extends Fragment implements IComponent
   private FragmentManager mFragmentMgr;
   private IRootListener mRootListener;
   private PermissionProxy mPermissionProxy;
+  protected static boolean isHomePage = true;
 
   protected static final String REQUEST_CODE = "requestCode";
 
@@ -132,6 +133,13 @@ public abstract class BizEntranceFragment extends Fragment implements IComponent
    */
   protected boolean isAddLeftClick() {
     return true;
+  }
+
+  /**
+   * 返回键Pop
+   */
+  protected void popBackListener() {
+    mTopbarView.popBackListener();
   }
 
   /**
@@ -380,12 +388,15 @@ public abstract class BizEntranceFragment extends Fragment implements IComponent
     public void onLocationChanged(Address location) {
       if (location != null) {
         isLocationSuccess = true;
-//        updateTitlebar();
-        LocationProvider.getInstance().removeLocationChangedListener(this);
-
+//        LocationProvider.getInstance().removeLocationChangedListener(this);
+        updateMyLocation(location);
       }
     }
   };
+
+  private void updateMyLocation(Address location) {
+    mMap.updateMyLocation(location);
+  }
 
   /**
    * 离开首页
@@ -397,6 +408,8 @@ public abstract class BizEntranceFragment extends Fragment implements IComponent
   public void onLeaveHome() {
     // 锁定DrawerLayout 不允许侧滑
     mNavigator.lockDrawerLayout(true);
+    isHomePage = false;
+    Logger.i(TAG, "onLeaveHome() >> " + isHomePage);
   }
 
   /**
@@ -406,7 +419,8 @@ public abstract class BizEntranceFragment extends Fragment implements IComponent
    */
   @Override
   public void onBackToHome() {
-    Logger.i("ldx", "onBackToHome() >> " + getClass().getCanonicalName());
+    isHomePage = true;
+    Logger.i(TAG, "onBackToHome() >> " + isHomePage);
   }
 
   protected void recoverDefault() {
@@ -415,7 +429,7 @@ public abstract class BizEntranceFragment extends Fragment implements IComponent
     mNavigator.backToRoot();
     mNavigator.lockDrawerLayout(false);
     mPinView.hide(false);
-
+    mMap.showMyLocation();
     doBackHome();
   }
 
@@ -550,6 +564,13 @@ public abstract class BizEntranceFragment extends Fragment implements IComponent
         performBackStackChanged();
       }
     });
+  }
+
+  @Override
+  public void onDestroyView() {
+    super.onDestroyView();
+    Logger.e("BizEntranceFragment", "onDestroyView >>>>>");
+//    popBackListener();
   }
 
   private void performBackStackChanged() {

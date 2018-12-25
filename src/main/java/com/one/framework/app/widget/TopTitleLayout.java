@@ -25,6 +25,7 @@ import java.util.Stack;
  */
 
 public class TopTitleLayout extends RelativeLayout implements ITopTitleView, OnClickListener {
+  private static final String TAG = TopTitleLayout.class.getSimpleName();
 
   private TextView mTitle;
   private ImageView mLeft;
@@ -45,6 +46,8 @@ public class TopTitleLayout extends RelativeLayout implements ITopTitleView, OnC
   private Stack<ITopTitleListener> mClickListenerStack = new Stack<>();
 
   private final int sTitleSize = 17;
+
+  private boolean isSamePage = false;
 
 
   public TopTitleLayout(Context context) {
@@ -76,6 +79,7 @@ public class TopTitleLayout extends RelativeLayout implements ITopTitleView, OnC
     mTitle.setOnClickListener(this);
     mLeft.setOnClickListener(this);
     mRight.setOnClickListener(this);
+    mRightIcon.setOnClickListener(this);
     mLeft.setImageResource(mLeftDefaultResId);
     mRightIcon.setImageResource(mRightDefaultResId);
   }
@@ -186,13 +190,18 @@ public class TopTitleLayout extends RelativeLayout implements ITopTitleView, OnC
     mRight.setVisibility(visible ? View.VISIBLE : View.GONE);
   }
 
+  /**
+   * 设置左上角点击返回List
+   * @param listener
+   */
   @Override
   public void setTopTitleListener(ITopTitleListener listener) {
-    Logger.e("ldx", "titleListener >>>> " + listener + " stack " + mClickListenerStack);
+    Logger.e(TAG, "setTopTitleListener put before stack " + mClickListenerStack);
     if (mClickListenerStack.contains(listener)) {
       return;
     }
     mClickListenerStack.push(listener);
+    Logger.i(TAG, "setTopTitleListener put after stack " + mClickListenerStack);
   }
 
   @Override
@@ -254,6 +263,11 @@ public class TopTitleLayout extends RelativeLayout implements ITopTitleView, OnC
   }
 
   @Override
+  public void setSamePageBack(boolean samePage) {
+    isSamePage = samePage;
+  }
+
+  @Override
   public void onClick(View v) {
     if (mClickListenerStack.size() == 0) {
       return;
@@ -263,16 +277,18 @@ public class TopTitleLayout extends RelativeLayout implements ITopTitleView, OnC
     ITopTitleListener listener;
     int id = v.getId();
     if (id == R.id.one_top_left) {
-      listener = onlyOne ? mClickListenerStack.peek() : mClickListenerStack.pop();
+      Logger.i(TAG, "TopTitleLayout click before >>> " + mClickListenerStack);
+      listener = onlyOne || isSamePage ? mClickListenerStack.peek() : mClickListenerStack.pop();
       if (listener != null) {
         listener.onTitleItemClick(ClickPosition.LEFT);
       }
+      Logger.e(TAG, "TopTitleLayout click after >>> " + mClickListenerStack);
     } else if (id == R.id.one_top_title) {
       listener = mClickListenerStack.peek();
       if (listener != null) {
         listener.onTitleItemClick(ClickPosition.TITLE);
       }
-    } else if (id == R.id.one_top_right) {
+    } else if (id == R.id.one_top_right || id == R.id.one_top_right_icon) {
       listener = mClickListenerStack.peek();
       if (listener != null) {
         listener.onTitleItemClick(ClickPosition.RIGHT);
@@ -285,11 +301,13 @@ public class TopTitleLayout extends RelativeLayout implements ITopTitleView, OnC
     // peek 返回栈顶元素 不移除
     // pop 返回栈顶元素 移除
     boolean onlyOne = mClickListenerStack.size() == 1;
+    Logger.w(TAG, "TopTitleLayout popBack before... onlyOne " + onlyOne + " stack >> " + mClickListenerStack);
     if (onlyOne) {
       mClickListenerStack.peek();
     } else {
       mClickListenerStack.pop();
     }
+    Logger.d(TAG, "TopTitleLayout popBack after... onlyOne " + onlyOne + " stack >> " + mClickListenerStack);
   }
 
   @Override

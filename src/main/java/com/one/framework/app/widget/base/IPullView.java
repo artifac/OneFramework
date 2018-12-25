@@ -9,6 +9,8 @@ import android.view.View;
 
 public interface IPullView {
 
+  int ANIM_DURATION = 200;
+
   /**
    * 获取滚动的距离
    */
@@ -39,14 +41,45 @@ public interface IPullView {
 
   void setHeaderView(View view);
 
-  void setHeaderView(@LayoutRes int layout);
+  void setHeaderView(@LayoutRes int headerViewHeight);
+
+  void setCustomHeaderViewHeight(int layout);
 
   void setHaveFooterView(boolean flag);
 
+  void goonMove(long duration, boolean rollback);
+
   interface IPullCallback {
+
+    /**
+     * 手势下拉时 Move 事件
+     * @param x
+     * @param y
+     */
     void move(float x, float y);
+
+    /**
+     * 放手之后 Up 回调
+     * @param y
+     */
     void up(float y);
+
+    /**
+     * up 之后的move事件(动画)
+     * @param x
+     * @param y
+     */
+    void moveAfterUp(float x, float y);
   }
+
+  interface ILoadListener {
+
+    void onLoadRefresh();
+    void onLoadMore();
+    void onLoadComplete();
+
+  }
+  void setLoadListener(ILoadListener listener);
 
   void setPullCallback(IPullCallback listener);
 }

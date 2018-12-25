@@ -50,7 +50,7 @@ public class CropActivity extends Activity {
 
   private void setTitlebar() {
     mTitleBar = findViewById(R.id.title_bar);
-    mTitleBar.setLeftImage(R.drawable.one_top_bar_back_normal);
+    mTitleBar.setLeftImage(R.drawable.one_top_bar_back_selector);
     mTitleBar.setLeftClickListener(backListener);
     mTitleBar.setTitle("");
     mTitleBar.setRightText(getString(R.string.crop_image_to_use));

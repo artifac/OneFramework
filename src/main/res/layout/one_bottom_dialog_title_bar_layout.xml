@@ -1,30 +1,37 @@
-<RelativeLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
-  android:layout_height="wrap_content"
-  android:background="#f3f3f3">
+  android:layout_height="wrap_content">
 
   <TextView
-    android:id="@+id/one_bottom_dlg_cancel"
+    android:id="@+id/one_bottom_dlg_title"
+    android:textStyle="bold"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_alignParentLeft="true"
-    android:layout_centerVertical="true"
-    android:padding="15dp"
-    android:gravity="center"
-    android:text="@string/one_cancel"
-    android:textColor="#191d21"
-    android:textSize="15sp"/>
-
-  <TextView
-    android:id="@+id/one_bottom_dlg_confirm"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_alignParentRight="true"
+    android:layout_centerInParent="true"
+    android:layout_centerHorizontal="true"
     android:layout_centerVertical="true"
     android:padding="15dp"
     android:gravity="center"
     android:text="@string/one_confirm"
-    android:textColor="#f05b48"
-    android:textSize="15sp"/>
+    android:textColor="#373c43"
+    android:textSize="18sp"/>
+
+  <ImageView
+    android:id="@+id/one_bottom_dlg_cancel"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_alignParentRight="true"
+    android:padding="10dp"
+    android:scaleType="fitXY"
+    android:src="@drawable/one_time_picker_close"/>
+  
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:background="#f0f0f0"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp"
+    android:layout_below="@id/one_bottom_dlg_title"/>
 </RelativeLayout>

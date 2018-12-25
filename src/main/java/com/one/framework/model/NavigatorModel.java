@@ -15,6 +15,9 @@ public class NavigatorModel {
   public static final int CUSTOMER_SERVICE = MY_TRAVEL << 2;
   public static final int SETTING = MY_TRAVEL << 4;
   public static final int MY_WALLET = MY_TRAVEL << 6;
+  public static final int INVITE = MY_TRAVEL << 8;
+
+  public static final int FEEDBACK = MY_TRAVEL << 10;
 
   public String optionsIconUrl; // 小 icon
   public int optionsIconId;

@@ -8,16 +8,18 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
+import android.graphics.Shader;
+import android.graphics.Shader.TileMode;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 import com.one.framework.R;
-import com.one.framework.log.Logger;
 import com.one.framework.utils.UIUtils;
 
 /**
@@ -76,6 +78,14 @@ public class LoadingView extends View {
   private Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
   private Paint mLastPaint = null;
 
+  private int mLineProgressBg;
+  private int mLineProgressForebackground;
+  private int mRound;
+  private RectF mRoundRectF;
+  private RectF mLineProgressRectF;
+  private int mLineProgressStrokeColor;
+  private int mLineProgressStrokeWidth;
+
   public LoadingView(Context context) {
     this(context, null);
   }
@@ -96,10 +106,14 @@ public class LoadingView extends View {
     mLoadingProgressColor = a.getColor(R.styleable.LoadingView_loading_progress_color, Color.parseColor("#f05b48"));
     mLoadingProgressWidth = a.getDimensionPixelOffset(R.styleable.LoadingView_loading_progress_width, 5);
     mLoadingProgressLineStart = a.getInt(R.styleable.LoadingView_loading_line_start, LOADING_LINE_START_POSITION_LEFT);
+    mLineProgressBg = a.getColor(R.styleable.LoadingView_loading_progressBackgroundColor, -1);
+    mLineProgressForebackground = a.getColor(R.styleable.LoadingView_loading_progressForegroundColor, -1);
+    mRound = a.getDimensionPixelOffset(R.styleable.LoadingView_loading_progressRound, 0);
+    mLineProgressStrokeColor = a.getColor(R.styleable.LoadingView_loading_progressStrokeColor, 0);
+    mLineProgressStrokeWidth = a.getDimensionPixelOffset(R.styleable.LoadingView_loading_progressStrokeWidth, 0);
     a.recycle();
 
-    mPointSpace = TypedValue
-        .applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, context.getResources().getDisplayMetrics());
+    mPointSpace = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, context.getResources().getDisplayMetrics());
 
     mScreenWidth = UIUtils.getScreenWidth(getContext());
 
@@ -108,19 +122,22 @@ public class LoadingView extends View {
     mLastPaint.setAntiAlias(true);
     mLastPaint.setStyle(Paint.Style.FILL);
     mLastPaint.setStrokeWidth(mLoadingProgressWidth);
+    if (mLoadingProgressType == LOADING_PROGRESS_LINE) {
+
+    }
   }
 
   @Override
   protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
     super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     mProgressRectF.set(0, 0, getMeasuredWidth(), getMeasuredHeight());
+    mRoundRectF = new RectF(0, 0, getMeasuredWidth(), getMeasuredHeight());
   }
 
   @Override
   protected void onDraw(Canvas canvas) {
     super.onDraw(canvas);
-
-    mPaint.setStrokeCap(Cap.ROUND);
+    mPaint.setStrokeCap(Cap.ROUND); // 圆角
     switch (mLoadingType) {
       case LOADING_POINT: {
         mPaint.setColor(mLoadingColor);
@@ -140,20 +157,53 @@ public class LoadingView extends View {
   }
 
   private void drawLoadingLine(Canvas canvas) {
+
+    mPaint.setStyle(Style.FILL);
+    mPaint.setStrokeCap(Cap.ROUND); // 圆角
+    mPaint.setAntiAlias(true);
+    mPaint.setStrokeWidth(mLoadingProgressWidth);
+
     if (mLastPaintColor != -1) {
       canvas.drawLine(0,0, mScreenWidth, 0, mLastPaint);
     }
 
-    mPaint.setColor(lineProgressBegin ? lineColors[lineColorPosition] : mLoadingProgressColor);
-    mPaint.setStyle(Style.FILL);
-    mPaint.setAntiAlias(true);
-    mPaint.setStrokeWidth(mLoadingProgressWidth);
     switch (mLoadingProgressLineStart) {
       case LOADING_LINE_START_POSITION_LEFT: {
-        canvas.drawLine(0, 0, mLineLeftEnd, 0, mPaint);
+        if (mLineProgressBg != -1) { // 设置了background
+          mPaint.setColor(mLineProgressBg); // 画背景
+          canvas.drawRoundRect(mRoundRectF, mRound, mRound, mPaint);
+        }
+
+        if (mLineProgressStrokeColor != 0 && mLineProgressStrokeWidth != 0) {
+          // 描边
+          mPaint.setStrokeWidth(mLineProgressStrokeWidth);
+          mPaint.setStyle(Style.STROKE);
+          mPaint.setColor(mLineProgressStrokeColor);
+          canvas.drawRoundRect(mRoundRectF, mRound, mRound, mPaint);
+        }
+
+        if (mLineProgressRectF == null) {
+          mLineProgressRectF = new RectF(0, 0, getHeight(), getHeight()); // 默认是一个小圆点
+        }
+        mLineProgressRectF.set(0, 0, mLineLeftEnd <= mLineProgressRectF.right ? mLineProgressRectF.right : mLineLeftEnd, getHeight()); // 进度条
+
+        if (mLineProgressForebackground != -1) { // 前景色
+          Paint shaderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+          shaderPaint.setStyle(Style.FILL);
+          LinearGradient linearGradient = new LinearGradient(0,0, mLineLeftEnd, 0, 0xff319eff, 0xff1665ff, TileMode.CLAMP);
+          shaderPaint.setShader(linearGradient);
+//          mPaint.setColor(mLineProgressForebackground);
+          canvas.drawRoundRect(mLineProgressRectF, mRound, mRound, shaderPaint);
+        }
+
+        mPaint.setStyle(Style.FILL);
+        mPaint.setColor(Color.WHITE);
+        float x = mLineLeftEnd <= mLineProgressRectF.right ? mLineProgressRectF.right : mLineLeftEnd;
+        canvas.drawCircle(x - getHeight() / 2, getHeight() / 2, getHeight() / 3, mPaint);
         break;
       }
       case LOADING_LINE_START_POSITION_CENTER: {
+        mPaint.setColor(lineProgressBegin ? lineColors[lineColorPosition] : mLoadingProgressColor);
         int centerX = UIUtils.getScreenWidth(getContext()) / 2;
         canvas.drawLine(centerX, 0, mLineCenter2Left, 0, mPaint);
         canvas.drawLine(centerX, 0, mLineCenter2Right, 0, mPaint);
@@ -166,7 +216,7 @@ public class LoadingView extends View {
     }
   }
 
-  public synchronized void updateProgressLine(float linePosition) {
+  public synchronized void setProgress(float linePosition) {
     switch (mLoadingProgressLineStart) {
       case LOADING_LINE_START_POSITION_LEFT: {
         mLineLeftEnd = linePosition;
@@ -376,4 +426,5 @@ public class LoadingView extends View {
     }
     mProgressSweep = 0;
   }
+
 }

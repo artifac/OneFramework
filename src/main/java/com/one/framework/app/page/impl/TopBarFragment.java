@@ -76,15 +76,14 @@ public class TopBarFragment extends Fragment implements ITopbarFragment, IScaleL
 
   private void initView(View view) {
     mTopTitleView = (TopTitleLayout) view.findViewById(R.id.one_top_title_layout);
-    mTabParentView = (FrameLayout) view.findViewById(R.id.one_tab_container_parent);
+    mTabParentView = view.findViewById(R.id.one_tab_container_parent);
     mTabIndicator = (TabIndicator) view.findViewById(R.id.one_top_bar_tab_indicator);
-    mMenuView = (ImageView) view.findViewById(R.id.one_top_bar_tab_menu);
+    mMenuView = view.findViewById(R.id.one_top_bar_tab_menu);
 
     mMenuAllView = LayoutInflater.from(getContext()).inflate(R.layout.one_menu_all_grid, null);
-    mPullView = (PullScrollRelativeLayout) mMenuAllView
-        .findViewById(R.id.one_top_bar_menu_pull_view);
-    mPullGridView = (PullGridView) mMenuAllView.findViewById(R.id.one_top_bar_menu_grid_view);
-    mMenuClose = (ImageView) mMenuAllView.findViewById(R.id.one_menu_close);
+    mPullView = mMenuAllView.findViewById(R.id.one_top_bar_menu_pull_view);
+    mPullGridView = mMenuAllView.findViewById(R.id.one_top_bar_menu_grid_view);
+    mMenuClose = mMenuAllView.findViewById(R.id.one_menu_close);
     mMenuAdapter = new TopbarMenuGripAdapter(getContext());
     mPullGridView.setAdapter(mMenuAdapter);
     mPullGridView.setItemClickListener(this);
@@ -267,6 +266,11 @@ public class TopBarFragment extends Fragment implements ITopbarFragment, IScaleL
   @Override
   public void titleBarReset() {
     mTopTitleView.titleReset();
+  }
+
+  @Override
+  public void setSamePageBack(boolean samePageBack) {
+    mTopTitleView.setSamePageBack(samePageBack);
   }
 
   @Override

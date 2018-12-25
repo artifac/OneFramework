@@ -97,20 +97,12 @@ public class SettingsFragment extends BaseFragment implements ISettingView, OnCl
   private void showLogoutDlg() {
     SupportDialogFragment.Builder builder = new SupportDialogFragment.Builder(getActivity())
         .setMessage(getString(R.string.one_logout_message))
-        .setNegativeButton(getString(R.string.one_cancel), new OnClickListener() {
-          @Override
-          public void onClick(View v) {
-            mLogoutDlg.dismiss();
-          }
+        .setNegativeButton(getString(R.string.one_cancel), v -> mLogoutDlg.dismiss())
+        .setPositiveButton(getString(R.string.one_confirm), v -> {
+          mLoading.showDlg();
+          mPresenter.doLogout();
         })
-        .setPositiveButton(getString(R.string.one_confirm), new OnClickListener() {
-          @Override
-          public void onClick(View v) {
-            mLoading.showDlg();
-            mPresenter.doLogout();
-          }
-        })
-        .setPositiveButtonTextColor(Color.parseColor("#A3D2E4"));
+        .setPositiveButtonTextColor(Color.parseColor("#02040d"));
     mLogoutDlg = builder.create();
     mLogoutDlg.show(getFragmentManager(), "");
   }

@@ -1,0 +1,7 @@
+<resources>
+  <dimen name="invite_top_margin">130dp</dimen>
+  <dimen name="invite_code_size">40sp</dimen>
+  <dimen name="invite_share_margin_bottom">30dp</dimen>
+  <dimen name="invite_max_margin_bottom">25dp</dimen>
+  <dimen name="invite_share_margin_top">25dp</dimen>
+</resources>

@@ -20,11 +20,12 @@
 
   <ImageView
     android:id="@+id/one_time_picker_close"
-    android:layout_width="14dp"
-    android:layout_height="14dp"
-    android:layout_marginTop="20dp"
-    android:layout_marginRight="20dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:layout_marginRight="10dp"
     android:layout_alignParentRight="true"
+    android:padding="10dp"
     android:scaleType="fitXY"
     android:src="@drawable/one_time_picker_close"/>
 
@@ -65,18 +66,37 @@
       android:layout_marginLeft="20dp"
       app:wheelGravity="center"/>
 
-    <TextView
-      android:id="@+id/one_data_picker_hour"
-      android:textStyle="bold"
+    <LinearLayout
       android:layout_width="0dp"
-      android:layout_height="match_parent"
+      android:layout_height="wrap_content"
       android:layout_weight="2"
+      android:layout_gravity="center_vertical"
       android:layout_marginTop="10dp"
-      android:layout_gravity="center"
-      android:gravity="center"
-      android:text="@string/one_emergent_time_to"
-      android:textColor="#373c43"
-      android:textSize="18sp"/>
+      android:orientation="vertical">
+
+      <View
+        android:layout_width="match_parent"
+        android:layout_height="0.6dp"
+        android:background="#f0f0f0"/>
+
+      <TextView
+        android:id="@+id/one_data_picker_hour"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="5dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/one_emergent_time_to"
+        android:textColor="#373c43"
+        android:textSize="18sp"/>
+
+      <View
+        android:layout_width="match_parent"
+        android:layout_height="0.6dp"
+        android:background="#f0f0f0"/>
+    </LinearLayout>
 
     <com.one.framework.app.widget.wheelview.WheelView
       android:id="@+id/one_time_picker_to"
@@ -103,10 +123,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="20dp"
-    android:gravity="center"
     android:layout_below="@id/one_time_picker_bottom_separator"
+    android:background="@drawable/one_time_picker_confirm"
+    android:gravity="center"
     android:text="@string/one_sure"
     android:textColor="#ffffff"
-    android:textSize="14sp"
-    android:background="@drawable/one_time_picker_confirm"/>
+    android:textSize="14sp"/>
 </RelativeLayout>

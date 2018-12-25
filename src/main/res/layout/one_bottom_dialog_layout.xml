@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   android:layout_width="fill_parent"
   android:layout_height="fill_parent"
   android:background="@android:color/white"
@@ -11,4 +12,19 @@
     android:id="@+id/one_bottom_dlg_view_group"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"/>
+
+  <com.one.framework.app.widget.TripButton
+    android:id="@id/one_bottom_dlg_confirm"
+    android:layout_width="match_parent"
+    android:layout_height="44dp"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginBottom="10dp"
+    app:btn_radius="4dp"
+    app:enable_color="#373c43"
+    app:text_size="14sp"
+    app:disable_color="@android:color/white"
+    app:text_color="@android:color/white"
+    app:text="@string/one_sure"/>
 </LinearLayout>

@@ -73,6 +73,8 @@ public class WebViewModel implements Serializable {
    */
   public int rightTextResId = -1;
 
+  public int rightIconResId = 0;
+
   public String rightNextUrl = "";
 
 //  public View.OnClickListener rightClickListener;
@@ -87,6 +89,8 @@ public class WebViewModel implements Serializable {
   public boolean isFromBuiness = false;
 
   public boolean isFromPaypal = false;
+
+  public String jsMethod;
 
   public String getTopic() {
     return topic;

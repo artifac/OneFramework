@@ -19,7 +19,6 @@ public class ToastUtils {
    * 要展示的文案
    */
   public static String showStr = "";
-  private static LayoutInflater mInflater;
 
   /**
    * 弹出dialog
@@ -54,18 +53,14 @@ public class ToastUtils {
       return;
     }
 
-    if (mInflater == null) {
-      mInflater = LayoutInflater.from(context);
-    }
-
-    View v = mInflater.inflate(R.layout.one_base_toast_layout, null);
+    View v = LayoutInflater.from(context).inflate(R.layout.one_base_toast_layout, null);
     if (null != v) {
-      TextView msg = (TextView) v.findViewById(R.id.mocha_base_toast_message);
+      TextView msg = v.findViewById(R.id.mocha_base_toast_message);
       if (null == msg) {
         return;
       }
       msg.setText(text);
-      ImageView icon = (ImageView) v.findViewById(R.id.mocha_base_toast_icon);
+      ImageView icon = v.findViewById(R.id.mocha_base_toast_icon);
       if (null != icon && iconResId > 0) {
         icon.setImageResource(iconResId);
         icon.setVisibility(View.VISIBLE);

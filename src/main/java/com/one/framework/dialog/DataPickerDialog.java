@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.TextView;
 import com.one.framework.R;
 import com.one.framework.app.widget.wheelview.CommonWheelView;
 import com.one.framework.app.widget.wheelview.TimeRange;
@@ -32,8 +31,6 @@ public class DataPickerDialog extends BottomSheetDialog {
 
   private int mTimeRangeDays;
 
-
-
   public DataPickerDialog(@NonNull Context context, int timeRange) {
     super(context);
     mTimeRangeDays = timeRange;
@@ -42,7 +39,7 @@ public class DataPickerDialog extends BottomSheetDialog {
   }
 
   private void initView(Context context) {
-    View view = LayoutInflater.from(context).inflate(R.layout.one_data_picker_dialog_layout, null);
+    View view = LayoutInflater.from(context).inflate(R.layout.one_data_picker_dialog_layout, mContentGroup, true);
     //日期滚轮
     mTime = (WheelView) view.findViewById(R.id.one_data_picker_time);
     //小时滚轮
@@ -50,45 +47,35 @@ public class DataPickerDialog extends BottomSheetDialog {
     //分钟滚轮
     mMinute = (WheelView) view.findViewById(R.id.one_data_picker_minute);
 
-    TextView confirm = (TextView) view.findViewById(R.id.one_bottom_dlg_confirm);
-    TextView cancel = (TextView) view.findViewById(R.id.one_bottom_dlg_cancel);
+    mConfirm.setOnClickListener(v -> {
+      dismiss();
+      timePosition = mTime.getSelectedPosition();
+      hourPosition = mHour.getSelectedPosition();
+      minutePosition = mMinute.getSelectedPosition();
 
-    cancel.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        dismiss();
+      int timePosition = mTime.getSelectedPosition();
+      String hourSelected = mHour.getSelectedItem();
+      int hourIndex = hourSelected
+          .lastIndexOf(getContext().getString(R.string.one_dialog_data_picker_hour));
+      String minuteSelected = mMinute.getSelectedItem();
+      int minuteIndex = minuteSelected
+          .lastIndexOf(getContext().getString(R.string.one_dialog_data_picker_minute));
+
+      int hour = Integer.parseInt(hourSelected.substring(0, hourIndex));
+      int minute = Integer.parseInt(minuteSelected.substring(0, minuteIndex));
+      long time = getLongTime(timePosition, hour, minute);
+      Date currTime = new Date(System.currentTimeMillis());
+      Date selectTime = new Date(time);
+      isSameDay = TimeUtils.isInSameDay(currTime, selectTime);
+      isSameHour = TimeUtils.isInSameHour(currTime, selectTime);
+      String showTime = new StringBuffer().append(mTime.getSelectedItem()).append(" ").append("{")
+          .append(hour).append(":").append(minuteSelected.substring(0, minuteIndex)).append("}")
+          .toString();
+      if (mListener != null) {
+        mListener.onTimeSelect(time, showTime);
       }
     });
 
-    confirm.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        dismiss();
-        timePosition = mTime.getSelectedPosition();
-        hourPosition = mHour.getSelectedPosition();
-        minutePosition = mMinute.getSelectedPosition();
-
-        int timePosition = mTime.getSelectedPosition();
-        String hourSelected = mHour.getSelectedItem();
-        int hourIndex = hourSelected.lastIndexOf(getContext().getString(R.string.one_dialog_data_picker_hour));
-        String minuteSelected = mMinute.getSelectedItem();
-        int minuteIndex = minuteSelected.lastIndexOf(getContext().getString(R.string.one_dialog_data_picker_minute));
-
-        int hour = Integer.parseInt(hourSelected.substring(0, hourIndex));
-        int minute = Integer.parseInt(minuteSelected.substring(0, minuteIndex));
-        long time = getLongTime(timePosition, hour, minute);
-        Date currTime = new Date(System.currentTimeMillis());
-        Date selectTime = new Date(time);
-        isSameDay = TimeUtils.isInSameDay(currTime, selectTime);
-        isSameHour = TimeUtils.isInSameHour(currTime, selectTime);
-        String showTime = new StringBuffer().append(mTime.getSelectedItem()).append(" ").append("{").append(hour).append(":").append(minuteSelected.substring(0, minuteIndex)).append("}").toString();
-        if (mListener != null) {
-          mListener.onTimeSelect(time, showTime);
-        }
-      }
-    });
-
-    setContentView(view);
   }
 
   private void setItems() {
@@ -106,8 +93,7 @@ public class DataPickerDialog extends BottomSheetDialog {
         List hourStrList = CommonWheelView.buildHoursByDay(getContext(), mTime, timeRange);
         int newIndexHour = hourStrList.indexOf(mHour.getSelectedItem());
         mHour.setItems(hourStrList, newIndexHour);
-        List minStrList = CommonWheelView
-            .buildMinutesByDayHour(getContext(), mTime, mHour, timeRange);
+        List minStrList = CommonWheelView.buildMinutesByDayHour(getContext(), mTime, mHour, timeRange);
         int newIndexMin = minStrList.indexOf(mMinute.getSelectedItem());
         mMinute.setItems(minStrList, newIndexMin);
       }
@@ -115,7 +101,8 @@ public class DataPickerDialog extends BottomSheetDialog {
     mHour.setOnItemSelectedListener(new WheelView.OnItemSelectedListener() {
       @Override
       public void onItemSelected(int index, String item) {
-        List minStrList = CommonWheelView.buildMinutesByDayHour(getContext(), mTime, mHour, timeRange);
+        List minStrList = CommonWheelView
+            .buildMinutesByDayHour(getContext(), mTime, mHour, timeRange);
         int newIndexMin = minStrList.indexOf(mMinute.getSelectedItem());
         mMinute.setItems(minStrList, newIndexMin);
       }
@@ -146,7 +133,8 @@ public class DataPickerDialog extends BottomSheetDialog {
     int month = calendar.get(Calendar.MONTH) + 1;
     int day = calendar.get(Calendar.DAY_OF_MONTH) + timePosition;
     StringBuffer buffer = new StringBuffer();
-    String time = buffer.append(year).append("-").append(month).append("-").append(day).append(" ").append(hour).append(":").append(minute).append(":").append(0).toString();
+    String time = buffer.append(year).append("-").append(month).append("-").append(day).append(" ")
+        .append(hour).append(":").append(minute).append(":").append(0).toString();
     return TimeUtils.stringToLong(time, "");
   }
 

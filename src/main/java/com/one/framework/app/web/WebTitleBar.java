@@ -1,6 +1,7 @@
 package com.one.framework.app.web;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import com.one.framework.app.widget.TopTitleLayout;
 
@@ -19,6 +20,7 @@ public class WebTitleBar extends TopTitleLayout {
 
   public WebTitleBar(Context context, AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
+    setBackgroundColor(Color.WHITE);
   }
 
   /**

@@ -17,8 +17,10 @@ data class CarType(
         val carName: String,
         @field:SerializedName("startPrice")
         val carStartPrice: Int,
-        @field:SerializedName("normalIcon")
+        @field:SerializedName("normalIcon3X")
         val carNormalIcon: String,
+        @field:SerializedName("selectedIcon3X")
+        val carSelectIcon: String,
         @field:SerializedName("isSelected")
         var isSelected: Boolean
 ) {

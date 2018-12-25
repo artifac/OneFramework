@@ -10,7 +10,7 @@ import android.webkit.WebView;
  */
 public class CommonUrlOverrider implements OverrideUrlLoader {
 
-  private final static String DIDI_DRIVER_DOWNLOAD = "https://static.udache.com/gulfstream/webapp/pages/download-page/download.html?type=0";
+  private final static String DRIVER_DOWNLOAD = "https://static.driver.com/gulfstream/webapp/pages/download-page/download.html?type=0";
 
   @Override
   public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -45,12 +45,12 @@ public class CommonUrlOverrider implements OverrideUrlLoader {
         intent.setData(Uri.parse(url));
         view.getContext().startActivity(intent);
         return true;
-      }*/ else if (url.startsWith("diditravel:")) {
+      }*/ else if (url.startsWith("travel:")) {
         Uri uri = Uri.parse(url);
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         view.getContext().startActivity(intent);
         return true;
-      } else if (url.contains("didipasnger:")) {
+      } else if (url.contains("passenger:")) {
         Uri uri = Uri.parse(url);
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         view.getContext().startActivity(intent);
@@ -64,7 +64,7 @@ public class CommonUrlOverrider implements OverrideUrlLoader {
         Intent mailIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse(url));
         view.getContext().startActivity(mailIntent);
         return true;
-      } else if (url.startsWith("unidriver:")) {
+      } else if (url.startsWith("driver:")) {
         try {
           Uri uri = Uri.parse(url);
           Intent intent = new Intent(Intent.ACTION_VIEW, uri);
@@ -72,7 +72,7 @@ public class CommonUrlOverrider implements OverrideUrlLoader {
         } catch (Exception e) {
           //没有安装司机端
           Intent intent = new Intent(view.getContext(), WebActivity.class);
-          intent.putExtra(WebActivity.KEY_URL, DIDI_DRIVER_DOWNLOAD);
+          intent.putExtra(WebActivity.KEY_URL, DRIVER_DOWNLOAD);
           view.getContext().startActivity(intent);
         }
         return true;

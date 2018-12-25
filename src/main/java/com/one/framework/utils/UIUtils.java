@@ -1,6 +1,10 @@
 package com.one.framework.utils;
 
+import android.app.Service;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -13,8 +17,10 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Build;
+import android.os.Vibrator;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -34,7 +40,7 @@ import java.util.regex.Pattern;
 public class UIUtils {
 
   private static final String FORMAT = "\\{[^}]*\\}";
-  private static final int FORMAT_COLOR = Color.parseColor("#f05b48");
+  private static final int FORMAT_COLOR = Color.parseColor("#373c43");
 
   private static long sLastClickTime = 0;
   private static final long DURATION = 500L;
@@ -42,6 +48,8 @@ public class UIUtils {
   private static Integer sScreenWidth = null;
   private static Integer sScreenHeight = null;
   private static Integer sStatusBarHeight = null;
+
+  private Vibrator mVibrator;
 
   /**
    * 检验是否是快速点击
@@ -54,6 +62,11 @@ public class UIUtils {
   }
 
   public static int dip2pxInt(Context context, float dip) {
+    DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+    return (int) (dip * metrics.density);
+  }
+
+  public static int px2dipInt(Context context, float dip) {
     DisplayMetrics metrics = context.getResources().getDisplayMetrics();
     return (int) (dip * metrics.density);
   }
@@ -208,6 +221,24 @@ public class UIUtils {
   }
 
   /**
+   * 检验是否是手机号码
+   * @param phone
+   * @return
+   */
+  public static boolean isMobileNO(String phone) {
+    Pattern p;
+    Matcher m;
+    boolean isMobile = false;
+    if(!TextUtils.isEmpty(phone)){
+      String regex="^[1](([3][0-9])|([4][5,7,9])|([5][0-9])|([6][6])|([7][3,5,6,7,8])|([8][0-9])|([9][8,9]))[0-9]{8}$";// 验证手机号
+      p = Pattern.compile(regex);
+      m = p.matcher(phone);
+      isMobile = m.matches();
+    }
+    return isMobile;
+  }
+
+  /**
    * view获取bitmap
    *
    * @param addViewContent
@@ -230,7 +261,7 @@ public class UIUtils {
     return bitmap;
   }
 
-  public static CharSequence highlight(String input, String format, int color) {
+  private static CharSequence highlight(String input, String format, int color) {
     Pattern pattern = Pattern.compile(format);
     Matcher matcher = pattern.matcher(input);
 
@@ -259,6 +290,18 @@ public class UIUtils {
     return highlight(input, FORMAT, FORMAT_COLOR);
   }
 
+  /**
+   * 震动
+   * @param context
+   */
+  public static void vibrator(Context context) {
+    if (context != null) {
+      Vibrator vibrator = (Vibrator) context.getSystemService(Service.VIBRATOR_SERVICE);
+      vibrator.vibrate(100);
+      vibrator.cancel();
+    }
+  }
+
   static class Range {
 
     public final int start;
@@ -268,5 +311,17 @@ public class UIUtils {
       this.start = start;
       this.end = end;
     }
+  }
+
+  public static String appName(Context context) {
+    PackageManager manager = context.getPackageManager();
+    try {
+      PackageInfo packageInfo = manager.getPackageInfo(context.getPackageName(), 0);
+      int labelRes = packageInfo.applicationInfo.labelRes;
+      return context.getResources().getString(labelRes);
+    } catch (NameNotFoundException e) {
+      e.printStackTrace();
+    }
+    return "";
   }
 }

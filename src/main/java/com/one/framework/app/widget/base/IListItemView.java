@@ -10,7 +10,7 @@ import android.widget.ImageView.ScaleType;
 
 public interface IListItemView {
 
-  int DEFAULT_COLOR = Color.parseColor("#343c43");
+  int DEFAULT_COLOR = Color.parseColor("#373c43");
   int DEFAULT_SIZE = 14;
 
   void setLeftImgVisible(boolean visible);
@@ -25,13 +25,23 @@ public interface IListItemView {
 
   void setItemTitle(@StringRes int strRes);
 
+  void setItemTitle(@StringRes int strRes, int color);
+
   void setItemTitle(CharSequence title, int size);
 
+  void setItemColor(int color);
+
   void setItemTitle(CharSequence title, int size, int color);
+
+  void setItemTitle(CharSequence title, int size, int color, boolean useUnit);
+
+  void setItemTitle(@StringRes int title, int size, int color, boolean useUnit);
 
   void setItemTitle(CharSequence title, int size, boolean bold, int color);
 
   void setRightTxt(@StringRes int resId);
+
+  void setRightColor(int color);
 
   void setRightTxt(CharSequence rightTxt);
 
@@ -42,6 +52,10 @@ public interface IListItemView {
   void setScriptTxt(CharSequence scriptTxt, int color, int size);
 
   void setClickCallback(IClickCallback callback);
+
+  void setArrowVisible(boolean visible);
+
+  void setSeparatorColor(int color);
 
   void setLRMargin(int margin);
 

@@ -3,17 +3,16 @@ package com.one.framework.app.login;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 import com.one.framework.R;
 import com.one.framework.app.widget.LoadingView;
 import com.one.framework.app.widget.TripButton;
 import com.one.framework.utils.SystemUtils;
+import com.one.framework.utils.ToastUtils;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -72,7 +71,7 @@ public class LoginDialogView extends RelativeLayout {
     String phoneNumber = mLoginInput.getText().toString();
     String phone = phoneNumber.replaceAll(" ", "");
     if (!isChinaPhoneLegal(phone)) {
-      Toast.makeText(getContext(), R.string.one_login_input_right_phone, Toast.LENGTH_LONG).show();
+      ToastUtils.toast(getContext(), getContext().getString(R.string.one_login_input_right_phone));
       return false;
     }
     return true;

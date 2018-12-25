@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   android:layout_width="fill_parent"
-  android:layout_height="fill_parent"
-  android:background="@android:color/white"
-  android:orientation="vertical">
-
-  <include
-    layout="@layout/one_bottom_dialog_title_bar_layout"/>
+  android:layout_height="fill_parent">
 
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:background="@android:color/white">
 
     <com.one.framework.app.widget.wheelview.WheelView
       android:id="@+id/one_data_picker_time"
@@ -36,6 +32,4 @@
       app:wheelGravity="left"/>
 
   </LinearLayout>
-
-
-</LinearLayout>
+</merge>

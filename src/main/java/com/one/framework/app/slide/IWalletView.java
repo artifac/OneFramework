@@ -1,5 +1,7 @@
 package com.one.framework.app.slide;
 
-public interface IWalletView {
+import com.one.framework.net.model.MyWalletModel;
 
+public interface IWalletView {
+  void updateMyWallet(MyWalletModel myWalletModel);
 }

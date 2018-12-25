@@ -38,29 +38,35 @@
   <string name="one_login_input_verification_code">输入验证码</string>
   <string name="one_login_verification_confirm">验证码已发送到:{%1$s}</string>
   <string name="one_login_reobtain_verificode_count_down">重新获取验证码(%1ds)</string>
-  <string name="one_login_recode_count_down">重新获取%1ds</string>
+  <string name="one_login_recode_count_down">重新获取{%1ds}</string>
   <string name="one_login_verificode_fail">获取验证码失败</string>
   <string name="one_login_reobtain_verificode">重新获取验证码</string>
   <string name="one_login_verificode_error">校验验证码错误</string>
   <string name="one_login_skip">跳过</string>
+  <string name="one_login_proto">"点击登录即同意<![CDATA[<font color=\'#1665ff\'>《摩拜用户协议》</font>]]>"</string>
 
   <string name="one_slide_my_trips">我的行程</string>
-  <string name="one_slide_setting">通用设置</string>
   <string name="one_trip_empty_msg">空空如也~</string>
+  <string name="one_trip_order_type_now">实时</string>
+  <string name="one_trip_order_type_book">预约</string>
   <string name="one_dlg_loading">加载中...</string>
   <string name="one_press_again_exit">再按一次退出</string>
   <string name="one_logining">登录中</string>
 
   <string name="one_slide_my_wallet">我的钱包</string>
-  <string name="one_wallet_balance">账户余额</string>
-  <string name="one_wallet_red_bag">我的红包</string>
+  <string name="one_wallet_balance">余额</string>
+  <string name="one_wallet_red_bag">我的优惠券</string>
+  <string name="one_wallet_red_bag_count">%1d 张</string>
   <string name="one_wallet_wechat_no_pwd">微信免密</string>
+  <string name="one_wallet_wechat_toggle_on">已开通</string>
+  <string name="one_wallet_wechat_toggle_off">未开通</string>
   <string-array name="one_wallet_options_toggle">
     <item>开</item>
     <item>关</item>
   </string-array>
   <string name="one_wallet_detail">明细</string>
-  <string name="one_slide_customer_service">客服</string>
+  <string name="one_slide_customer_service">客服中心</string>
+  <string name="one_all_orders">全部订单</string>
 
   <string name="one_settings">设置</string>
   <string name="one_settings_account">账户与安全</string>
@@ -71,6 +77,12 @@
   <string name="one_settings_evaluate">给予好评</string>
   <string name="one_settings_lawer_private">法律条款与隐私政策</string>
   <string name="one_settings_about">关于我们</string>
+  
+  <string name="one_slide_invite_friend">邀请朋友</string>
+  <string name="one_slide_feedback">反馈建议</string>
+  <string name="one_invite_my_code">我的邀请码</string>
+  <string name="one_invite_type">邀请方式</string>
+  <string name="one_invite_max">最多可邀请{%1d}位朋友</string>
 
   <string name="one_normal_adr_home">家</string>
   <string name="one_normal_home_address">家的地址</string>
@@ -81,9 +93,14 @@
   <string name="one_logout_message">确认退出?</string>
 
   <string-array name="one_photos">
-    <item>图库</item>
-    <item>相机</item>
+    <item>拍照</item>
+    <item>从手机相册选择</item>
   </string-array>
+
+  <string name="base_end_pay_meter">计价器金额</string>
+  <string name="base_end_pay_coupon">优惠券抵扣</string>
+  <string name="base_end_pay_balance">余额抵扣</string>
+  <string name="base_end_pay_type">支付方式</string>
 
   <string name="crop_image_to_use">使用</string>
   <string name="crop_image_too_small">剪切的图片太小,请重新选择</string>
@@ -96,6 +113,7 @@
   <string name="emergent_enter_contact">通讯录</string>
   <string name="one_add_emergent">添加紧急联系人</string>
   <string name="one_update_emergent">编辑紧急联系人</string>
+  <string name="one_emergent_empty">未添加任何联系人</string>
   <string name="one_delete_emergent">删除</string>
   <string name="one_del_emergent_title">确认删除</string>
   <string name="one_del_emergent_msg">删除紧急联系人后使用一键报警功能行程将无法自动发送给TA</string>
@@ -105,6 +123,8 @@
   <string name="one_emergent_validate_time_information">该时间段的行程信息会通过短信息自动分享给您的紧急联系人</string>
   <string name="one_emergent_time_to">到</string>
   <string name="one_time_picker_format">%02d</string>
+
+  <string name="one_footer_no_more">没有更多了</string>
 
   <!--个推 begin -->
   <string name="bind_alias">绑定别名</string>
@@ -142,11 +162,20 @@
   <!--个推 end-->
 
   <!-- pay begin -->
-  <string name="pay_dlg_title">支付</string>
+  <string name="pay_dlg_title">请选择支付方式</string>
   <string name="pay_dlg_cur_trip">行程费用</string>
   <string name="pay_dlg_cur_trip_total">共 </string>
   <string name="pay_dlg_cur_trip_fee_unit"> 元</string>
   <string name="pay_dlg_cur_trip_fee_detail">费用明细</string>
   <string name="pay_dlg_pay_fee_confirm">确认支付%1$s元</string>
   <!-- pay end -->
+
+  <!--download begin-->
+  <string name="one_download_reject">残忍拒绝</string>
+  <string name="one_download_upgrade">立即升级</string>
+  <string name="one_download_start">开始下载</string>
+  <string name="one_download_success">下载成功</string>
+  <string name="one_download_error">下载失败</string>
+  <string name="one_download_remove_apk_file">已删除安装包</string>
+  <!--download end-->
 </resources>

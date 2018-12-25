@@ -24,7 +24,7 @@ public class ImageHelper {
   private int mTargetHeight;
   private int mTargetQuality;
 
-  private boolean mNeedResize = true;    //ofo项目不需要压缩图片,所以添加此标记位
+  private boolean mNeedResize = true;
 
   private IImg2StrListener mImage2StringResultListener;
 
@@ -65,7 +65,6 @@ public class ImageHelper {
     }
   }
 
-
   public void handleImageChoose(IImg2StrListener listener) {
     if (listener != null) {
 
@@ -76,7 +75,6 @@ public class ImageHelper {
     }
   }
 
-
   private void showBottomMenu() {
     if (mAvatarMenu == null) {
       mAvatarMenu = new BottomListMenu(mAcContext, mAcContext.findViewById(android.R.id.content),
@@ -85,9 +83,9 @@ public class ImageHelper {
         @Override
         public void onItemSelected(int position, String itemStr) {
           if (position == 0) {
-            dispatchTakePictureIntent();
-          } else if (position == 1) {
             dispatchPickPictureIntent();
+          } else if (position == 1) {
+            dispatchTakePictureIntent();
           }
         }
       });
@@ -95,9 +93,11 @@ public class ImageHelper {
     mAvatarMenu.showDialog();
   }
 
-
+  /**
+   * 拍照
+   */
   private void dispatchTakePictureIntent() {
-    mOutPutFile = FileUtils.getPhotoOutputFile();
+    mOutPutFile = FileUtils.getPhotoOutputFile(mAcContext.getPackageName());
     Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
     if (takePictureIntent.resolveActivity(mAcContext.getPackageManager()) != null) {
       if (mOutPutFile != null) {
@@ -109,6 +109,9 @@ public class ImageHelper {
     }
   }
 
+  /**
+   * 相册
+   */
   private void dispatchPickPictureIntent() {
     Intent pickPictureIntent = new Intent(Intent.ACTION_GET_CONTENT);
     pickPictureIntent.setType(IMAGE_UNSPECIFIED);
@@ -163,8 +166,7 @@ public class ImageHelper {
   private Bitmap loadOriginImage(final Uri uri) {
     Bitmap originBitmap = null;
     try {
-      originBitmap = BitmapFactory
-          .decodeStream(mAcContext.getContentResolver().openInputStream(uri));
+      originBitmap = BitmapFactory.decodeStream(mAcContext.getContentResolver().openInputStream(uri));
     } catch (Exception e) {
       recycleBmp(originBitmap);
     } finally {

@@ -33,6 +33,8 @@ public interface ITopbarFragment {
   void hideRightImage(boolean hide);
   void titleBarReset();
 
+  void setSamePageBack(boolean samePageBack);
+
   void setTitleRight(int txtResId);
 
   void setTitleRight(String right);

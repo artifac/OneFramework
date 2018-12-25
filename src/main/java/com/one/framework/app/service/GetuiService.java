@@ -16,7 +16,7 @@ public class GetuiService extends Service {
 
   @Override
   public void onCreate() {
-    // 该行日志在 release 版本去掉
+    // 该行日志在 noMore 版本去掉
     Logger.d(TAG, TAG + " call -> onCreate -------");
 
     super.onCreate();
@@ -25,7 +25,7 @@ public class GetuiService extends Service {
 
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
-    // 该行日志在 release 版本去掉
+    // 该行日志在 noMore 版本去掉
     Logger.d(TAG, TAG + " call -> onStartCommand -------");
 
     super.onStartCommand(intent, flags, startId);
@@ -34,14 +34,14 @@ public class GetuiService extends Service {
 
   @Override
   public IBinder onBind(Intent intent) {
-    // 该行日志在 release 版本去掉
+    // 该行日志在 noMore 版本去掉
     Logger.d(TAG, "onBind -------");
     return GTServiceManager.getInstance().onBind(intent);
   }
 
   @Override
   public void onDestroy() {
-    // 该行日志在 release 版本去掉
+    // 该行日志在 noMore 版本去掉
     Logger.d(TAG, "onDestroy -------");
 
     super.onDestroy();

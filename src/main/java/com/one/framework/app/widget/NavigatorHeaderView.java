@@ -9,6 +9,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import com.one.framework.R;
 import com.one.framework.app.blur.BlurKit;
 import com.one.framework.app.login.UserProfile;
@@ -25,6 +26,7 @@ import com.trip.taxi.utils.H5Page;
 public class NavigatorHeaderView extends BaseHeaderView implements View.OnClickListener {
   private ImageView mNavigatorHeader;
   private ImageView mHeaderAvator;
+  private TextView mUserName;
 
   public NavigatorHeaderView(@NonNull Context context, int maxScrollHeight) {
     super(context, maxScrollHeight);
@@ -41,6 +43,17 @@ public class NavigatorHeaderView extends BaseHeaderView implements View.OnClickL
   @Override
   protected View createView(Context context) {
     return LayoutInflater.from(context).inflate(R.layout.one_navigator_header_layout, this, true);
+  }
+
+  @Override
+  protected void initView(View view) {
+    super.initView(view);
+    mUserName = view.findViewById(R.id.one_navigator_user);
+  }
+
+  @Override
+  public void setHeaderTitle(String text) {
+    mUserName.setText(text);
   }
 
   @Override

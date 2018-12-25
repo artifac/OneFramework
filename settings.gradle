@@ -1,4 +1,4 @@
-include ':app', ':onemap', ':uikit'/*, ':pay'*/
+include ':app', ':onemap', ':uikit', ':share'
 
 def map = project(':onemap')
 map.projectDir = new File('../OneMap')
@@ -6,5 +6,5 @@ map.projectDir = new File('../OneMap')
 def uikit = project(':uikit')
 uikit.projectDir = new File('../uikit')
 
-//def pay = project(':pay')
-//pay.projectDir = new File('../Pay')
+def share = project(':share')
+share.projectDir = new File('../OneShare')

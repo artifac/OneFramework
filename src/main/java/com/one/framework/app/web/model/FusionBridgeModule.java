@@ -12,7 +12,6 @@ import com.one.framework.app.web.WebViewModel;
 import com.one.framework.app.web.hybird.FusionWebView;
 import com.one.framework.app.web.hybird.IHybridActivity;
 import com.one.framework.app.web.js.CallbackFunction;
-import com.one.framework.app.web.js.ExportNamespace;
 import com.one.framework.app.web.js.JsInterface;
 import com.one.framework.app.web.js.WebViewJsBridge;
 import com.one.framework.app.web.jsbridge.functions.image.ImageCallback;
@@ -30,7 +29,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * //获取App相关信息，如系统信息、设备信息、用户信息、以及地理位置等信息
+ * 获取App相关信息，如系统信息、设备信息、用户信息、以及地理位置等信息
  */
 public class FusionBridgeModule extends BaseHybridModule {
 
@@ -55,7 +54,6 @@ public class FusionBridgeModule extends BaseHybridModule {
     mContext = hybridContainer.getActivity();
     mJavascriptBridge = hybridContainer.getWebView().getWebViewJsBridge();
   }
-
 
   @JsInterface("callHandler")
   public Object callHandler(String handlerName, JSONObject handlerParams,
@@ -293,7 +291,6 @@ public class FusionBridgeModule extends BaseHybridModule {
     if (params != null) {
       final String callback = params.optString("callback");
       if (TextUtils.isEmpty(callback)) {
-        //由于历史原因，ofo使用该分支
         mImageHelper = new ImageHelper(mContext);
         mImageHelper.handleImageChoose(new ImageHelper.IImg2StrListener() {
           @Override

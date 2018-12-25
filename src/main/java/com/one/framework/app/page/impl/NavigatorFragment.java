@@ -3,14 +3,17 @@ package com.one.framework.app.page.impl;
 import static com.one.framework.app.navigation.INavigator.BUNDLE_ADD_TO_BACK_STACK;
 import static com.one.framework.app.navigation.INavigator.BUNDLE_FORWARD_FRAGMENT_STYLE;
 import static com.one.framework.model.NavigatorModel.CUSTOMER_SERVICE;
+import static com.one.framework.model.NavigatorModel.FEEDBACK;
+import static com.one.framework.model.NavigatorModel.INVITE;
 import static com.one.framework.model.NavigatorModel.MY_TRAVEL;
 import static com.one.framework.model.NavigatorModel.MY_WALLET;
 import static com.one.framework.model.NavigatorModel.SETTING;
 
 import android.animation.ValueAnimator;
-import android.animation.ValueAnimator.AnimatorUpdateListener;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,18 +24,25 @@ import com.one.framework.adapter.AbsBaseAdapter;
 import com.one.framework.adapter.impl.NavigatorOptionsAdapter;
 import com.one.framework.adapter.impl.NavigatorOptionsGridAdapter;
 import com.one.framework.app.base.BaseFragment;
+import com.one.framework.app.login.UserProfile;
 import com.one.framework.app.page.ISlideDrawer;
+import com.one.framework.app.slide.InviteFragment;
 import com.one.framework.app.slide.MyTripsFragment;
 import com.one.framework.app.slide.MyWalletFragment;
 import com.one.framework.app.slide.SettingsFragment;
+import com.one.framework.app.web.WebActivity;
+import com.one.framework.app.web.WebViewModel;
+import com.one.framework.app.widget.NavigatorHeaderView;
 import com.one.framework.app.widget.PullGridView;
 import com.one.framework.app.widget.PullListView;
 import com.one.framework.app.widget.PullScrollRelativeLayout;
 import com.one.framework.app.widget.ScrollerLayout;
+import com.one.framework.app.widget.base.IHeaderView;
 import com.one.framework.app.widget.base.IItemClickListener;
 import com.one.framework.app.widget.base.IMovePublishListener;
 import com.one.framework.model.NavigatorModel;
 import com.one.framework.utils.UIUtils;
+import com.trip.taxi.utils.H5Page;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +53,7 @@ import java.util.List;
 public class NavigatorFragment extends BaseFragment implements IMovePublishListener, ISlideDrawer,
     IItemClickListener {
 
+  private IHeaderView mHeaderView;
   private PullScrollRelativeLayout mPullRootLayout;
   private PullListView mNavigatorOptionsList;
   private AbsBaseAdapter mListAdapter;
@@ -63,11 +74,12 @@ public class NavigatorFragment extends BaseFragment implements IMovePublishListe
   }
 
   private void initView(View view) {
-    mPullRootLayout = (PullScrollRelativeLayout) view.findViewById(R.id.one_nav_pull_view_root);
-    mNavigatorOptionsList = (PullListView) view.findViewById(android.R.id.list);
-    mGeneralLayout = (ScrollerLayout) view.findViewById(R.id.one_navigator_general);
-    mOptionsGrid = (PullGridView) view.findViewById(R.id.one_navigator_grid_view);
-    mGridArrow = (ImageView) view.findViewById(R.id.one_navigator_general_arrow);
+    mHeaderView = (NavigatorHeaderView) view.findViewById(R.id.one_navigator_header_view);
+    mPullRootLayout = view.findViewById(R.id.one_nav_pull_view_root);
+    mNavigatorOptionsList = view.findViewById(android.R.id.list);
+    mGeneralLayout = view.findViewById(R.id.one_navigator_general);
+    mOptionsGrid = view.findViewById(R.id.one_navigator_grid_view);
+    mGridArrow = view.findViewById(R.id.one_navigator_general_arrow);
 
     mPullRootLayout.setMoveListener(mNavigatorOptionsList);
     mPullRootLayout.setScrollView(mNavigatorOptionsList);
@@ -91,6 +103,7 @@ public class NavigatorFragment extends BaseFragment implements IMovePublishListe
     int height = getResources().getDimensionPixelOffset(R.dimen.one_general_default_show_height);
     mGeneralDefaultHeight = screeHeight - height - navigatorHeaderHeight;
     mGeneralLayout.setTranslationY(mGeneralDefaultHeight);
+    refreshHeader();
   }
 
   @Override
@@ -133,13 +146,10 @@ public class NavigatorFragment extends BaseFragment implements IMovePublishListe
   private void goonMove(float from, final float to, long duration) {
     ValueAnimator translate = ValueAnimator.ofFloat(from, to);
     translate.setDuration(duration);
-    translate.addUpdateListener(new AnimatorUpdateListener() {
-      @Override
-      public void onAnimationUpdate(ValueAnimator animation) {
-        float animValue = (Float) animation.getAnimatedValue();
-        mGridArrow.setRotation(to == 0 ? 180 : 0);
-        mGeneralLayout.setTranslationY(animValue);
-      }
+    translate.addUpdateListener(animation -> {
+      float animValue = (Float) animation.getAnimatedValue();
+      mGridArrow.setRotation(to == 0 ? 180 : 0);
+      mGeneralLayout.setTranslationY(animValue);
     });
     translate.start();
   }
@@ -162,6 +172,14 @@ public class NavigatorFragment extends BaseFragment implements IMovePublishListe
         break;
       }
       case CUSTOMER_SERVICE: {
+        WebViewModel webViewModel = new WebViewModel();
+        webViewModel.url = H5Page.INSTANCE.serviceInfo(UserProfile.getInstance(getContext()).getUserId(), UserProfile.getInstance(getContext()).getTokenValue());
+        webViewModel.rightTextResId = 0;
+        webViewModel.rightIconResId = 0;
+        webViewModel.jsMethod = "allOrder";
+        Intent intent = new Intent(getActivity(), WebActivity.class);
+        intent.putExtra(WebActivity.KEY_WEB_VIEW_MODEL, webViewModel);
+        startActivity(intent);
         break;
       }
       case SETTING: {
@@ -176,6 +194,23 @@ public class NavigatorFragment extends BaseFragment implements IMovePublishListe
         bundle.putBoolean(BUNDLE_FORWARD_FRAGMENT_STYLE, true);
         bundle.putBoolean(BUNDLE_ADD_TO_BACK_STACK, true);
         forward(MyWalletFragment.class, bundle);
+        break;
+      }
+      case INVITE: {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(BUNDLE_FORWARD_FRAGMENT_STYLE, true);
+        bundle.putBoolean(BUNDLE_ADD_TO_BACK_STACK, true);
+        forward(InviteFragment.class, bundle);
+        break;
+      }
+      case FEEDBACK: {
+        WebViewModel webViewModel = new WebViewModel();
+        webViewModel.url = H5Page.INSTANCE.feedback(UserProfile.getInstance(getContext()).getUserId(), UserProfile.getInstance(getContext()).getTokenValue());
+        webViewModel.rightTextResId = 0;
+        webViewModel.rightIconResId = 0;
+        Intent intent = new Intent(getActivity(), WebActivity.class);
+        intent.putExtra(WebActivity.KEY_WEB_VIEW_MODEL, webViewModel);
+        startActivity(intent);
         break;
       }
     }
@@ -200,15 +235,35 @@ public class NavigatorFragment extends BaseFragment implements IMovePublishListe
     customerService.optionsIconId = R.drawable.one_slide_customer_service;
 
     NavigatorModel general = new NavigatorModel();
-    general.optionsInfo = getString(R.string.one_slide_setting);
+    general.optionsInfo = getString(R.string.one_settings);
     general.optionsType = SETTING;
     general.optionsIconId = R.drawable.one_slide_setting;
+
+    NavigatorModel invite = new NavigatorModel();
+    invite.optionsInfo = getString(R.string.one_slide_invite_friend);
+    invite.optionsType = INVITE;
+    invite.optionsIconId = R.drawable.one_slide_invite;
+
+    NavigatorModel feedback = new NavigatorModel();
+    feedback.optionsInfo = getString(R.string.one_slide_feedback);
+    feedback.optionsType = FEEDBACK;
+    feedback.optionsIconId = R.drawable.one_slide_feedback;
 
     models.add(myOrders);
     models.add(myWallet);
     models.add(customerService);
+    models.add(invite);
+    models.add(feedback);
     models.add(general);
     return models;
+  }
+
+  @Override
+  public void refreshHeader() {
+    String phone = UserProfile.getInstance(getContext()).getMobile();
+    if (!TextUtils.isEmpty(phone)) {
+      mHeaderView.setHeaderTitle(phone.replace(phone.substring(3, 7), "****"));
+    }
   }
 
   @Override

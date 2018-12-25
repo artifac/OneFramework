@@ -12,6 +12,7 @@ import com.one.framework.app.page.ITopbarFragment.TitlePosition;
 @Keep
 public interface ITopTitleView {
 
+  @Keep
   enum ClickPosition {
     LEFT, TITLE, RIGHT
   }
@@ -45,6 +46,11 @@ public interface ITopTitleView {
   void popBackListener();
 
   void titleReset();
+
+  /**
+   * handle 添加紧急联系人 用户点击通讯录时 再点击 x 导致 返回键列表错误
+   */
+  void setSamePageBack(boolean samePage);
 
   View getRightView();
 

@@ -1,6 +1,9 @@
 package com.one.framework.app.slide;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -16,12 +19,11 @@ import android.text.TextWatcher;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.one.framework.R;
 import com.one.framework.adapter.ContactAdapter;
 import com.one.framework.app.base.BaseFragment;
@@ -33,8 +35,11 @@ import com.one.framework.app.widget.TripButton;
 import com.one.framework.app.widget.base.IItemClickListener;
 import com.one.framework.app.widget.base.ITopTitleView.ClickPosition;
 import com.one.framework.dialog.SupportDialogFragment;
+import com.one.framework.log.Logger;
 import com.one.framework.model.ContactModel;
 import com.one.framework.utils.SystemUtils;
+import com.one.framework.utils.ToastUtils;
+import com.one.framework.utils.UIUtils;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -134,6 +139,7 @@ public class AddEmergentFragment extends BaseFragment implements View.OnClickLis
     mListView.setAdapter(mAdapter);
 
     mEmptyView.setImgRes(R.drawable.one_contact_empty);
+    mEmptyView.setTxtRes(R.string.one_emergent_empty);
     mListView.setItemClickListener(this);
   }
 
@@ -148,8 +154,17 @@ public class AddEmergentFragment extends BaseFragment implements View.OnClickLis
 
   @Override
   public void onTitleItemClick(ClickPosition position) {
-    super.onTitleItemClick(position);
     switch (position) {
+      case LEFT: {
+        if (mScrollView.getVisibility() == View.VISIBLE) {
+          mTopbarView.setLeft(R.drawable.one_top_bar_back_selector);
+          mTopbarView.setSamePageBack(false);
+          showContactView(false);
+        } else {
+          super.onTitleItemClick(position);
+        }
+        break;
+      }
       case RIGHT: {
         showDelEmergent();
         break;
@@ -158,15 +173,15 @@ public class AddEmergentFragment extends BaseFragment implements View.OnClickLis
   }
 
   private void showDelEmergent() {
+    if (mDelDlg != null && mDelDlg.isVisible()) {
+      return;
+    }
     final SupportDialogFragment.Builder builder = new SupportDialogFragment.Builder(getContext())
         .setTitle(getString(R.string.one_del_emergent_title))
         .setMessage(getString(R.string.one_del_emergent_msg))
-        .setPositiveButton(getString(R.string.one_del_emergent_confirm), new OnClickListener() {
-          @Override
-          public void onClick(View v) {
-            mDelDlg.dismiss();
-            mContactPresenter.deleteContact(mEmergentId);
-          }
+        .setPositiveButton(getString(R.string.one_del_emergent_confirm), v -> {
+          mDelDlg.dismiss();
+          mContactPresenter.deleteContact(mEmergentId);
         })
         .setPositiveBackgroundMargin(leftMargin, 0, leftMargin, bottomMargin)
         .setPositiveButtonTextColor(Color.parseColor("#ffffff"))
@@ -184,14 +199,20 @@ public class AddEmergentFragment extends BaseFragment implements View.OnClickLis
     model.setPhoneNumber(mPhone.getText().toString());
     if (id == R.id.one_add_emergent_save) {
       if (mRequestCode == 1) {
-        // 保存添加联系人
-        mContactPresenter.addContact(model);
+        if (UIUtils.isMobileNO(mPhone.getText().toString())) {
+          // 保存添加联系人
+          mContactPresenter.addContact(model);
+        } else {
+          mPhone.requestFocus();
+          ToastUtils.toast(getActivity(), getString(R.string.one_login_input_right_phone));
+        }
       } else {
         model.setContactId(mEmergentId);
         mContactPresenter.updateContact(model);
       }
     } else if (id == R.id.one_add) {
       // 通讯录
+      checkPermission();
     }
   }
 
@@ -211,7 +232,7 @@ public class AddEmergentFragment extends BaseFragment implements View.OnClickLis
 
   @Override
   public void onError(int code, String message) {
-
+    ToastUtils.toast(getActivity(), message);
   }
 
   @Override
@@ -220,18 +241,35 @@ public class AddEmergentFragment extends BaseFragment implements View.OnClickLis
     super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     if (requestCode == READ_CONTACT) {
       if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {//判断是否给于权限
-        mContacts.addAll(getContacts());
-//        mAdapter.refreshData(mContacts);
-//        mAdapter.notifyDataSetChanged();
+        fillContactList();
       } else {
-        Toast.makeText(getContext(), "请开启权限", Toast.LENGTH_SHORT).show();
+        ToastUtils.toast(getContext(), "请开启权限");
       }
     }
   }
 
+  /**
+   * 访问通讯录
+   */
+  private void fillContactList() {
+    showContactView(true);
+    mTopbarView.setSamePageBack(true);
+    mTopbarView.setLeft(R.drawable.one_time_picker_close);
+    mContacts.addAll(getContacts());
+    mAdapter.refreshData(mContacts);
+    mAdapter.notifyDataSetChanged();
+  }
+
   @Override
   public void onItemClick(AdapterView<?> adapterView, View view, int position) {
+    ContactModel contact = mAdapter.getItem(position);
+    Logger.e("ldx", "ContactModel >>" + contact);
+    mName.setText(contact.getName());
+    mPhone.setText(contact.getPhoneNumber());
 
+    showContactView(false);
+    mTopbarView.setLeft(R.drawable.one_top_bar_back_selector);
+    mTopbarView.setSamePageBack(false);
   }
 
   private void checkPermission() {
@@ -239,17 +277,15 @@ public class AddEmergentFragment extends BaseFragment implements View.OnClickLis
     if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS) !=
         PackageManager.PERMISSION_GRANTED) {//没有权限需要动态获取
       //动态请求权限
-      ActivityCompat.requestPermissions(getActivity(),
-          new String[]{Manifest.permission.READ_CONTACTS}, READ_CONTACT);
+      ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CONTACTS}, READ_CONTACT);
     } else {
       if (!mContacts.isEmpty()) {
         mContacts.clear();
       }
-      mContacts.addAll(getContacts());
-//      mAdapter.refreshData(mContacts);
-//      mAdapter.notifyDataSetChanged();
+      fillContactList();
     }
   }
+
 
   //查询数据库中手机联系人信息的方法
   private List<ContactModel> getContacts() {
@@ -268,6 +304,9 @@ public class AddEmergentFragment extends BaseFragment implements View.OnClickLis
         //当手机号为空或者没有该字段，跳过循环
         if (TextUtils.isEmpty(phoneNum)) {
           continue;
+        }
+        if (phoneNum.contains(" ")) {
+          phoneNum = phoneNum.replaceAll(" ", "");
         }
         //获取联系人姓名：
         String name = cursor
@@ -312,28 +351,30 @@ public class AddEmergentFragment extends BaseFragment implements View.OnClickLis
     }
   }
 
-  private void showContactView() {
-//    if (mScrollView.getVisibility() == View.VISIBLE) {
-//      return;
-//    }
-//    ObjectAnimator objectAnimator = ObjectAnimator
-//        .ofFloat(mScrollView, "translationY", UIUtils.getScreenHeight(getContext()), 0f);
-//    objectAnimator.addListener(new AnimatorListenerAdapter() {
-//      @Override
-//      public void onAnimationStart(Animator animation) {
-//        super.onAnimationStart(animation);
-//        mScrollView.setVisibility(View.VISIBLE);
-//      }
-//    });
-//    objectAnimator.setInterpolator(new LinearInterpolator());
-//    objectAnimator.setDuration(300);
-//    objectAnimator.start();
-  }
+  private void showContactView(final boolean show) {
+    float from = show ? UIUtils.getScreenHeight(getContext()) : 0f;
+    float to = show ? 0f : UIUtils.getScreenHeight(getContext());
+    ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mScrollView, "translationY", from, to);
+    objectAnimator.addListener(new AnimatorListenerAdapter() {
+      @Override
+      public void onAnimationStart(Animator animation) {
+        super.onAnimationStart(animation);
+        if (show) {
+          mScrollView.setVisibility(View.VISIBLE);
+        }
+      }
 
-  private void checkContactList() {
-//    if (mCurSelected.size() >= 1) {
-//      mScrollView.setVisibility(View.GONE);
-//    }
+      @Override
+      public void onAnimationEnd(Animator animation) {
+        super.onAnimationEnd(animation);
+        if (!show) {
+          mScrollView.setVisibility(View.GONE);
+        }
+      }
+    });
+    objectAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+    objectAnimator.setDuration(300);
+    objectAnimator.start();
   }
 
   @Override

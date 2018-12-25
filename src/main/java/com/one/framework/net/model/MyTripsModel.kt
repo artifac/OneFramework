@@ -28,8 +28,12 @@ data class Trip(
         val tripEndLat: Double,
         @field:SerializedName("endLng")
         val tripEndLng: Double,
+        @field:SerializedName("startTimestamp")
+        val tripStartTime: Long,
         @field:SerializedName("createTime")
         val tripTime: Long,
         @field:SerializedName("bizType")
-        val tripType: Int
+        val tripType: Int,
+        @field:SerializedName("type")
+        val tripOrderType: Int = 1 // 1 -> 实时 2 -> 预约
 )

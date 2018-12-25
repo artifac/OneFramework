@@ -101,7 +101,7 @@ public class FusionWebViewClient extends WebViewClient implements WebViewJsBridg
 
   @Override
   public void executeJs(String js) {
-
+    mWebView.loadUrl(js);
   }
 
   public void callbackJS(CallbackMessage callbackMessage) {

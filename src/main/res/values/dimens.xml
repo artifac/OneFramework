@@ -6,4 +6,5 @@
   <integer name="one_default_page_animation_duration">400</integer>
 
   <dimen name="one_dialog_loading_wh">85dp</dimen>
+
 </resources>

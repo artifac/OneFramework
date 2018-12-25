@@ -3,12 +3,12 @@ package com.one.framework.pay.zfb;
 import android.app.Activity;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 import com.alipay.sdk.app.PayTask;
 import com.one.framework.pay.dialog.PayBottomDlg;
 import com.one.framework.pay.dialog.PayBottomDlg.IPayCallback;
 import com.one.framework.pay.util.OrderInfoUtil2_0;
 import com.one.framework.pay.util.PayResult;
+import com.one.framework.utils.ToastUtils;
 import com.one.framework.utils.UIThreadHandler;
 import java.lang.ref.SoftReference;
 import java.util.Map;
@@ -43,7 +43,7 @@ public class AliPay {
       // 判断resultStatus 为9000则代表支付成功
       if (TextUtils.equals(resultStatus, "9000")) {
         // 该笔订单是否真实支付成功，需要依赖服务端的异步通知。
-        Toast.makeText(mReference.get(), "支付成功", Toast.LENGTH_SHORT).show();
+        ToastUtils.toast(mReference.get(), "支付成功");
 
         dlg.dismiss();
         UIThreadHandler.post(new Runnable() {
@@ -54,7 +54,7 @@ public class AliPay {
         });
       } else {
         // 该笔订单真实的支付结果，需要依赖服务端的异步通知。
-        Toast.makeText(mReference.get(), "支付失败", Toast.LENGTH_SHORT).show();
+        ToastUtils.toast(mReference.get(), "支付失败");
         UIThreadHandler.post(new Runnable() {
           @Override
           public void run() {

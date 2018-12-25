@@ -13,11 +13,11 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import com.one.framework.R;
+import com.one.framework.log.Logger;
 import com.one.framework.utils.UIUtils;
 
 /**
- * Created by ludexiang on 2018/2/9.
- * 带角标的TextView
+ * Created by ludexiang on 2018/2/9. 带角标的TextView
  */
 
 public class ScriptTextView extends AppCompatTextView {
@@ -30,8 +30,7 @@ public class ScriptTextView extends AppCompatTextView {
   private static final int LOC_BOTTOM = 2;
   private RectF rectF = new RectF();
   /**
-   * 角标位置
-   * default bottom
+   * 角标位置 default bottom
    */
   private int scriptLoc;
   private int scriptColor;
@@ -41,6 +40,7 @@ public class ScriptTextView extends AppCompatTextView {
   private int scriptDirection;
   private String scriptText;
   private int scriptSize;
+  private int scriptWidth;
 
   public ScriptTextView(Context context) {
     this(context, null);
@@ -58,6 +58,7 @@ public class ScriptTextView extends AppCompatTextView {
     scriptLoc = a.getInt(R.styleable.ScriptTextView_script_loc, 2);
     scriptSize = a.getDimensionPixelSize(R.styleable.ScriptTextView_script_text_size, 5);
     scriptDirection = a.getInt(R.styleable.ScriptTextView_script_direction, DIRECTION_RIGHT);
+    scriptWidth = a.getDimensionPixelOffset(R.styleable.ScriptTextView_script_width, 0);
     a.recycle();
   }
 
@@ -66,7 +67,7 @@ public class ScriptTextView extends AppCompatTextView {
     super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     if (!TextUtils.isEmpty(scriptText)) {
       RectF rect = getTextWidth((String) getText());
-      setMeasuredDimension((int) (rect.width() + scriptSize * 2), (int) rect.height());
+      setMeasuredDimension((int) (rect.width() + scriptWidth == 0 ? scriptSize * 2 : scriptWidth), (int) rect.height());
       rectF.set(rect);
     }
   }
@@ -80,8 +81,14 @@ public class ScriptTextView extends AppCompatTextView {
 
   @Override
   protected void onDraw(Canvas canvas) {
+    super.onDraw(canvas);
     TextPaint originPaint = getPaint();
+    originPaint.setTextSize(getTextSize());
     FontMetrics originMetrics = originPaint.getFontMetrics();
+    Logger.e("ldx",
+        "Script onDraw >> " + getTextSize() + " originMetrics ascent >" + originMetrics.ascent + " top >"
+            + originMetrics.top + " bottom > " + originMetrics.bottom + " leading >" + originMetrics.leading + " descent >"
+            + originMetrics.descent);
     if (!TextUtils.isEmpty(scriptText)) {
       int restore = canvas.save();
       Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -104,14 +111,14 @@ public class ScriptTextView extends AppCompatTextView {
       } else if (scriptLoc == LOC_MID) {
         y = (rectF.height() - scriptHeight) / 2 + metrics.descent / 2;
       } else if (scriptLoc == LOC_BOTTOM) {
-        y = (rectF.height() - scriptHeight) / 2 + originMetrics.descent / 2; // ascent 是baseline 到字符最高度的距离因为在baseline之上则为负值
+        // ascent 是baseline 到字符最高度的距离因为在baseline之上则为负值
+        y = Math.abs(originMetrics.bottom) + originMetrics.descent;
       }
 
       canvas.translate(x, y);
       canvas.drawText(scriptText, x, y, paint);
       canvas.restoreToCount(restore);
     }
-    super.onDraw(canvas);
   }
 
   /**

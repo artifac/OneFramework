@@ -26,35 +26,71 @@
       android:layout_height="match_parent"
       android:orientation="vertical">
 
-      <com.one.framework.app.widget.ShapeImageView
-        android:id="@+id/one_wallet_image"
+      <TextView
+        android:textStyle="bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/one_slide_my_wallet"
+        android:textColor="#02040d"
+        android:textSize="24sp"/>
+
+      <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="120dp"
-        android:layout_margin="10dp"
-        app:imageType="round"
-        app:rectRoundRadius="2dp"/>
+        android:layout_margin="20dp">
 
+        <com.one.framework.app.widget.ShapeImageView
+          android:id="@+id/one_wallet_image"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:scaleType="fitXY"
+          app:imageType="round"
+          app:rectRoundRadius="4dp"/>
 
-      <com.one.framework.app.widget.ListItemWithRightArrowLayout
-        android:id="@+id/one_wallet_balance"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"/>
+        <TextView
+          android:id="@+id/one_wallet_balance"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textSize="14sp"
+          android:layout_marginTop="30dp"
+          android:layout_marginLeft="20dp"
+          android:text="@string/one_wallet_balance"
+          android:textColor="@android:color/white"/>
+
+        <TextView
+          android:id="@+id/one_wallet_balance_value"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textSize="30sp"
+          android:layout_marginTop="10dp"
+          android:layout_below="@id/one_wallet_balance"
+          android:layout_marginLeft="20dp"
+          android:textColor="@android:color/white"/>
+      </RelativeLayout>
 
       <com.one.framework.app.widget.ListItemWithRightArrowLayout
         android:id="@+id/one_wallet_red_bag"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"/>
+        android:layout_height="60dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"/>
+
+      <com.one.framework.app.widget.ListItemWithRightArrowLayout
+        android:id="@+id/one_wallet_pay_free"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:visibility="gone"/>
 
       <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp">
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:visibility="gone">
 
         <TextView
           android:id="@+id/list_item_info"
@@ -63,9 +99,9 @@
           android:layout_marginLeft="20dp"
           android:layout_centerVertical="true"
           android:layout_toRightOf="@id/list_item_img_view"
+          android:text="@string/one_wallet_wechat_no_pwd"
           android:textColor="#373c43"
-          android:textSize="14sp"
-          android:text="@string/one_wallet_wechat_no_pwd"/>
+          android:textSize="14sp"/>
 
         <com.one.framework.app.widget.OptionsView
           android:id="@+id/one_wallet_wx_options"
@@ -82,19 +118,19 @@
           app:options_foreground_color="#f05b48"
           app:options_min_height="20dp"
           app:options_min_width="20dp"
+          app:options_op="@array/one_wallet_options_toggle"
           app:options_op_key="same_way_now_toggle"
           app:options_text_default_color="#999ba1"
           app:options_text_selected_color="#ffffff"
-          app:options_text_size="10sp"
-          app:options_op="@array/one_wallet_options_toggle"/>
+          app:options_text_size="10sp"/>
       </RelativeLayout>
 
       <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="#f3f3f3"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"/>
+        android:layout_marginRight="10dp"
+        android:background="#f3f3f3"/>
 
     </LinearLayout>
 

@@ -15,6 +15,7 @@ public interface IHeaderView {
   boolean isNeedScroll();
   void setHeaderView(@LayoutRes int layout);
   void setHeaderView(View view);
+  void setHeaderTitle(String text);
   void updateView(View view);
   View getView();
 }

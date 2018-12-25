@@ -1,0 +1,8 @@
+<!-- adapter mi 8 density = 2.75 -->
+<resources>
+  <dimen name="invite_top_margin">180dp</dimen>
+  <dimen name="invite_code_size">42sp</dimen>
+  <dimen name="invite_share_margin_bottom">40dp</dimen>
+  <dimen name="invite_max_margin_bottom">32dp</dimen>
+  <dimen name="invite_share_margin_top">30dp</dimen>
+</resources>

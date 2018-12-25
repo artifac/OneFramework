@@ -10,9 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.one.framework.R;
+import com.one.framework.app.widget.TripButton;
 import java.util.List;
 
 /**
@@ -22,13 +25,16 @@ import java.util.List;
 public class BottomSheetDialog extends Dialog {
 
   private View mSubView;
-  private String mNegativeTxt;
   private View.OnClickListener mNegativeClickListener;
-  private int mNegativeColor;
   private String mPositiveTxt;
   private int mPositiveColor;
+  private String mDlgTitle;
   private View.OnClickListener mPositiveClickListener;
   protected ISelectResultListener mListener;
+
+  protected FrameLayout mContentGroup;
+  private TextView mBottomSheetTitle;
+  protected TripButton mConfirm;
 
   public BottomSheetDialog(@NonNull Context context) {
     this(context, R.style.ActionSheetDialogStyle);
@@ -53,6 +59,8 @@ public class BottomSheetDialog extends Dialog {
     lp.y = 0;//设置Dialog距离底部的距离
 //       将属性设置给窗体
     dialogWindow.setAttributes(lp);
+
+    initView();
   }
 
   public int getGravity() {
@@ -61,37 +69,33 @@ public class BottomSheetDialog extends Dialog {
 
   private void initView() {
     View view = LayoutInflater.from(getContext()).inflate(R.layout.one_bottom_dialog_layout, null);
-    FrameLayout group = (FrameLayout) view.findViewById(R.id.one_bottom_dlg_view_group);
-    TextView cancel = (TextView) view.findViewById(R.id.one_bottom_dlg_cancel);
-    TextView confirm = (TextView) view.findViewById(R.id.one_bottom_dlg_confirm);
-    confirm.setText(TextUtils.isEmpty(mPositiveTxt) ? getContext().getString(R.string.one_confirm)
-        : mPositiveTxt);
-    confirm.setTextColor(mPositiveColor == 0 ? Color.parseColor("#f05b48") : mPositiveColor);
-    cancel.setText(TextUtils.isEmpty(mNegativeTxt) ? getContext().getString(R.string.one_cancel)
-        : mNegativeTxt);
-    cancel.setTextColor(mNegativeColor == 0 ? Color.parseColor("#191d21") : mNegativeColor);
+    mContentGroup = (FrameLayout) view.findViewById(R.id.one_bottom_dlg_view_group);
+    mBottomSheetTitle = (TextView) view.findViewById(R.id.one_bottom_dlg_title);
+    ImageView cancel = (ImageView) view.findViewById(R.id.one_bottom_dlg_cancel);
+    mConfirm = (TripButton) view.findViewById(R.id.one_bottom_dlg_confirm);
+    mConfirm.setTripButtonText(TextUtils.isEmpty(mPositiveTxt) ? getContext().getString(R.string.one_confirm) : mPositiveTxt);
+    mConfirm.setTripButtonTextColor(mPositiveColor == 0 ? Color.WHITE : mPositiveColor);
+    mBottomSheetTitle.setText(mDlgTitle);
     if (mNegativeClickListener != null) {
       cancel.setOnClickListener(mNegativeClickListener);
     } else {
-      cancel.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-          dismiss();
-        }
-      });
+      cancel.setOnClickListener(v -> dismiss());
     }
-    confirm.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        dismiss();
-        if (mPositiveClickListener != null) {
-          mPositiveClickListener.onClick(v);
-        }
+    mConfirm.setOnClickListener(v -> {
+      dismiss();
+      if (mPositiveClickListener != null) {
+        mPositiveClickListener.onClick(v);
       }
     });
-    group.addView(mSubView);
-
+    if (mSubView != null) {
+      mContentGroup.addView(mSubView);
+    }
     setContentView(view);
+  }
+
+  public BottomSheetDialog setBottomSheetTitle(String title) {
+    mBottomSheetTitle.setText(title);
+    return this;
   }
 
   @Override
@@ -109,6 +113,11 @@ public class BottomSheetDialog extends Dialog {
 
     public Builder setContentView(View view) {
       params.view = view;
+      return this;
+    }
+
+    public Builder setDialogTitle(String text) {
+      params.title = text;
       return this;
     }
 
@@ -130,29 +139,8 @@ public class BottomSheetDialog extends Dialog {
       return this;
     }
 
-    public Builder setNegativeButton(String text, View.OnClickListener listener) {
-      params.negativeBtnTxt = text;
-      params.negativeClickListener = listener;
-      return this;
-    }
-
-    public Builder setNegativeButton(String text) {
-      params.negativeBtnTxt = text;
-      return this;
-    }
-
     public Builder setPositiveButtonTextColor(int color) {
       params.positiveBtnColor = color;
-      return this;
-    }
-
-    public Builder setNegativeTextColor(int color) {
-      params.negativeBtnColor = color;
-      return this;
-    }
-
-    public Builder setNegativeText(String text) {
-      params.negativeBtnTxt = text;
       return this;
     }
 
@@ -168,11 +156,10 @@ public class BottomSheetDialog extends Dialog {
     Context context;
     View view;
     List<SheetItem> items;
+    String title;
     int positiveBtnColor;
     String positiveBtnTxt;
-    int negativeBtnColor;
     View.OnClickListener positiveClickListener;
-    String negativeBtnTxt;
     View.OnClickListener negativeClickListener;
 
     public DialogParams(Context context) {
@@ -181,10 +168,9 @@ public class BottomSheetDialog extends Dialog {
 
     void doRender(BottomSheetDialog dialog) {
       dialog.mSubView = view;
-      dialog.mNegativeColor = negativeBtnColor;
       dialog.mPositiveColor = positiveBtnColor;
       dialog.mPositiveTxt = positiveBtnTxt;
-      dialog.mNegativeTxt = negativeBtnTxt;
+      dialog.mDlgTitle = title;
       dialog.mNegativeClickListener = negativeClickListener;
       dialog.mPositiveClickListener = positiveClickListener;
       dialog.initView();

@@ -44,13 +44,10 @@ public class Pay {
       return;
     }
     PayBottomDlg payBottomDlg = new PayBottomDlg(mReference.get(), listener, model);
-    payBottomDlg.setOnDismissListener(new OnDismissListener() {
-      @Override
-      public void onDismiss(DialogInterface dialog) {
-        // 支付成功 将mContext = null 否则 内存泄露
+    payBottomDlg.setOnDismissListener(dialog -> {
+      // 支付成功 将mContext = null 否则 内存泄露
 //        mContext = null;
 //        mReference.clear();
-      }
     });
     payBottomDlg.show();
   }

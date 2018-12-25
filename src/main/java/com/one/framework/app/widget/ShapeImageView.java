@@ -85,14 +85,24 @@ public class ShapeImageView extends AppCompatImageView {
         UIUtils.dip2pxInt(mContext, DEFAULT_BORDER_WIDTH));
     mRectRoundRadius = a.getDimensionPixelSize(R.styleable.ShapeImageView_rectRoundRadius,
         UIUtils.dip2pxInt(mContext, DEFAULT_RECT_ROUND_RADIUS));
+    isFullRadius = a.getBoolean(R.styleable.ShapeImageView_isFullRound, true);
     a.recycle();
 
-    mSpecialRadii = new float[]{
-        mRectRoundRadius, mRectRoundRadius,
-        mRectRoundRadius, mRectRoundRadius,
-        mRectRoundRadius, mRectRoundRadius,
-        mRectRoundRadius, mRectRoundRadius
-    };
+    if (isFullRadius) {
+      mSpecialRadii = new float[]{
+          mRectRoundRadius, mRectRoundRadius,
+          mRectRoundRadius, mRectRoundRadius,
+          mRectRoundRadius, mRectRoundRadius,
+          mRectRoundRadius, mRectRoundRadius
+      };
+    } else {
+      mSpecialRadii = new float[]{
+          mRectRoundRadius, mRectRoundRadius,
+          mRectRoundRadius, mRectRoundRadius,
+          0, 0,
+          0, 0
+      };
+    }
 
   }
 
@@ -313,12 +323,9 @@ public class ShapeImageView extends AppCompatImageView {
             }
             if (clickable) {
               setEnabled(true);
-              setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                  if (mListener != null) {
+              setOnClickListener(view -> {
+                if (mListener != null) {
 //                  mListener.onClick(WebUtils.link(schema));
-                  }
                 }
               });
             }

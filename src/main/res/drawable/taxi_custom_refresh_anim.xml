@@ -1,0 +1,6 @@
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:drawable="@drawable/one_custom_refresh1" android:duration="100"/>
+  <item android:drawable="@drawable/one_custom_refresh2" android:duration="100"/>
+  <item android:drawable="@drawable/one_custom_refresh3" android:duration="100"/>
+  <item android:drawable="@drawable/one_custom_refresh4" android:duration="100"/>
+</animation-list>

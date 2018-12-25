@@ -1,37 +1,64 @@
-<FrameLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="wrap_content">
   <LinearLayout
     android:id="@+id/one_trip_cell_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginRight="10dp"
-    android:layout_marginLeft="10dp"
     android:layout_marginBottom="6dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
     android:background="@drawable/one_trip_bg_selector"
     android:orientation="vertical">
 
     <RelativeLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginTop="10dp"
+      android:layout_marginTop="20dp"
       android:layout_marginBottom="5dp">
       <TextView
         android:id="@+id/one_my_trips_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="17dp"
+        android:layout_alignParentLeft="true"
+        android:textColor="#999ba1"
+        android:textSize="14sp"/>
+
+      <TextView
+        android:id="@+id/one_my_trips_order_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:textSize="16sp"
-        android:layout_alignParentLeft="true"/>
+        android:layout_toRightOf="@id/one_my_trips_time"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:background="@drawable/one_trips_order_type"
+        android:text="实时"
+        android:textColor="#babfca"
+        android:textSize="12sp"/>
+
+      <TextView
+        android:id="@+id/one_my_trips_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:layout_alignParentRight="true"
+        android:drawablePadding="10dp"
+        android:drawableRight="@drawable/one_list_item_common_right_arrow"
+        android:textColor="#999ba1"
+        android:textSize="14sp"/>
 
       <TextView
         android:id="@+id/one_my_trips_type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="10dp"
+        android:layout_alignParentRight="true"
         android:textSize="16sp"
-        android:layout_alignParentRight="true"/>
+        android:visibility="gone"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -46,12 +73,17 @@
           android:id="@+id/one_my_trips_start"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:paddingLeft="10dp"
-          android:textSize="14sp"
-          android:gravity="center_vertical"
+          android:layout_marginTop="20dp"
+          android:paddingLeft="17dp"
           android:drawableLeft="@drawable/one_trip_start_address_point"
           android:drawablePadding="10dp"
-          android:text="start address"/>
+          android:ellipsize="end"
+          android:focusable="false"
+          android:focusableInTouchMode="false"
+          android:gravity="center_vertical"
+          android:lines="1"
+          android:textColor="#02040d"
+          android:textSize="20sp"/>
 
         <View
           android:id="@+id/one_trip_line"
@@ -61,38 +93,45 @@
           android:layout_alignLeft="@id/one_my_trips_start"
           android:layout_below="@id/one_my_trips_start"
           android:background="@drawable/one_trip_dot_line"
-          android:layerType="software"/>
+          android:layerType="software"
+          android:visibility="gone"/>
 
         <TextView
           android:id="@+id/one_my_trips_end"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_below="@id/one_trip_line"
-          android:paddingLeft="10dp"
-          android:textSize="14sp"
-          android:gravity="center_vertical"
+          android:layout_marginTop="10dp"
+          android:layout_marginBottom="20dp"
+          android:layout_below="@id/one_my_trips_start"
+          android:paddingLeft="17dp"
           android:drawableLeft="@drawable/one_trip_end_address_point"
           android:drawablePadding="10dp"
-          android:text="end address"/>
+          android:ellipsize="end"
+          android:focusable="false"
+          android:focusableInTouchMode="false"
+          android:gravity="center_vertical"
+          android:lines="1"
+          android:textColor="#02040d"
+          android:textSize="20sp"/>
 
       </RelativeLayout>
 
 
-      <TextView
-        android:id="@+id/one_my_trips_status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:layout_marginRight="10dp"
-        android:textColor="#c3c3c3"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"/>
+      <!--<TextView-->
+      <!--android:id="@+id/one_my_trips_status"-->
+      <!--android:layout_width="wrap_content"-->
+      <!--android:layout_height="wrap_content"-->
+      <!--android:layout_marginRight="10dp"-->
+      <!--android:layout_alignParentRight="true"-->
+      <!--android:layout_centerVertical="true"-->
+      <!--android:textColor="#c3c3c3"-->
+      <!--android:textSize="14sp"/>-->
     </RelativeLayout>
 
     <View
       android:layout_width="match_parent"
       android:layout_height="0.5dp"
-      android:background="#e3e3e3"
-      android:layout_marginTop="10dp"/>
+      android:layout_marginTop="10dp"
+      android:background="#e3e3e3"/>
   </LinearLayout>
 </FrameLayout>

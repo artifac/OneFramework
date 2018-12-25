@@ -2,6 +2,7 @@ package com.one.framework.app.login;
 
 import android.support.annotation.IntDef;
 import com.one.framework.net.model.UserInfo;
+import java.io.Serializable;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -27,7 +28,7 @@ public interface ILogin {
   /**
    * 登录接口
    */
-  interface ILoginListener {
+  interface ILoginListener extends Serializable {
     void onLoginSuccess();
     void onLoginFail(String message);
   }
@@ -36,7 +37,7 @@ public interface ILogin {
    * 验证码
    */
   interface ILoginVerifyCode {
-    void onSuccess();
+    void onSuccess(boolean isNewUser);
     void onFail();
   }
 

@@ -35,7 +35,7 @@ public class SettingPresenter {
           public void onFinish(BaseObject baseObject) {
             UserProfile.getInstance(mContext).logout(); // clear data
             DBUtil.deleteTables(mContext); // clear table
-            HomeDataProvider.getInstance().saveOrderDetail(null);
+            HomeDataProvider.getInstance().clearOrderDetails();
             NIMClient.getService(AuthService.class).logout();
             mView.logout();
           }

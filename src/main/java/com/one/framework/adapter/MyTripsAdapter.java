@@ -33,6 +33,7 @@ public class MyTripsAdapter extends AbsBaseAdapter<Trip, TripsHolder> {
   protected void initView(View view, TripsHolder holder) {
     holder.tripCellLayout = (LinearLayout) view.findViewById(R.id.one_trip_cell_layout);
     holder.tripTime = (TextView) view.findViewById(R.id.one_my_trips_time);
+    holder.tripOrderType = view.findViewById(R.id.one_my_trips_order_type);
     holder.tripType = (TextView) view.findViewById(R.id.one_my_trips_type);
     holder.tripStart = (TextView) view.findViewById(R.id.one_my_trips_start);
     holder.tripEnd = (TextView) view.findViewById(R.id.one_my_trips_end);
@@ -46,10 +47,14 @@ public class MyTripsAdapter extends AbsBaseAdapter<Trip, TripsHolder> {
       params.topMargin = UIUtils.dip2pxInt(mContext, 6);
       holder.tripCellLayout.setLayoutParams(params);
     }
-    holder.tripTime.setText(TimeUtils.longToString(model.getTripTime(), "yyyy-MM.dd"));
+    holder.tripTime.setText(TimeUtils.longToString(model.getTripStartTime(), "M月d日 HH:mm"));
     holder.tripType.setText(SrcCarType.getBizName(model.getTripType()));
     holder.tripStart.setText(model.getTripStart());
     holder.tripEnd.setText(model.getTripEnd());
+    holder.tripOrderType.setText(model.getTripOrderType() == 1 ? mContext.getString(R.string.one_trip_order_type_now) : mContext.getString(R.string.one_trip_order_type_book));
+//    holder.tripOrderType.setTextColor(model.getTripOrderType() == 1 ? Color.parseColor("#1665ff") : Color.parseColor("#f05b48"));
+//    holder.tripOrderType.setBackgroundResource(model.getTripOrderType() == 1 ? R.drawable.one_trips_order_type
+//        : R.drawable.one_trips_order_type_book);
     OrderStatus status = OrderStatus.fromStateCode(model.getTripStatus());
     switch (status) {
       case CONFIRMED_PRICE:
@@ -74,6 +79,7 @@ public class MyTripsAdapter extends AbsBaseAdapter<Trip, TripsHolder> {
   class TripsHolder {
     LinearLayout tripCellLayout;
     TextView tripTime;
+    TextView tripOrderType;
     TextView tripType;
     TextView tripStart;
     TextView tripEnd;

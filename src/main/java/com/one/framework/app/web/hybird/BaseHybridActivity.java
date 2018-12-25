@@ -1,8 +1,6 @@
 package com.one.framework.app.web.hybird;
 
 import android.app.Activity;
-import android.graphics.Color;
-import android.support.v4.app.FragmentActivity;
 import com.one.framework.app.base.BaseActivity;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -16,35 +14,27 @@ public abstract class BaseHybridActivity extends BaseActivity implements IHybrid
     return this;
   }
 
-  public abstract FusionWebView getWebView();
-
   public Object getExportModuleInstance(Class exportClass) {
     Object instance = this.cachedModuleInstance.get(exportClass);
     if (instance == null) {
       try {
         Constructor constructor = exportClass.getConstructor(IHybridActivity.class);
         instance = constructor.newInstance(this);
-      } catch (InstantiationException var4) {
-        var4.printStackTrace();
-      } catch (IllegalAccessException var5) {
-        var5.printStackTrace();
-      } catch (InvocationTargetException var6) {
-        var6.printStackTrace();
-      } catch (NoSuchMethodException var7) {
-        var7.printStackTrace();
+      } catch (InstantiationException e) {
+        e.printStackTrace();
+      } catch (IllegalAccessException e) {
+        e.printStackTrace();
+      } catch (InvocationTargetException e) {
+        e.printStackTrace();
+      } catch (NoSuchMethodException e) {
+        e.printStackTrace();
       }
 
       if (instance != null) {
         this.cachedModuleInstance.put(exportClass, instance);
       }
     }
-
     return instance;
-  }
-
-  @Override
-  protected int getStatusBarColor() {
-    return Color.parseColor("#e3e3e3");
   }
 
   @Override

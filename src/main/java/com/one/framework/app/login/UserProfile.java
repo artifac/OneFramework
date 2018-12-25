@@ -35,7 +35,7 @@ public class UserProfile {
   private static final String KEY_TOEKN_VALUE = "token_value";
   private static final String KEY_MOBILE_VALUE = "mobile_value";
   private static final String KEY_USERID_VALUE = "user_id_value";
-  private static final String KEY_PUSH_KEY = "push_value";
+  private static final String KEY_PUSH_KEY = "push_id";
 
 
   public static UserProfile getInstance(Context context, User user) {

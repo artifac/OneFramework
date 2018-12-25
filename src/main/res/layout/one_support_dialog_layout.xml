@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:layout_gravity="center"
@@ -9,6 +10,8 @@
     android:id="@+id/one_support_dialog_body"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp"
     android:layout_gravity="center"
     android:background="@drawable/one_support_dialog_shape_bg"
     android:gravity="center">
@@ -17,9 +20,15 @@
       android:id="@+id/echo_dialog_top"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginLeft="27dp"
-      android:layout_marginRight="27dp"
       android:orientation="vertical">
+
+      <com.one.framework.app.widget.ShapeImageView
+        android:id="@+id/one_support_dialog_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        app:imageType="round"
+        app:rectRoundRadius="4dp"/>
 
       <TextView
         android:id="@+id/one_support_dialog_title"
@@ -34,22 +43,30 @@
 
       <TextView
         android:id="@+id/one_support_dialog_message"
-        android:textStyle="bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:paddingTop="15dp"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:gravity="center"
+        android:lineSpacingExtra="3dp"
         android:text="message"
         android:textColor="#999ba1"
         android:textSize="14sp"/>
 
       <TextView
         android:id="@+id/one_support_dialog_message_no_title"
-        android:textStyle="bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:paddingTop="22dp"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:gravity="center"
+        android:lineSpacingExtra="3dp"
         android:text="message"
         android:textColor="#999ba1"
         android:textSize="14sp"
@@ -97,13 +114,13 @@
           android:layout_height="40dp"
           android:gravity="center"
           android:text="cancel"
-          android:textColor="#999999"
+          android:textColor="#999ba1"
           android:textSize="14sp"/>
       </LinearLayout>
 
       <View
         android:id="@+id/one_support_dialog_line"
-        android:layout_width="1px"
+        android:layout_width="0.5dp"
         android:layout_height="20dp"
         android:layout_gravity="center"
         android:background="#f0f0f0"/>
@@ -123,7 +140,7 @@
           android:layout_height="40dp"
           android:gravity="center"
           android:text="confirm"
-          android:textColor="#ffffff"
+          android:textColor="#373c43"
           android:textSize="14sp"/>
 
       </LinearLayout>
@@ -135,8 +152,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginTop="91dp"
-    android:layout_centerHorizontal="true"
     android:layout_below="@id/one_support_dialog_body"
+    android:layout_centerHorizontal="true"
     android:layout_gravity="center_horizontal"
     android:src="@drawable/one_support_dlg_close"/>
 </RelativeLayout>

@@ -10,5 +10,6 @@ import java.util.List;
 public interface ISlideDrawer extends IComponent {
   void setListOptions(List<NavigatorModel> listOptions);
   void setGridOptions(List<NavigatorModel> gridOptions);
+  void refreshHeader();
   void recoveryDefault(); // 恢复默认
 }

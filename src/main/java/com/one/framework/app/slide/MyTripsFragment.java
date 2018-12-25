@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.widget.AdapterView;
 import com.one.framework.R;
 import com.one.framework.adapter.AbsBaseAdapter;
@@ -14,12 +16,13 @@ import com.one.framework.app.base.BaseFragment;
 import com.one.framework.app.common.SrcCarType;
 import com.one.framework.app.login.UserProfile;
 import com.one.framework.app.widget.EmptyView;
-import com.one.framework.app.widget.LoadingView;
 import com.one.framework.app.widget.PullListView;
 import com.one.framework.app.widget.PullScrollRelativeLayout;
 import com.one.framework.app.widget.base.IItemClickListener;
+import com.one.framework.app.widget.base.IPullView;
+import com.one.framework.app.widget.base.IPullView.ILoadListener;
 import com.one.framework.app.widget.base.IPullView.IPullCallback;
-import com.one.framework.log.Logger;
+import com.one.framework.app.widget.refresh.CustomRefreshView;
 import com.one.framework.net.Api;
 import com.one.framework.net.model.MyTripsModel;
 import com.one.framework.net.model.OrderDetail;
@@ -32,14 +35,16 @@ import org.greenrobot.eventbus.EventBus;
  * Created by ludexiang on 2018/6/21.
  */
 
-public class MyTripsFragment extends BaseFragment implements IItemClickListener, IPullCallback {
+public class MyTripsFragment extends BaseFragment implements IItemClickListener, IPullCallback, ILoadListener {
 
   private PullScrollRelativeLayout mMoveParentLayout;
   private PullListView mListView;
-  private LoadingView mRefreshLoadingView;
+  private CustomRefreshView mRefreshView;
   private AbsBaseAdapter mAdapter;
   private EmptyView mEmptyView;
-
+  private final int LIMIT = 10;
+  private boolean noMore = false;
+  private boolean isVibrate = false;
   private int pageOffset = 0;
 
   @Override
@@ -52,11 +57,13 @@ public class MyTripsFragment extends BaseFragment implements IItemClickListener,
   }
 
   private void initView(View view) {
-    mMoveParentLayout = (PullScrollRelativeLayout) view.findViewById(R.id.one_my_trips_parent_layout);
-    mRefreshLoadingView = (LoadingView) view.findViewById(R.id.one_my_trips_refresh_loading);
-    mListView = (PullListView) view.findViewById(android.R.id.list);
-    mEmptyView = (EmptyView) view.findViewById(R.id.empty_view);
+    mMoveParentLayout = view.findViewById(R.id.one_my_trips_parent_layout);
+    mRefreshView = view.findViewById(R.id.one_my_trips_refresh);
+    mListView = view.findViewById(android.R.id.list);
+    mEmptyView = view.findViewById(R.id.empty_view);
 
+    int viewHeight = UIUtils.getViewHeight(mRefreshView);
+    mListView.setCustomHeaderViewHeight(viewHeight);
     mMoveParentLayout.setScrollView(mListView);
     mMoveParentLayout.setMoveListener(mListView);
     mAdapter = new MyTripsAdapter(getActivity());
@@ -68,18 +75,43 @@ public class MyTripsFragment extends BaseFragment implements IItemClickListener,
     mTopbarView.setTitleRight(0);
 
     mListView.setEmptyView(mEmptyView);
-    loadData(pageOffset, false);
+    loadData(pageOffset, true);
     mListView.setItemClickListener(this);
     mListView.setPullCallback(this);
+    mListView.setLoadListener(this);
   }
 
   private void loadData(int pageIndex, final boolean isRefresh) {
-    Api.myTrips(UserProfile.getInstance(getContext()).getUserId(), pageIndex, 10, new IResponseListener<MyTripsModel>() {
+    Api.myTrips(UserProfile.getInstance(getContext()).getUserId(), pageIndex, LIMIT, new IResponseListener<MyTripsModel>() {
       @Override
       public void onSuccess(MyTripsModel myTripsModel) {
         fillList(myTripsModel, isRefresh);
-        mRefreshLoadingView.stop();
-        mRefreshLoadingView.setVisibility(View.GONE);
+
+        if (isRefresh) {
+          mRefreshView.stopAnim(new AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+              noMore = false;
+              isVibrate = false;
+              mRefreshView.releaseResources();
+              mListView.goonMove(IPullView.ANIM_DURATION, true);
+              mListView.canLoadMore();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+          });
+        } else {
+          noMore = myTripsModel.getTripList() == null || myTripsModel.getTripList().size() < LIMIT;
+          mListView.releaseFootView(noMore ? true : false);
+        }
       }
 
       @Override
@@ -97,7 +129,7 @@ public class MyTripsFragment extends BaseFragment implements IItemClickListener,
   @Override
   public void onItemClick(AdapterView<?> adapterView, View view, int position) {
     mLoading.showDlg();
-    Trip currentTrip = (Trip) mAdapter.getItem(position);
+    Trip currentTrip = (Trip) mAdapter.getItem(position - mListView.getHeaderViewsCount());
     Api.tripDetail(currentTrip.getTripType(), currentTrip.getOrderId(),
         new IResponseListener<OrderDetail>() {
           @Override
@@ -111,7 +143,6 @@ public class MyTripsFragment extends BaseFragment implements IItemClickListener,
 
           @Override
           public void onFail(int errCode, String message) {
-            Logger.e("ldx", "MyTripFragments tripDetail Fail " + errCode);
           }
 
           @Override
@@ -132,25 +163,53 @@ public class MyTripsFragment extends BaseFragment implements IItemClickListener,
   }
 
   @Override
-  public void move(float x, float y) {
-    if (y > 0) {
-      mRefreshLoadingView.setVisibility(View.VISIBLE);
-      mRefreshLoadingView.updateProgressLine(y * 2f);
-    } else {
-      mRefreshLoadingView.setVisibility(View.GONE);
+  public void move(float x, float offsetY) {
+    if (mRefreshView != null && offsetY > 0 && mAdapter.getCount() > 0) {
+      int transY = (int) (mRefreshView.getTranslationY() + offsetY);
+      if (transY > 0 && !isVibrate) {
+        isVibrate = true;
+        UIUtils.vibrator(getActivity());
+      }
+      mRefreshView.setTranslationY(transY);
+    }
+  }
+
+  @Override
+  public void moveAfterUp(float x, float animFraction) {
+    if (mRefreshView != null) {
+      mRefreshView.setTranslationY(mRefreshView.getTranslationY() * animFraction);
     }
   }
 
   @Override
   public void up(float y) { // y ACTION_UP 所保存的值
-    boolean canRefresh = y * 2 >= UIUtils.getScreenWidth(getContext()) / 2;
-    if (canRefresh) {
-      mRefreshLoadingView.startLineProgress();
-      refreshData();
-    } else {
-      mRefreshLoadingView.stop();
-      mRefreshLoadingView.setVisibility(View.GONE);
+    if (mRefreshView != null) {
+      boolean canRefresh = y >= mRefreshView.getRefreshHeight();
+      if (canRefresh) {
+        mRefreshView.startAnim();
+        refreshData();
+      } else {
+        mRefreshView.releaseResources();
+      }
     }
+  }
+
+  @Override
+  public void onLoadRefresh() {
+
+  }
+
+  @Override
+  public void onLoadMore() {
+    if (!noMore) {
+      pageOffset++;
+      loadData(pageOffset, false);
+    }
+  }
+
+  @Override
+  public void onLoadComplete() {
+
   }
 
   private void refreshData() {

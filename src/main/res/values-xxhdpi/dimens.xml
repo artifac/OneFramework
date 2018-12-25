@@ -1,0 +1,8 @@
+<!-- adapter dpi 480 1080 x 1920 density = 3.0 -->
+<resources>
+  <dimen name="invite_top_margin">140dp</dimen>
+  <dimen name="invite_code_size">35sp</dimen>
+  <dimen name="invite_share_margin_bottom">30dp</dimen>
+  <dimen name="invite_max_margin_bottom">25dp</dimen>
+  <dimen name="invite_share_margin_top">25dp</dimen>
+</resources>

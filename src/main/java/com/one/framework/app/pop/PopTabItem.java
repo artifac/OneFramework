@@ -14,6 +14,9 @@ public class PopTabItem {
   public static final int CANCEL_ORDER = 1;
   public static final int CONNECT_SERVICE = 2;
   public static final int EMERGENCY_CONTACT = 3;
+  public static final int SAFE_110 = 4;
+  public static final int SHARE_TRIP = 5;
+
   public PopTabItem(String tab) {
     this.tab = tab;
   }
@@ -26,7 +29,7 @@ public class PopTabItem {
 
   @Target({ElementType.FIELD})
   @Retention(RetentionPolicy.RUNTIME)
-  @IntDef({CANCEL_ORDER, CONNECT_SERVICE, EMERGENCY_CONTACT})
+  @IntDef({CANCEL_ORDER, CONNECT_SERVICE, EMERGENCY_CONTACT, SAFE_110, SHARE_TRIP})
   public @interface PopTabItemType {
 
   }

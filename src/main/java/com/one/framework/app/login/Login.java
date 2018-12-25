@@ -2,7 +2,6 @@ package com.one.framework.app.login;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -11,27 +10,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-import com.netease.nim.uikit.api.NimUIKit;
-import com.netease.nim.uikit.business.uinfo.UserInfoHelper;
-import com.netease.nimlib.sdk.NIMClient;
-import com.netease.nimlib.sdk.RequestCallback;
-import com.netease.nimlib.sdk.auth.AuthService;
-import com.netease.nimlib.sdk.auth.LoginInfo;
 import com.one.framework.R;
-import com.one.framework.app.login.ILogin.ILoginCountDownTimer;
-import com.one.framework.app.login.UserProfile.User;
 import com.one.framework.app.login.VerificationCodeView.OnCodeFinishListener;
 import com.one.framework.app.widget.LoadingView;
 import com.one.framework.app.widget.TripButton;
 import com.one.framework.dialog.LoginDialog;
-import com.one.framework.log.Logger;
-import com.one.framework.net.Api;
-import com.one.framework.net.base.BaseObject;
-import com.one.framework.net.model.IMLoginInfo;
-import com.one.framework.net.model.UserInfo;
-import com.one.framework.net.response.IResponseListener;
-import com.one.framework.utils.PreferenceUtil;
 import com.one.framework.utils.ToastUtils;
 import com.one.framework.utils.UIUtils;
 
@@ -93,7 +76,10 @@ public class Login implements ILogin {
         loginLoading.setVisibility(View.VISIBLE);
         loginLoadingView.setRepeatCount(-1).setConfigWaitTime(5);
 
-        mLoginProxy.doLogin(mobilePhone, content, new ILoginListener() {
+        /**
+         * 弹窗登录页 默认不传邀请码 default ""
+         */
+        mLoginProxy.doLogin(mobilePhone, content, "", new ILoginListener() {
           @Override
           public void onLoginSuccess() {
             loginDialog.dismiss();
@@ -104,7 +90,7 @@ public class Login implements ILogin {
 
           @Override
           public void onLoginFail(String message) {
-            Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+            ToastUtils.toast(mContext, message);
             loginLoadingView.release();
             loginLoading.setVisibility(View.GONE);
             if (mLoginListener != null) {
@@ -139,7 +125,7 @@ public class Login implements ILogin {
       final LoadingView loading, final TextView phoneArea) {
     mLoginProxy.doSms(mobilePhone, new ILoginVerifyCode() {
       @Override
-      public void onSuccess() {
+      public void onSuccess(boolean isNew) {
         title.setText(R.string.one_login_input_verification_code);
         verifiLayout.setVisibility(View.VISIBLE);
         phoneArea.setVisibility(View.INVISIBLE);
@@ -171,12 +157,7 @@ public class Login implements ILogin {
 
       @Override
       public void onFail() {
-//        try {
-//          ToastUtils.toast(mContext, mContext.getString(R.string.one_login_verificode_fail));
-//        } catch (Exception e) {
-//        }
-        Toast.makeText(mContext, mContext.getString(R.string.one_login_verificode_fail),
-            Toast.LENGTH_SHORT).show();
+        ToastUtils.toast(mContext, mContext.getString(R.string.one_login_verificode_fail));
         loading.setVisibility(View.GONE);
         next.setTripButtonText(R.string.one_login_next);
       }

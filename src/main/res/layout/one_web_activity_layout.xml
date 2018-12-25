@@ -4,18 +4,18 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:fitsSystemWindows="true"
-  android:orientation="vertical">
+  android:orientation="vertical"
+  android:background="@android:color/white">
 
   <com.one.framework.app.web.WebTitleBar
     android:id="@+id/web_title_bar"
     android:layout_width="match_parent"
     android:layout_height="50dp"
-    android:layout_alignParentTop="true"/>
+    android:background="@android:color/white"/>
 
   <FrameLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_below="@id/web_title_bar">
+    android:layout_height="match_parent">
 
     <com.one.framework.app.web.BaseWebView
       android:id="@+id/web_view"

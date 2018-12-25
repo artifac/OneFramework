@@ -25,6 +25,7 @@
     android:hint="请输入姓名"
     android:textColor="#02040d"
     android:textColorHint="#999ba1"
+    android:textCursorDrawable="@drawable/edittext_cursor_color_bg"
     android:textSize="16sp"/>
 
   <TextView
@@ -75,6 +76,7 @@
     android:maxLength="11"
     android:textColor="#02040d"
     android:textColorHint="#999ba1"
+    android:textCursorDrawable="@drawable/edittext_cursor_color_bg"
     android:textSize="16sp"/>
 
   <com.one.framework.app.widget.TripButton
@@ -95,8 +97,6 @@
     android:id="@+id/one_contact_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="10dp"
-    android:layout_marginRight="10dp"
     android:background="@drawable/one_contact_list_bg"
     android:visibility="gone">
 

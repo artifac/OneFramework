@@ -108,7 +108,12 @@ public class PullGridView extends GridView implements IMovePublishListener, IPul
   }
 
   @Override
-  public void setHeaderView(int layout) {
+  public void setHeaderView(int headerViewHeight) {
+
+  }
+
+  @Override
+  public void setCustomHeaderViewHeight(int layout) {
 
   }
 
@@ -220,10 +225,11 @@ public class PullGridView extends GridView implements IMovePublishListener, IPul
 
   private void selfScrollerUp(boolean bottom2Up, boolean isFling) {
     int tranlationY = (int) getTranslationY();
-    goonMove(200);
+    goonMove(ANIM_DURATION, false);
   }
 
-  private void goonMove(long duration) {
+  @Override
+  public void goonMove(long duration, boolean rollback) {
     ValueAnimator translate = ValueAnimator.ofFloat(1f, 0f);
     translate.setDuration(duration);
     translate.addUpdateListener(new AnimatorUpdateListener() {
@@ -261,6 +267,11 @@ public class PullGridView extends GridView implements IMovePublishListener, IPul
 
   @Override
   public void setPullCallback(IPullCallback listener) {
+
+  }
+
+  @Override
+  public void setLoadListener(ILoadListener listener) {
 
   }
 }

@@ -1,5 +1,7 @@
 package com.one.framework.app.web;
 
+import static com.one.framework.app.web.FileChooserManager.REQUEST_CODE_SELECT_PIC;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -45,11 +47,10 @@ public class WebActivity extends BaseHybridActivity {
   public static final String KEY_TITLE = "title";
   public static final String KEY_COUPON_ID = "getSelectedCouponID";
 
-
   private View mRootView;
 
   private WebTitleBar mWebTitleBar;
-  private BaseWebView mWebView;
+  private static BaseWebView mWebView;
 
   private View mErrorView;            //出错信息视图
   private ImageView mErrorImage;      //错误图片
@@ -71,7 +72,7 @@ public class WebActivity extends BaseHybridActivity {
   private OverrideUrlLoaderSet mUrlOverriders = new OverrideUrlLoaderSet();
 
   private boolean mTitleByJs = false;
-
+  private FileChooserManager mFileChooseManager;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -93,7 +94,7 @@ public class WebActivity extends BaseHybridActivity {
         mFusionWebModel.canChangeWebViewTitle = false;
       }
     } else {
-      Logger.e("ldx","WebActivity can not get WebViewModel from extra data, exit.");
+      Logger.e("ldx", "WebActivity can not get WebViewModel from extra data, exit.");
       finishWithResultCodeCanceled();
       return;
     }
@@ -122,23 +123,25 @@ public class WebActivity extends BaseHybridActivity {
 
   private void setupViews() {
     mRootView = findViewById(R.id.root_view);
-    mWebTitleBar = (WebTitleBar) findViewById(R.id.web_title_bar);
+    mWebTitleBar = findViewById(R.id.web_title_bar);
     if (mFusionWebModel != null && !TextUtils.isEmpty(mFusionWebModel.title)) {
       mWebTitleBar.setTitleName(mFusionWebModel.title);
     }
+
     mWebTitleBar.setCloseVisible(false);
     mWebTitleBar.setRightVisible(mFusionWebModel.rightTextResId == -1 ? false : true);
     mWebTitleBar.setRightResId(mFusionWebModel.rightTextResId, Color.BLACK);
-    mWebTitleBar.setLeftImage(R.drawable.one_top_bar_back_normal);
+    mWebTitleBar.setRightImage(mFusionWebModel.rightIconResId);
+    mWebTitleBar.setLeftImage(R.drawable.one_top_bar_back_selector);
     mWebTitleBar.setOnBackClickListener(mOnBackClickListener);
     mWebTitleBar.setOnCloseClickListener(mOnCloseClickListener);
     mWebTitleBar.setOnMoreClickListener(mOnRightClickListener);
 
     mErrorView = findViewById(R.id.web_error_view);
-    mErrorImage = (ImageView) findViewById(R.id.web_error_image);
-    mErrorText = (TextView) findViewById(R.id.web_error_text);
+    mErrorImage = findViewById(R.id.web_error_image);
+    mErrorText = findViewById(R.id.web_error_text);
 
-    mWebView = (BaseWebView) findViewById(R.id.web_view);
+    mWebView = findViewById(R.id.web_view);
     mWebView.setDownloadListener(new DownloadListener() {
       @Override
       public void onDownloadStart(String url, String userAgent, String contentDisposition,
@@ -153,19 +156,19 @@ public class WebActivity extends BaseHybridActivity {
         }
       }
     });
+    mWebView.requestFocus(View.FOCUS_DOWN);
     mWebView.setWebViewClient(new ToneWebViewClient(mWebView));
     mWebView.setWebViewSetting(mFusionWebModel);
 
     appendUserAgent(mWebView);
+    mJsBridge = getFusionBridge();
 
-    new FileChooserManager(this).setFileChooserListener(mWebView);
+    mFileChooseManager = new FileChooserManager(this);
+    mFileChooseManager.setFileChooserListener(mWebView);
 
     addOverrideUrlLoader(new CommonUrlOverrider());
     addOverrideUrlLoader(new TicketUrlOverrider(this));
-
-    mJsBridge = getFusionBridge();
   }
-
 
   private void openUrl(String url) {
     url = appendQueryParams(url);
@@ -180,16 +183,14 @@ public class WebActivity extends BaseHybridActivity {
     Uri uri = Uri.parse(url);
 
     //添加公共参数
-//    if (WebConfigStore.getInstance().isWhiteUrl(url, this)) {    //白名单域名添加公共参数和token
-      if (mFusionWebModel.isPostBaseParams || mFusionWebModel.isAddCommonParam) {
-        List<Pair<String, String>> commonQueryList = WebURLWriter.combineBaseWebInfoAsPairList(this);
-        uri = WebURLWriter.appendUriQuery(uri, commonQueryList);
-      } else {
-        if (url.contains("token") && !mFusionWebModel.isFromBuiness
-            && !mFusionWebModel.isFromPaypal) {
-          uri = WebURLWriter.replaceUriParameter(uri, "token", UserProfile.getInstance(this).getTokenValue());
-        }
+    if (mFusionWebModel.isPostBaseParams || mFusionWebModel.isAddCommonParam) {
+      List<Pair<String, String>> commonQueryList = WebURLWriter.combineBaseWebInfoAsPairList(this);
+      uri = WebURLWriter.appendUriQuery(uri, commonQueryList);
+    } else {
+      if (url.contains("accesstoken") && !mFusionWebModel.isFromBuiness && !mFusionWebModel.isFromPaypal) {
+        uri = WebURLWriter.replaceUriParameter(uri, "accesstoken", UserProfile.getInstance(this).getTokenValue());
       }
+    }
 //    }
 
     //添加自定义参数
@@ -197,7 +198,6 @@ public class WebActivity extends BaseHybridActivity {
 
     return uri.toString();
   }
-
 
   private BroadcastReceiver mBroadcastReceiver = null;
 
@@ -217,45 +217,7 @@ public class WebActivity extends BaseHybridActivity {
     return mOrientationMonitor;
   }
 
-
-//  @Override
-//  public void updateUI(final String uiTarget, final Object... value) {
-//    super.updateUI(uiTarget, value);
-//    if (!TextUtils.isEmpty(uiTarget)) {
-//      runOnUiThread(new Runnable() {
-//        @Override
-//        public void run() {
-//          if (FusionBridgeModule.UI_TARGET_WEB_TITLE.equals(uiTarget) && value != null
-//              && value[0] instanceof String) {
-//            if (!mFusionWebModel.canChangeWebViewTitle && !TextUtils
-//                .isEmpty(mFusionWebModel.title)) {
-//              return;
-//            }
-//
-//            mWebTitleBar.setTitleName((String) value[0]);
-//            mTitleByJs = true;
-//          } else if (ShareEntranceModule.UI_TARGET_INIT_ENTRANCE.equals(uiTarget) && value != null
-//              && value[0] instanceof List) {
-//            mWebViewToolModelList = (List<WebViewToolModel>) value[0];
-//          } else if (ShareEntranceModule.UI_TARGET_SHOW_ENTRANCE.equals(uiTarget)) {
-//            CallbackFunction jsCallback = (CallbackFunction) value[0];
-//            String h5MethodName = (String) value[1];
-//            showEntrance(jsCallback, h5MethodName);
-//          } else if (ShareEntranceModule.UI_TARGET_INVOKE_ENTRANCE.equals(uiTarget)) {
-//            CallbackFunction jsCallback = (CallbackFunction) value[0];
-//            invokeEntrance(jsCallback);
-//          } else if (ShareEntranceModule.UI_TARGET_HIDE_ENTRANCE.equals(uiTarget)) {
-//            hideEntrance();
-//          }
-//        }
-//      });
-//
-//    }
-//  }
-
-
   /****************************生命周期或系统回调方法****************************/
-
 
   @Override
   protected void onResume() {
@@ -264,7 +226,6 @@ public class WebActivity extends BaseHybridActivity {
       mWebView.onResume();
     }
   }
-
 
   @Override
   protected void onPause() {
@@ -288,6 +249,12 @@ public class WebActivity extends BaseHybridActivity {
   @Override
   public boolean onKeyDown(int keyCode, KeyEvent event) {
     if (keyCode == KeyEvent.KEYCODE_BACK) {
+      if (mFileChooseManager.isShowing()) {
+        // 选择图片 弹出选择框之后 点击返回键 此处 REQUEST_CODE_SELECT_PIC || REQUEST_CODE_CAPTURE_PIC 任意 只是为了让其回调onReceiveValue(null)不阻塞
+        mFileChooseManager.onActivityResult(REQUEST_CODE_SELECT_PIC, RESULT_CANCELED, null);
+        mFileChooseManager.dismiss();
+        return true;
+      }
       goBack(true);
       return true;
     }
@@ -299,7 +266,9 @@ public class WebActivity extends BaseHybridActivity {
     super.onDestroy();
 
     if (mWebView != null) {
-      ((ViewGroup) mWebView.getParent()).removeView(mWebView);
+      if (mWebView.getParent() != null) {
+        ((ViewGroup) mWebView.getParent()).removeView(mWebView);
+      }
       mWebView.removeAllViews();
       mWebView.destroy();
     }
@@ -319,15 +288,15 @@ public class WebActivity extends BaseHybridActivity {
     super.onActivityResult(requestCode, resultCode, data);
 
     /* 选择图片, From ImageHelper */
-    if ((requestCode == ImageHelper.REQ_ALBUM_ACTIVITY
-        || requestCode == ImageHelper.REQ_CAMERA_ACTIVITY)) {
+    if ((requestCode == ImageHelper.REQ_ALBUM_ACTIVITY || requestCode == ImageHelper.REQ_CAMERA_ACTIVITY)) {
       if (resultCode == RESULT_OK) {
         FusionBridgeModule fusionBridge = (FusionBridgeModule) mWebView
             .getExportModuleInstance(FusionBridgeModule.class);
         fusionBridge.handleChooseImageResult(requestCode, resultCode, data);
       }
+    } else if ((requestCode == REQUEST_CODE_SELECT_PIC || requestCode == FileChooserManager.REQUEST_CODE_CAPTURE_PIC)) {
+      mFileChooseManager.onActivityResult(requestCode, resultCode, data);
     }
-
   }
 
   @Override
@@ -383,7 +352,7 @@ public class WebActivity extends BaseHybridActivity {
 //
 //      mErrorView.setOnClickListener(null);
 //    } else {
-//      mErrorImage.setImageResource(R.drawable.icon_webview_error_connectfail);
+//      mErrorImage.setImageResource(R.drawable.icon_webview_error_connectfail)o;
 //      mErrorText.setText(R.string.webview_error_connectfail);
 //      mErrorView.setOnClickListener(onClickListenerReload);
 //    }
@@ -488,7 +457,8 @@ public class WebActivity extends BaseHybridActivity {
     }
 
     @Override
-    public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+    public void onReceivedError(WebView view, int errorCode, String description,
+        String failingUrl) {
       if (Build.VERSION.SDK_INT < 18) {
         view.clearView();
       } else {
@@ -516,22 +486,22 @@ public class WebActivity extends BaseHybridActivity {
   /**
    * 标题栏关闭按钮的点击事件监听
    */
-  private View.OnClickListener mOnCloseClickListener = new View.OnClickListener() {
-    @Override
-    public void onClick(View v) {
-      finishWithResultCodeOK();
-    }
-  };
+  private View.OnClickListener mOnCloseClickListener = v -> finishWithResultCodeOK();
 
   private View.OnClickListener mOnRightClickListener = new View.OnClickListener() {
     @Override
     public void onClick(View v) {
-      if (mFusionWebModel != null && !TextUtils.isEmpty(mFusionWebModel.rightNextUrl)) {
-        WebViewModel webViewModel = new WebViewModel();
-        webViewModel.url = mFusionWebModel.rightNextUrl;
-        Intent intent = new Intent(getActivity(), WebActivity.class);
-        intent.putExtra(WebActivity.KEY_WEB_VIEW_MODEL, webViewModel);
-        startActivity(intent);
+      if (mFusionWebModel != null) {
+        if (!TextUtils.isEmpty(mFusionWebModel.rightNextUrl)) {
+          WebViewModel webViewModel = new WebViewModel();
+          webViewModel.url = mFusionWebModel.rightNextUrl;
+          Intent intent = new Intent(getActivity(), WebActivity.class);
+          intent.putExtra(WebActivity.KEY_WEB_VIEW_MODEL, webViewModel);
+          startActivity(intent);
+        } else if (!TextUtils.isEmpty(mFusionWebModel.jsMethod)) {
+
+          mJsBridge.callH5Method(mFusionWebModel.jsMethod, null);
+        }
       }
     }
   };
@@ -606,8 +576,8 @@ public class WebActivity extends BaseHybridActivity {
    * FusionBridge用来兼容老的Bridge注册机制
    */
   protected FusionBridgeModule getFusionBridge() {
-
-    return (null == mWebView) ? null : (FusionBridgeModule) mWebView.getExportModuleInstance(FusionBridgeModule.class);
+    return (null == mWebView) ? null
+        : (FusionBridgeModule) mWebView.getExportModuleInstance(FusionBridgeModule.class);
   }
 
 
@@ -634,9 +604,6 @@ public class WebActivity extends BaseHybridActivity {
     void onReceivedError(WebView view, int errorCode, String description, String failingUrl);
   }
 
-  /**
-   * 为上海海浪提供接口
-   */
   public void shSetWebViewClient(SHWebViewClient shWebViewClient) {
     this.mSHWebViewClient = shWebViewClient;
   }
@@ -672,7 +639,14 @@ public class WebActivity extends BaseHybridActivity {
    * 隐藏右上角的分享入口
    */
   protected void hideEntrance() {
-    mWebTitleBar.setRightVisible(false);
+    if (mFusionWebModel != null) {
+      if (mFusionWebModel.rightTextResId != 0 || mFusionWebModel.rightIconResId != 0) {
+        mWebTitleBar.setRightVisible(true);
+      } else {
+        mWebTitleBar.setRightVisible(false);
+      }
+    }
+
   }
 
 }

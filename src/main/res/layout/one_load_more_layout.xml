@@ -1,0 +1,57 @@
+<com.one.framework.app.widget.LoadMoreLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:id="@+id/one_load_more"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:orientation="vertical">
+
+  <com.one.framework.app.widget.LoadingView
+    android:id="@+id/one_footer_loading"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:gravity="center"
+    android:layout_gravity="center"
+    app:loading_point_color="#e3e3e3"
+    app:loading_point_count="3"
+    app:loading_point_normal_size="3dp"
+    app:loading_point_selector_size="4dp"
+    app:loading_type="point"/>
+
+  <LinearLayout
+    android:id="@+id/one_footer_no_more"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:layout_gravity="center_horizontal"
+    android:gravity="center_horizontal"
+    android:orientation="horizontal"
+    android:visibility="gone">
+
+    <View
+      android:layout_width="56dp"
+      android:layout_height="1dp"
+      android:layout_gravity="center_vertical"
+      android:background="#e5e7e9"/>
+
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="10dp"
+      android:layout_marginRight="10dp"
+      android:layout_gravity="center_vertical"
+      android:includeFontPadding="false"
+      android:maxLines="1"
+      android:focusable="false"
+      android:gravity="center_vertical"
+      android:text="@string/one_footer_no_more"
+      android:textColor="#999ba1"
+      android:textSize="14sp"/>
+
+    <View
+      android:layout_width="56dp"
+      android:layout_height="1dp"
+      android:layout_gravity="center_vertical"
+      android:background="#e5e7e9"/>
+
+  </LinearLayout>
+</com.one.framework.app.widget.LoadMoreLayout>

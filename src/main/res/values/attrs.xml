@@ -1,8 +1,8 @@
 <resources>
   <declare-styleable name="GiftView">
-    <attr name="width" format="dimension"/>
-    <attr name="height" format="dimension"/>
-    <attr name="gift_text_size" format="dimension"/>
+    <attr format="dimension" name="width"/>
+    <attr format="dimension" name="height"/>
+    <attr format="dimension" name="gift_text_size"/>
   </declare-styleable>
   <declare-styleable name="ShapeImageView">
     <attr name="imageType">
@@ -10,9 +10,10 @@
       <enum name="cycle" value="1"/>
       <enum name="round" value="2"/>
     </attr>
-    <attr name="borderColor" format="color"/>
-    <attr name="borderWidth" format="dimension"/>
-    <attr name="rectRoundRadius" format="dimension"/>
+    <attr format="color" name="borderColor"/>
+    <attr format="dimension" name="borderWidth"/>
+    <attr format="dimension" name="rectRoundRadius"/>
+    <attr name="isFullRound" format="boolean"/>
   </declare-styleable>
 
   <declare-styleable name="TripButton">
@@ -26,21 +27,21 @@
       <enum name="normal" value="0"/>
       <enum name="body" value="1"/>
     </attr>
-    <attr name="btn_background" format="reference"/>
+    <attr format="reference" name="btn_background"/>
     <attr format="color" name="stroke_color"/>
     <attr format="dimension" name="stroke_width"/>
   </declare-styleable>
 
   <declare-styleable name="PageIndexPoint">
-    <attr name="point_normal_color" format="color"/>
-    <attr name="point_select_color" format="color"/>
+    <attr format="color" name="point_normal_color"/>
+    <attr format="color" name="point_select_color"/>
     <attr name="point_type">
       <enum name="cycle" value="0"/>
       <enum name="rect" value="1"/>
     </attr>
-    <attr name="point_width" format="dimension"/>
-    <attr name="point_height" format="dimension"/>
-    <attr name="point_padding" format="dimension"/>
+    <attr format="dimension" name="point_width"/>
+    <attr format="dimension" name="point_height"/>
+    <attr format="dimension" name="point_padding"/>
   </declare-styleable>
 
   <declare-styleable name="PullView">
@@ -49,24 +50,24 @@
       <enum name="self" value="1"/>
     </attr>
     <attr format="dimension" name="scroll_max_height"/>
-    <attr name="header_view_id" format="reference"/>
+    <attr format="reference" name="header_view_id"/>
 
-    <attr name="resolve_conflict" format="boolean"/>
-    <attr name="have_footer_view" format="boolean"/>
-    <attr name="have_header_view" format="boolean"/>
-    <attr name="have_refresh_view" format="boolean"/>
-    <attr name="refresh_view_id" format="reference"/>
-    <attr name="have_load_more_view" format="boolean"/>
-    <attr name="load_more_view_id" format="reference"/>
+    <attr format="boolean" name="resolve_conflict"/>
+    <attr format="boolean" name="have_footer_view"/>
+    <attr format="boolean" name="have_header_view"/>
+    <attr format="boolean" name="have_refresh_view"/>
+    <attr format="reference" name="refresh_view_id"/>
+    <attr format="boolean" name="have_load_more_view"/>
+    <attr format="reference" name="load_more_view_id"/>
   </declare-styleable>
 
   <declare-styleable name="MapCenterPinView">
-    <attr name="pin_width" format="dimension"/>
-    <attr name="pin_color" format="color"/>
-    <attr name="pin_height" format="dimension"/>
-    <attr name="pin_circle_size" format="dimension"/>
-    <attr name="pin_circle_color" format="color"/>
-    <attr name="pin_inner_circle_color" format="color"/>
+    <attr format="dimension" name="pin_width"/>
+    <attr format="color" name="pin_color"/>
+    <attr format="dimension" name="pin_height"/>
+    <attr format="dimension" name="pin_circle_size"/>
+    <attr format="color" name="pin_circle_color"/>
+    <attr format="color" name="pin_inner_circle_color"/>
   </declare-styleable>
 
   <declare-styleable name="LoadingView">
@@ -74,10 +75,10 @@
       <enum name="point" value="0"/>
       <enum name="progress" value="1"/>
     </attr>
-    <attr name="loading_point_color" format="color|reference"/>
-    <attr name="loading_point_normal_size" format="dimension"/>
-    <attr name="loading_point_selector_size" format="dimension"/>
-    <attr name="loading_point_count" format="integer"/>
+    <attr format="color|reference" name="loading_point_color"/>
+    <attr format="dimension" name="loading_point_normal_size"/>
+    <attr format="dimension" name="loading_point_selector_size"/>
+    <attr format="integer" name="loading_point_count"/>
 
     <attr name="loading_progress_type">
       <enum name="circle" value="2"/>
@@ -89,21 +90,26 @@
       <enum name="center" value="1"/>
       <enum name="right" value="2"/>
     </attr>
-    <attr name="loading_progress_color" format="color|reference"/>
-    <attr name="loading_progress_width" format="dimension|reference"/>
+    <attr format="color|reference" name="loading_progress_color"/>
+    <attr name="loading_progressBackgroundColor" format="color"/>
+    <attr name="loading_progressStrokeColor" format="color"/>
+    <attr name="loading_progressStrokeWidth" format="dimension"/>
+    <attr name="loading_progressForegroundColor" format="color"/>
+    <attr name="loading_progressRound" format="dimension"/>
+    <attr format="dimension|reference" name="loading_progress_width"/>
 
   </declare-styleable>
 
   <declare-styleable name="WheelView">
-    <attr name="itemVisibleNum" format="integer"/>
-    <attr name="textColorOuter" format="color" />
-    <attr name="textSizeOuter" format="dimension" />
-    <attr name="textColorCenter" format="color" />
-    <attr name="textSizeCenter" format="dimension" />
-    <attr name="lineColor" format="color" />
-    <attr name="isLoop" format="boolean"/>
-    <attr name="lineSpaceDimens" format="dimension"/>
-    <attr name="wheelGravity" format="enum" >
+    <attr format="integer" name="itemVisibleNum"/>
+    <attr format="color" name="textColorOuter"/>
+    <attr format="dimension" name="textSizeOuter"/>
+    <attr format="color" name="textColorCenter"/>
+    <attr format="dimension" name="textSizeCenter"/>
+    <attr format="color" name="lineColor"/>
+    <attr format="boolean" name="isLoop"/>
+    <attr format="dimension" name="lineSpaceDimens"/>
+    <attr format="enum" name="wheelGravity">
       <enum name="left" value="234"/>
       <enum name="center" value="354"/>
       <enum name="right" value="894"/>
@@ -111,77 +117,78 @@
   </declare-styleable>
 
   <declare-styleable name="StarView">
-    <attr name="starViewNumber" format="integer"/>
-    <attr name="starView_isSlide" format="boolean"/>
-    <attr name="starViewWidth" format="dimension"/>
-    <attr name="starViewHeight" format="dimension"/>
-    <attr name="starViewRightMargin" format="dimension"/>
+    <attr format="integer" name="starViewNumber"/>
+    <attr format="boolean" name="starView_isSlide"/>
+    <attr format="dimension" name="starViewWidth"/>
+    <attr format="dimension" name="starViewHeight"/>
+    <attr format="dimension" name="starViewRightMargin"/>
   </declare-styleable>
 
   <declare-styleable name="ScriptTextView">
-    <attr name="script_color" format="color"/>
-    <attr name="script_text" format="reference"/>
-    <attr name="script_text_size" format="dimension"/>
-    <attr name="script_direction" format="enum">
+    <attr format="color" name="script_color"/>
+    <attr format="reference" name="script_text"/>
+    <attr format="dimension" name="script_text_size"/>
+    <attr format="enum" name="script_direction">
       <enum name="right" value="0"/>
       <enum name="left" value="1"/>
     </attr>
-    <attr name="script_loc" format="enum">
+    <attr format="enum" name="script_loc">
       <enum name="top" value="0"/>
       <enum name="mid" value="1"/>
       <enum name="bottom" value="2"/>
     </attr>
+    <attr format="dimension" name="script_width"/>
   </declare-styleable>
 
   <!-- 自定义验证码输入框-->
   <declare-styleable name="verificationCodeView">
     <!--输入框的数量-->
-    <attr name="vcv_et_number" format="integer" />
+    <attr format="integer" name="vcv_et_number"/>
     <!--输入类型-->
     <attr name="vcv_et_inputType">
-      <enum name="number" value="0" />
-      <enum name="numberPassword" value="1" />
-      <enum name="text" value="2" />
-      <enum name="textPassword" value="3" />
+      <enum name="number" value="0"/>
+      <enum name="numberPassword" value="1"/>
+      <enum name="text" value="2"/>
+      <enum name="textPassword" value="3"/>
     </attr>
     <!--输入框的宽度-->
-    <attr name="vcv_et_width" format="dimension|reference" />
+    <attr format="dimension|reference" name="vcv_et_width"/>
     <!--输入框文字颜色-->
-    <attr name="vcv_et_text_color" format="color|reference" />
+    <attr format="color|reference" name="vcv_et_text_color"/>
     <!--输入框文字大小-->
-    <attr name="vcv_et_text_size" format="dimension|reference" />
+    <attr format="dimension|reference" name="vcv_et_text_size"/>
     <!--输入框背景-->
-    <attr name="vcv_et_bg" format="reference" />
+    <attr format="reference" name="vcv_et_bg"/>
     <!--光标样式-->
-    <attr name="vcv_et_cursor" format="reference" />
+    <attr format="reference" name="vcv_et_cursor"/>
   </declare-styleable>
 
   <declare-styleable name="XEditText">
-    <attr name="x_separator" format="string"/>
-    <attr name="x_disableClear" format="boolean"/>
-    <attr name="x_clearDrawable" format="reference"/>
-    <attr name="x_showPwdDrawable" format="reference"/>
-    <attr name="x_hidePwdDrawable" format="reference"/>
-    <attr name="x_disableEmoji" format="boolean"/>
-    <attr name="x_togglePwdDrawableEnable" format="boolean"/>
-    <attr name="x_pattern" format="string"/>
+    <attr format="string" name="x_separator"/>
+    <attr format="boolean" name="x_disableClear"/>
+    <attr format="reference" name="x_clearDrawable"/>
+    <attr format="reference" name="x_showPwdDrawable"/>
+    <attr format="reference" name="x_hidePwdDrawable"/>
+    <attr format="boolean" name="x_disableEmoji"/>
+    <attr format="boolean" name="x_togglePwdDrawableEnable"/>
+    <attr format="string" name="x_pattern"/>
   </declare-styleable>
 
   <declare-styleable name="ProgressView">
-    <attr name="progress_from" format="integer"/>
-    <attr name="progress_to" format="integer"/>
-    <attr name="progress_width" format="dimension"/>
-    <attr name="progress_bg" format="color"/>
-    <attr name="progress_radius" format="dimension"/>
-    <attr name="progress_foreground" format="reference"/>
-    <attr name="progress_max_tick" format="integer"/>
+    <attr format="integer" name="progress_from"/>
+    <attr format="integer" name="progress_to"/>
+    <attr format="dimension" name="progress_width"/>
+    <attr format="color" name="progress_bg"/>
+    <attr format="dimension" name="progress_radius"/>
+    <attr format="reference" name="progress_foreground"/>
+    <attr format="integer" name="progress_max_tick"/>
   </declare-styleable>
 
   <declare-styleable name="BlurLayout">
-    <attr name="blk_downscaleFactor" format="float" />
-    <attr name="blk_blurRadius" format="integer" />
-    <attr name="blk_fps" format="integer" />
-    <attr name="blk_cornerRadius" format="dimension" />
+    <attr format="float" name="blk_downscaleFactor"/>
+    <attr format="integer" name="blk_blurRadius"/>
+    <attr format="integer" name="blk_fps"/>
+    <attr format="dimension" name="blk_cornerRadius"/>
   </declare-styleable>
 
   <declare-styleable name="OptionsView">
@@ -189,20 +196,34 @@
       <enum name="rect" value="0"/>
       <enum name="oval" value="1"/>
     </attr>
-    <attr name="options_op" format="reference"/>
-    <attr name="options_toggle" format="boolean"/>
-    <attr name="options_toggle_on_bg" format="color"/>
-    <attr name="options_toggle_off_bg" format="color"/>
-    <attr name="options_min_height" format="dimension"/>
-    <attr name="options_min_width" format="dimension"/>
-    <attr name="options_bg_outer_radius" format="dimension"/>
-    <attr name="options_bg_inner_radius" format="dimension"/>
-    <attr name="options_background_color" format="color"/>
-    <attr name="options_foreground_color" format="color"/>
-    <attr name="options_text_default_color" format="color"/>
-    <attr name="options_text_selected_color" format="color"/>
-    <attr name="options_text_size" format="dimension"/>
-    <attr name="options_op_key" format="string"/>
-    <attr name="options_default_select" format="integer"/>
+    <attr format="reference" name="options_op"/>
+    <attr format="boolean" name="options_toggle"/>
+    <attr format="color" name="options_toggle_on_bg"/>
+    <attr format="color" name="options_toggle_off_bg"/>
+    <attr format="dimension" name="options_min_height"/>
+    <attr format="dimension" name="options_min_width"/>
+    <attr format="dimension" name="options_bg_outer_radius"/>
+    <attr format="dimension" name="options_bg_inner_radius"/>
+    <attr format="color" name="options_background_color"/>
+    <attr format="color" name="options_foreground_color"/>
+    <attr format="color" name="options_text_default_color"/>
+    <attr format="color" name="options_text_selected_color"/>
+    <attr format="dimension" name="options_text_size"/>
+    <attr format="string" name="options_op_key"/>
+    <attr format="integer" name="options_default_select"/>
   </declare-styleable>
+
+  <declare-styleable name="ListItemWithRightArrowLayout">
+    <attr format="reference|string" name="itemTitle"/>
+    <attr format="color|reference" name="itemTitleColor"/>
+    <attr format="dimension|reference" name="itemMargin"/>
+    <attr format="dimension|reference" name="itemTitleSize"/>
+    <attr format="boolean" name="itemShowArrow"/>
+    <attr format="string" name="itemRightTitle"/>
+    <attr format="color|reference" name="itemRightTitleColor"/>
+    <attr format="reference" name="itemRightUnit"/>
+    <attr format="color" name="itemRightUnitColor"/>
+    <attr format="integer" name="itemRightUnitSize"/>
+  </declare-styleable>
+
 </resources>

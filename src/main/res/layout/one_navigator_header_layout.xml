@@ -31,7 +31,6 @@
     android:layout_height="wrap_content"
     android:layout_centerHorizontal="true"
     android:layout_below="@id/one_navigator_avator"
-    android:text="bubblelu"
     android:textColor="#02040d"
     android:textSize="16sp"/>
 

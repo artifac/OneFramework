@@ -4,6 +4,7 @@ import android.app.Activity;
 import com.one.framework.app.slide.IWalletView;
 import com.one.framework.net.Api;
 import com.one.framework.net.base.BaseObject;
+import com.one.framework.net.model.MyWalletModel;
 import com.one.framework.net.model.WxSecretFreeModel;
 import com.one.framework.net.response.IResponseListener;
 import com.one.framework.pay.Pay;
@@ -17,6 +18,25 @@ public class MyWalletPresenter {
   public MyWalletPresenter(Activity activity, IWalletView view) {
     mReference = new WeakReference<Activity>(activity);
     mView = view;
+  }
+
+  public void loadData() {
+    Api.myWallet(new IResponseListener<MyWalletModel>() {
+      @Override
+      public void onSuccess(MyWalletModel myWalletModel) {
+        mView.updateMyWallet(myWalletModel);
+      }
+
+      @Override
+      public void onFail(int errCod, String message) {
+
+      }
+
+      @Override
+      public void onFinish(MyWalletModel myWalletModel) {
+
+      }
+    });
   }
 
   /**

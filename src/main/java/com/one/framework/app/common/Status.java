@@ -42,14 +42,14 @@ public class Status {
     START("行程中", 4), // 接到乘客，行程开始
     ARRIVED("待支付", 5), //到达终点
     AUTO_PAID("待支付", 6), // 已自动支付，费用未结清，待手动支付
-    PAID("已支付", 7),  // 支付完成（终态)
+    PAID("已完成", 7),  // 支付完成（终态)
     COMPLAINT("订单疑义", 8),
     CANCELED("已取消", 9), //订单取消（终态）
     FINISH("已完成", 10), //未支付（到达终点或者取消需要支付取消费用）？？
     REASSIGN("重新派单", 11),  // 重新派单
     CANCELED_UNPAID("待支付", 12), // 取消未支付
     CANCELED_AUTOPAID("待支付", 13), // 取消待支付
-    CANCELED_PAID("已支付", 14), // 乘客取消已支付
+    CANCELED_PAID("已完成", 14), // 乘客取消已支付
     REFUNDING("退款中", 15), // 退款中
     REFUNDED("已退款", 16),  // 退款完成（终态）
     REFUND_FAILED("退款失败", 17),  //交易关闭（终态），如取消不需要支付费用

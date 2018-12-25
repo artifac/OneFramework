@@ -10,6 +10,9 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public final class FileUtils {
 
@@ -95,13 +98,22 @@ public final class FileUtils {
     return null;
   }
 
-  public static File getPhotoOutputFile() {
-    File file = new File(Environment.getExternalStorageDirectory() + "/avatars");
+  public static File getPhotoOutputFile(String packName) {
+    File file = new File(Environment.getExternalStorageDirectory() + "/" + packName + "/upload");
     if (!file.isDirectory()) {
       file.mkdir();
     }
-    return file;
+    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+    String imageFileName = "upload_" + timeStamp + "_";
+    try {
+      return File.createTempFile(imageFileName, ".jpg", file.getAbsoluteFile());
+    } catch (IOException e) {
+      e.printStackTrace();
+      return file;
+    }
   }
+
+
 
   public static void deleteFile(File file) {
     if (file != null) {

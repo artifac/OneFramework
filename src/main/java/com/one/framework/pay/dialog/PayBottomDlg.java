@@ -9,9 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 import com.alipay.sdk.app.EnvUtils;
 import com.alipay.sdk.app.EnvUtils.EnvEnum;
 import com.one.framework.R;
@@ -33,10 +31,6 @@ import com.one.pay.model.PayModel;
 public class PayBottomDlg extends BottomSheetDialog implements OnClickListener, IPay {
 
   private ImageView mClose;
-  private TextView mTotalFee;
-  private LinearLayout mFeeDetail;
-  private TextView mPayVoucher;
-  private LinearLayout mVoucherLayout;
   private ListView mPayTypeList;
   private TripButton mPay;
   private PayModel mModel;
@@ -117,10 +111,6 @@ public class PayBottomDlg extends BottomSheetDialog implements OnClickListener, 
     mAdapter = new PayDlgListAdapter(activity);
     View view = LayoutInflater.from(activity).inflate(R.layout.pay_dlg_layout, null);
     mClose = (ImageView) view.findViewById(R.id.pay_dlg_close);
-    mTotalFee = (TextView) view.findViewById(R.id.pay_trip_fee);
-    mFeeDetail = (LinearLayout) view.findViewById(R.id.pay_fee_detail_layout);
-    mPayVoucher = (TextView) view.findViewById(R.id.pay_voucher);
-    mVoucherLayout = (LinearLayout) view.findViewById(R.id.pay_voucher_choose);
     mPayTypeList = (ListView) view.findViewById(R.id.pay_type_list);
     mPay = (TripButton) view.findViewById(R.id.pay);
 
@@ -128,17 +118,12 @@ public class PayBottomDlg extends BottomSheetDialog implements OnClickListener, 
       mAdapter.setListData(mModel.getPayList());
       mAdapter.setListener(listener);
 
-      mTotalFee.setText(String.valueOf(mModel.getTotalFee()));
       mPay.setTripButtonText(String.format(getContext().getString(R.string.pay_dlg_pay_fee_confirm), String.valueOf(mModel.getTotalFee())));
     }
     mPayTypeList.setAdapter(mAdapter);
     mClose.setOnClickListener(this);
-    mFeeDetail.setOnClickListener(this);
-    mVoucherLayout.setOnClickListener(this);
     mPay.setOnClickListener(this);
     setContentView(view);
-
-
   }
 
   public void updatePayList(int position) {
@@ -149,9 +134,7 @@ public class PayBottomDlg extends BottomSheetDialog implements OnClickListener, 
   @Override
   public void onClick(View v) {
     int id = v.getId();
-    if (id == R.id.pay_fee_detail_layout) {
-      // h5
-    } else if (id == R.id.pay_dlg_close) {
+    if (id == R.id.pay_dlg_close) {
       dismiss();
       UIThreadHandler.post(new Runnable() {
         @Override
@@ -159,8 +142,6 @@ public class PayBottomDlg extends BottomSheetDialog implements OnClickListener, 
           mPayListener.onPayFail();
         }
       });
-    } else if (id == R.id.pay_voucher_choose) {
-      // voucher choose list
     } else if (id == R.id.pay) {
       PayList payType = mModel.getPayList().get(mPayPosition);
       switch (payType.getPayItemType()) {

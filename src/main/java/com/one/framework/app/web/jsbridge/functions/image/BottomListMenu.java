@@ -2,10 +2,8 @@ package com.one.framework.app.web.jsbridge.functions.image;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.graphics.drawable.BitmapDrawable;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.PopupWindow;
@@ -18,7 +16,6 @@ public class BottomListMenu {
   private OnDismissListener mDismissListener;
 
   public interface ListMenuListener {
-
     void onItemSelected(int position, String itemStr);
   }
 
@@ -39,26 +36,15 @@ public class BottomListMenu {
 
     mContentView = View.inflate(mContext, R.layout.one_pic_bottom_list_menu, null);
 
-    mCancelView = (TextView) mContentView.findViewById(R.id.cancel_text);
-    mCancelView.setOnClickListener(new View.OnClickListener() {
-
-      @Override
-      public void onClick(View v) {
-        onCancel();
-      }
-    });
-    mListMenu = (ListView) mContentView.findViewById(R.id.menu_list);
+    mCancelView = mContentView.findViewById(R.id.cancel_text);
+    mCancelView.setOnClickListener(v -> onCancel());
+    mListMenu = mContentView.findViewById(R.id.menu_list);
     mListAdapter = new ArrayAdapter<String>(mContext, R.layout.one_bottom_list_menu_item, strArray);
     mListMenu.setAdapter(mListAdapter);
-    mListMenu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-      @Override
-      public void onItemClick(AdapterView<?> parent, View view,
-          int position, long id) {
-        dismiss();
-        if (mListMenuListener != null) {
-          mListMenuListener.onItemSelected(position, mListAdapter.getItem(position));
-        }
+    mListMenu.setOnItemClickListener((parent, view, position, id) -> {
+      dismiss();
+      if (mListMenuListener != null) {
+        mListMenuListener.onItemSelected(position, mListAdapter.getItem(position));
       }
     });
 
@@ -66,13 +52,13 @@ public class BottomListMenu {
   }
 
   private PopupWindow newSelectPopupWindow(View view) {
-    PopupWindow popupWindow = new PopupWindow(view, UIUtils.getScreenWidth(view.getContext()),
-        ActionBar.LayoutParams.WRAP_CONTENT, true);
-    popupWindow.setFocusable(true);
-    popupWindow.setBackgroundDrawable(new BitmapDrawable());
-    popupWindow.setOutsideTouchable(true);
-    popupWindow.update();
+    PopupWindow popupWindow = new PopupWindow(view, UIUtils.getScreenWidth(view.getContext()), ActionBar.LayoutParams.WRAP_CONTENT);
+    // 以下注释为了保证Activity onKeyDown 先触发，不注释的话PopupWindow 先接受到返回键
+//    popupWindow.setFocusable(true);
+//    popupWindow.setBackgroundDrawable(new BitmapDrawable());
+//    popupWindow.setOutsideTouchable(true);
 
+    popupWindow.update();
     return popupWindow;
   }
 
@@ -99,9 +85,12 @@ public class BottomListMenu {
     }
   }
 
-  public interface OnDismissListener {
+  public boolean isShowing() {
+    return mPopupWindow != null && mPopupWindow.isShowing();
+  }
 
-    public void dismiss();
+  public interface OnDismissListener {
+    void dismiss();
   }
 
   public void setDismissListener(OnDismissListener listener) {

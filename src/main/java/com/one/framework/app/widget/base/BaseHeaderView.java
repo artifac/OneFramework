@@ -59,7 +59,7 @@ public abstract class BaseHeaderView extends FrameLayout implements IHeaderView 
 
   }
 
-  private void initView(View view) {
+  protected void initView(View view) {
     mParentLayout = view.findViewById(R.id.list_header_parent_layout);
     if (mParentLayout == null) {
       throw new IllegalArgumentException("HeaderView id must be list_header_parent_layout");

@@ -2,4 +2,9 @@
   <item name="content_view_container" type="id"/>
   <item name="list_header_parent_layout" type="id"/>
   <item name="one_pull_header_view" type="id"/>
+
+  <item name="system_ui_fake_status_bar_view" type="id"/>
+  <item name="system_ui_translucent_view" type="id"/>
+
+  <item name="one_bottom_dlg_confirm" type="id"/>
 </resources>

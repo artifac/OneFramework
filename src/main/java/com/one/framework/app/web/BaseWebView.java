@@ -9,7 +9,6 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.AttributeSet;
-import android.view.View;
 import android.webkit.GeolocationPermissions;
 import android.webkit.JsResult;
 import android.webkit.ValueCallback;
@@ -21,7 +20,6 @@ import android.webkit.WebView;
 import com.one.framework.R;
 import com.one.framework.app.web.hybird.FusionWebView;
 import com.one.framework.app.web.hybird.FusionWebViewClient;
-import com.one.framework.app.web.hybird.IHybridActivity;
 import com.one.framework.app.web.model.FusionBridgeModule;
 import com.one.framework.dialog.SupportDialogFragment;
 
@@ -37,11 +35,13 @@ public class BaseWebView extends FusionWebView {
   private FileChooserListener mFileChooserListener;
 
   public BaseWebView(Context context) {
-    this(context, null);
+    super(context);
+    init(context);
   }
 
   public BaseWebView(Context context, AttributeSet attrs) {
-    this(context, attrs, 0);
+    super(context, attrs);
+    init(context);
   }
 
   public BaseWebView(Context context, AttributeSet attrs, int defStyle) {
@@ -99,12 +99,8 @@ public class BaseWebView extends FusionWebView {
 
       SupportDialogFragment.Builder builder = new SupportDialogFragment.Builder(getContext());
       builder.setMessage(message)
-          .setPositiveButton(getContext().getString(R.string.one_i_know), new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-              mAlertDialogFragment.dismiss();
-            }
-          });
+          .setPositiveButton(getContext().getString(R.string.one_i_know),
+              v -> mAlertDialogFragment.dismiss());
       mAlertDialogFragment = builder.create();
 
       try {
@@ -132,8 +128,7 @@ public class BaseWebView extends FusionWebView {
     }
 
     @Override
-    public void onGeolocationPermissionsShowPrompt(String origin,
-        GeolocationPermissions.Callback callback) {
+    public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
       callback.invoke(origin, true, false);
     }
 

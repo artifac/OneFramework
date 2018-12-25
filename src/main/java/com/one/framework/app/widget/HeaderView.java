@@ -45,6 +45,11 @@ public class HeaderView extends BaseHeaderView {
   }
 
   @Override
+  public void setHeaderTitle(String text) {
+
+  }
+
+  @Override
   public void setHeaderView(View view) {
     if (getChildCount() > 0) {
       removeAllViews();

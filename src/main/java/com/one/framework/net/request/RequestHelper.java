@@ -4,11 +4,17 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 import com.google.gson.Gson;
+import com.netease.nimlib.sdk.NIMClient;
+import com.netease.nimlib.sdk.auth.AuthService;
+import com.one.framework.app.base.OneApplication;
+import com.one.framework.app.login.UserProfile;
 import com.one.framework.log.Logger;
 import com.one.framework.net.NetConstant;
 import com.one.framework.net.base.BaseObject;
 import com.one.framework.net.base.INetworkConfig;
 import com.one.framework.net.response.IResponseListener;
+import com.one.framework.provider.HomeDataProvider;
+import com.one.framework.utils.DBUtil;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -35,7 +41,6 @@ public final class RequestHelper {
   private INetworkConfig mConfig;
   private String errMsg = "";
   private int errCode = -1;
-
   private static ConcurrentHashMap<Integer, Call> requestQueue = new ConcurrentHashMap<Integer, Call>();
   private OkHttpClient mHttpClient;
 
@@ -132,14 +137,11 @@ public final class RequestHelper {
             return;
           }
           final UIHandler<T> uiHandler = new UIHandler<>(Looper.getMainLooper(), t);
-          uiHandler.post(new Runnable() {
-            @Override
-            public void run() {
-              T t = uiHandler.t();
-              /* 非法数据 */
-              listener.onFail(t != null ? t.code : NetConstant.NO_DATA, "服务开小差,请稍后再试!");
-              listener.onFinish(t);
-            }
+          uiHandler.post(() -> {
+            T t1 = uiHandler.t();
+            /* 非法数据 */
+            listener.onFail(t1 != null ? t1.code : NetConstant.NO_DATA, "服务开小差,请稍后再试!");
+            listener.onFinish(t1);
           });
         }
 
@@ -156,10 +158,14 @@ public final class RequestHelper {
             BaseObject base = new BaseObject();
             base.parse(result);
             if (base != null && base.isAvailable()) {
-              if (base.data != null) {
-                t = gson.fromJson(base.data, clazz);
-              } else if (base.object != null) {
-                t = gson.fromJson(base.object, clazz);
+              try {
+                if (!TextUtils.isEmpty(base.data)) {
+                  t = gson.fromJson(base.data, clazz);
+                } else if (base.object != null) {
+                  t = gson.fromJson(base.object, clazz);
+                }
+              } catch (Exception e) {
+
               }
               if (base.data == null && clazz == BaseObject.class) {
                 // 后端有可能返回 data: null 无返回值但是请求成功
@@ -183,6 +189,7 @@ public final class RequestHelper {
           if (listener == null) {
             return;
           }
+
           final UIHandler<T> uiHandler = new UIHandler<T>(Looper.getMainLooper(), t);
           uiHandler.post(new Runnable() {
             @Override
@@ -197,6 +204,12 @@ public final class RequestHelper {
                 listener.onSuccess(t);
                 listener.onFinish(t);
                 return;
+              }
+              if (t != null && t.getErrorCode() == NetConstant.OUT) {
+                UserProfile.getInstance(OneApplication.appContext).logout(); // clear data
+                DBUtil.deleteTables(OneApplication.appContext); // clear table
+                HomeDataProvider.getInstance().clearOrderDetails();
+                NIMClient.getService(AuthService.class).logout();
               }
               if (errCode != -1 && !TextUtils.isEmpty(errMsg)) {
                 listener.onFail(errCode, errMsg);

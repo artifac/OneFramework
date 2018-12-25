@@ -1,0 +1,8 @@
+<!-- adapter glaxy 8 density = 2.8几 -->
+<resources>
+  <dimen name="invite_top_margin">195dp</dimen>
+  <dimen name="invite_code_size">50sp</dimen>
+  <dimen name="invite_share_margin_bottom">40dp</dimen>
+  <dimen name="invite_max_margin_bottom">25dp</dimen>
+  <dimen name="invite_share_margin_top">33dp</dimen>
+</resources>

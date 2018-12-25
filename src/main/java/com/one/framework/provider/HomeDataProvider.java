@@ -8,6 +8,7 @@ import com.one.framework.net.model.OrderDetail;
 import com.one.map.model.Address;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +25,7 @@ public class HomeDataProvider {
 //  private List<Address> mPoiAddress = new ArrayList<Address>();
 
   private List<ContactModel> mCurContactModels;
-  private OrderDetail mOrderDetail;
+  private List<OrderDetail> mOrderDetail = new ArrayList<>();
 
   private List<Entrance> mEntrances = new ArrayList<>();
 
@@ -140,10 +141,77 @@ public class HomeDataProvider {
   }
 
   public void saveOrderDetail(OrderDetail detail) {
-    mOrderDetail = detail;
+    if (detail == null) {
+      return;
+    }
+    boolean contain = false;
+    for (OrderDetail details : mOrderDetail) {
+      if (details.getOrderId().equals(detail.getOrderId())) {
+        contain = true;
+      }
+    }
+    if (contain) {
+      return;
+    }
+    mOrderDetail.add(detail);
   }
 
+  public void saveOrderDetails(List<OrderDetail> details) {
+    mOrderDetail.clear();
+    if (details != null) {
+      mOrderDetail.addAll(details);
+    }
+  }
+
+  /**
+   * 获取即时订单
+   * @return
+   */
   public OrderDetail obtainOrderDetail() {
-    return mOrderDetail;
+    if (mOrderDetail.isEmpty()) {
+      return null;
+    }
+    if (mOrderDetail.size() == 1) {
+      return mOrderDetail.get(0);
+    }
+    for (OrderDetail detail: mOrderDetail) {
+      if (detail != null && detail.getType() == 1) {
+        return detail;
+      } else {
+        continue;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * 司机或乘客取消订单之后要remove 当前的订单
+   * @param detail
+   */
+  public void removeOrder(OrderDetail detail) {
+    if (mOrderDetail.isEmpty()) {
+      return;
+    }
+    for (Iterator<OrderDetail> iterator = mOrderDetail.iterator(); iterator.hasNext();) {
+      OrderDetail od = iterator.next();
+      if (od.getOrderId().equals(detail.getOrderId())) {
+        iterator.remove();
+      }
+    }
+  }
+
+  /**
+   * 获取当前有多少个未完成订单
+   * @return
+   */
+  public int obtainOrdersCount() {
+    return mOrderDetail.size();
+  }
+
+  /**
+   * 清空所有数据
+   */
+  public void clearOrderDetails() {
+    mOrderDetail.clear();
   }
 }

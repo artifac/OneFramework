@@ -4,18 +4,23 @@ import android.text.TextUtils;
 import com.one.framework.app.ads.AdsModel;
 import com.one.framework.model.AutoShareModel;
 import com.one.framework.model.ContactLists;
-import com.one.framework.model.ContactModel;
+import com.one.framework.model.InviteModel;
 import com.one.framework.net.base.BaseObject;
 import com.one.framework.net.base.INetworkConfig;
 import com.one.framework.net.model.AppConfig;
+import com.one.framework.net.model.DownloadModel;
 import com.one.framework.net.model.IMLoginInfo;
+import com.one.framework.net.model.LoginModel;
 import com.one.framework.net.model.MyTripsModel;
+import com.one.framework.net.model.MyWalletModel;
 import com.one.framework.net.model.OrderDetail;
 import com.one.framework.net.model.OrderTravelling;
 import com.one.framework.net.model.UserInfo;
 import com.one.framework.net.model.WxSecretFreeModel;
 import com.one.framework.net.request.RequestHelper;
 import com.one.framework.net.response.IResponseListener;
+import com.one.map.location.LocationProvider;
+import com.one.map.model.Address;
 import java.util.HashMap;
 
 /**
@@ -24,7 +29,7 @@ import java.util.HashMap;
 
 public class Api {
   public static String BASE_URL_HOST = "http://app.taxi.com";
-  public static String BASE_URL_HOSTS = "https://furion-app.com";
+  public static String BASE_URL_HOSTS = "https://furion-app.mobike.com";
   private static String LOGIN_SEND_SMS = "/api/user/usermgr/getverifycode.do";
   private static String LOGIN_DO_LOGIN = "/api/user/usermgr/login.do";
   private static String LOGIN_DO_LOGOUT = "/api/user/usermgr/logout.do";
@@ -44,8 +49,16 @@ public class Api {
   private static final String AUTO_SHARE_ENABLE = "/api/taxi/autoshare/enable";
   private static final String AUTO_SHARE_DISABLE = "/api/taxi/autoshare/disable";
   private static final String AUTO_SHARE_USER_INFO = "/api/taxi/autoshare/info";
+
+  private static final String INVITE_FRIEND = "/api/user/usermgr/fetchInviteCode.do";
+
+  private static final String ALARM_SMS = "/api/taxi/emergency/alarm";
+  private static final String MY_WALLET = "/api/taxi/wallet/userWallet";
+  private static final String CHECK_APP_VERSION = "/api/taxi/upgrade/latest";
   private static String sApiUrl = BASE_URL_HOSTS;
   private static INetworkConfig sConfig;
+
+  private Api() {}
 
   public static void initNetworkConfig(INetworkConfig config) {
     sConfig = config;
@@ -64,19 +77,19 @@ public class Api {
     return request(IM_LOGIN, urlParams, listener, IMLoginInfo.class);
   }
 
-  public static int sendSms(String phone, IResponseListener<BaseObject> listener) {
+  public static int sendSms(String phone, IResponseListener<LoginModel> listener) {
     sConfig.setUserPhone(phone);
     HashMap<String, Object> urlParams = new HashMap<>();
     urlParams.put("mobileNo", phone);
-    urlParams.put("userid", "");
-    return request(LOGIN_SEND_SMS, urlParams, listener, BaseObject.class);
+    return request(LOGIN_SEND_SMS, urlParams, listener, LoginModel.class);
   }
 
-  public static int doLogin(String mobileNo, String verificode, IResponseListener<UserInfo> listener) {
+  public static int doLogin(String mobileNo, String verificode, String inviteCode, IResponseListener<UserInfo> listener) {
     HashMap<String, Object> urlParams = new HashMap<>();
     urlParams.put("abroadVersion", 1);
     urlParams.put("mobileNo", mobileNo);
     urlParams.put("capt", verificode);
+    urlParams.put("inviteCode", inviteCode);
     return request(LOGIN_DO_LOGIN, urlParams, listener, UserInfo.class);
   }
 
@@ -171,6 +184,17 @@ public class Api {
   }
 
   /**
+   * app upgrade
+   */
+  public static int appUpgrade(String version, IResponseListener<DownloadModel> listener) {
+    HashMap<String, Object> urlParams = new HashMap<>();
+    urlParams.put("version", version); // 此处应该去掉
+    urlParams.put("type", "PASSENGER"); // 此处应该去掉
+    urlParams.put("os", "ANDROID"); // 此处应该去掉
+    return requestGet(CHECK_APP_VERSION, urlParams, listener, DownloadModel.class);
+  }
+
+  /**
    * app config
    * @param listener
    * @return
@@ -178,6 +202,11 @@ public class Api {
   public static int appConfig(IResponseListener<AppConfig> listener) {
     HashMap<String, Object> urlParams = new HashMap<>();
     return request(APP_CONFIG, urlParams, listener, AppConfig.class);
+  }
+
+  public static int myWallet(IResponseListener<MyWalletModel> listener) {
+    HashMap<String, Object> urlParams = new HashMap<>();
+    return requestGet(MY_WALLET, urlParams, listener, MyWalletModel.class);
   }
 
   /**
@@ -196,6 +225,31 @@ public class Api {
     HashMap<String, Object> urlParams = new HashMap<>();
     urlParams.put("client", 0); // 0 表示android
     return request(WX_CLOSE_SECRET_FREE, urlParams, listener, BaseObject.class);
+  }
+
+  /**
+   * 邀请好友
+   */
+  public static int inviteFriend(IResponseListener<InviteModel> listener) {
+    HashMap<String, Object> urlParams = new HashMap<>();
+    urlParams.put("client", 0); // 0 表示android
+    return request(INVITE_FRIEND, urlParams, listener, InviteModel.class);
+  }
+
+  /**
+   * 一键报警
+   * 发送短信
+   */
+  public static int alarmSendSms(String oid, IResponseListener<BaseObject> listener) {
+    HashMap<String, Object> urlParams = new HashMap<>();
+    urlParams.put("orderId", oid);
+    Address location = LocationProvider.getInstance().getLocation();
+    if (location != null) {
+      urlParams.put("locationAddress", location.mAdrFullName);
+    } else {
+      urlParams.put("locationAddress", "");
+    }
+    return requestGet(ALARM_SMS, urlParams, listener, BaseObject.class);
   }
 
   /**

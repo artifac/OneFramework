@@ -303,7 +303,7 @@ public class PicUploadActivity extends FragmentActivity {
 
             final Uri imageUri = data.getData();
             String url = FileUtils.getPath(this, imageUri);
-            File mSaveFile = FileUtils.getPhotoOutputFile();
+            File mSaveFile = FileUtils.getPhotoOutputFile(getPackageName());
             FileUtils.copyFile(url, mSaveFile.getAbsolutePath());
             if (isNeedCut) {
               startSystemCropActivity(Uri.fromFile(mSaveFile));
@@ -471,7 +471,7 @@ public class PicUploadActivity extends FragmentActivity {
       } else {
         intent.setDataAndType(uri, "image/*");
       }
-      mCropFile = FileUtils.getPhotoOutputFile();
+      mCropFile = FileUtils.getPhotoOutputFile(getPackageName());
       Uri saveUri = Uri.fromFile(mCropFile);
       intent.putExtra("crop", "true");
 //            intent.putExtra("aspectX", 1);

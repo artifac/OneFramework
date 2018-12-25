@@ -13,8 +13,7 @@ import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.widget.Toast;
 import com.one.framework.R;
-import com.one.framework.log.Logger;
-import java.lang.reflect.Field;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,16 +34,15 @@ public class OneBaseToast {
    */
   public static final int LENGTH_LONG = Toast.LENGTH_LONG;
 
-  private static final int LONG_DELAY = 3500; // 3.5 seconds
-  private static final int SHORT_DELAY = 2000; // 2 seconds
-  Context mContext;
+  private static final int LONG_DELAY = 2000; // 2 seconds
+  private static final int SHORT_DELAY = 1500; // 1.5 seconds
+  private WeakReference<Context> mWeakActivity;
 
   private WindowManager mWdm;
   int mDuration;
   int mGravity;
 
   private View mNextView;
-  private LayoutParams mParams;
 
   int mX, mY;
   float mVerticalMargin, mHorizontalMargin;
@@ -52,16 +50,17 @@ public class OneBaseToast {
   private Handler mHandler = new Handler(Looper.getMainLooper());
 
   private static List<View> mRecords = new ArrayList<View>();
-  private static CancleRunnable mCancleRunnale;
+  private static CancleRunnable mCancelRunnable;
 
   /**
    * @param context 上下文
    */
   public OneBaseToast(Context context) {
-    mContext = context;
-    Toast toast = new Toast(context);
-    mY = toast.getYOffset();
-    initToastParams(toast);
+    mWeakActivity = new WeakReference<>(context);
+    if (mWeakActivity.get() != null) {
+      Toast toast = new Toast(mWeakActivity.get());
+      mY = toast.getYOffset();
+    }
   }
 
   /**
@@ -72,35 +71,11 @@ public class OneBaseToast {
    * @param duration 显示长短时间类型
    */
   public OneBaseToast(Context context, String text, int duration) {
-    mContext = context;
-    Toast toast = Toast.makeText(context, text, duration);
-    mY = toast.getYOffset();
-    initToastParams(toast);
-  }
-
-  private void initToastParams(Toast toast) {
-    try {
-      Field field = toast.getClass().getDeclaredField("mTN");
-      field.setAccessible(true);
-      Object obj = field.get(toast);
-      Field paramsField = obj.getClass().getDeclaredField("mParams");
-      paramsField.setAccessible(true);
-      mParams = (LayoutParams) paramsField.get(obj);
-    } catch (Exception e) {
-      e.printStackTrace();
-      mParams = new LayoutParams();
-      mParams.height = LayoutParams.WRAP_CONTENT;
-      mParams.width = LayoutParams.WRAP_CONTENT;
-      mParams.format = PixelFormat.TRANSLUCENT;
-      mParams.type = LayoutParams.TYPE_TOAST;
-      mParams.windowAnimations = R.style.OneToastAnim;
-      mParams.setTitle("Toast");
-      mParams.flags = LayoutParams.FLAG_KEEP_SCREEN_ON | LayoutParams.FLAG_NOT_FOCUSABLE
-          | LayoutParams.FLAG_NOT_TOUCHABLE;
+    mWeakActivity = new WeakReference<>(context);
+    if (mWeakActivity.get() != null) {
+      Toast toast = Toast.makeText(mWeakActivity.get(), text, duration);
+      mY = toast.getYOffset();
     }
-    mGravity = Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL;
-    mY = 0;
-    mNextView = toast.getView();
   }
 
   /**
@@ -108,20 +83,17 @@ public class OneBaseToast {
    */
   public void show() {
     // 主要解决 线程同步问题，使用messagequene解决极端条件下线程同步问题。
-    mHandler.post(new Runnable() {
-      @Override
-      public void run() {
-        cancleAll();
-        handleShow(mNextView);
-      }
+    mHandler.post(() -> {
+      cancleAll();
+      handleShow(mNextView);
     });
   }
 
   private void cancleAll() {
-    if (mCancleRunnale != null) {
-      mCancleRunnale.discard();
-      mHandler.removeCallbacks(mCancleRunnale);
-      mCancleRunnale = null;
+    if (mCancelRunnable != null) {
+      mCancelRunnable.discard();
+      mHandler.removeCallbacks(mCancelRunnable);
+      mCancelRunnable = null;
     }
     for (View view : mRecords) {
       handleHide(view);
@@ -130,35 +102,36 @@ public class OneBaseToast {
   }
 
   private void handleShow(View view) {
-    mWdm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
-    // We can resolve the Gravity here by using the Locale for getting
-    // the layout direction
-    final int gravity = mGravity;
-    mParams.gravity = gravity;
-    if ((gravity & Gravity.HORIZONTAL_GRAVITY_MASK) == Gravity.FILL_HORIZONTAL) {
-      mParams.horizontalWeight = 1.0f;
-    }
-    if ((gravity & Gravity.VERTICAL_GRAVITY_MASK) == Gravity.FILL_VERTICAL) {
-      mParams.verticalWeight = 1.0f;
-    }
-    mParams.x = mX;
-    mParams.y = mY;
-    mParams.verticalMargin = mVerticalMargin;
-    mParams.horizontalMargin = mHorizontalMargin;
-    try {
+    if (mWeakActivity != null && mWeakActivity.get() != null) {
+      mWdm = (WindowManager) mWeakActivity.get().getSystemService(Context.WINDOW_SERVICE);
+      // We can resolve the Gravity here by using the Locale for getting
+      // the layout direction
+      WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+      final int gravity = mGravity;
+      params.gravity = mGravity;
+      if ((gravity & Gravity.HORIZONTAL_GRAVITY_MASK) == Gravity.FILL_HORIZONTAL) {
+        params.horizontalWeight = 1.0f;
+      }
+      if ((gravity & Gravity.VERTICAL_GRAVITY_MASK) == Gravity.FILL_VERTICAL) {
+        params.verticalWeight = 1.0f;
+      }
+      params.height = LayoutParams.WRAP_CONTENT;
+      params.width = LayoutParams.WRAP_CONTENT;
+      params.x = mX;
+      params.y = mY;
+      params.verticalMargin = mVerticalMargin;
+      params.horizontalMargin = mHorizontalMargin;
+      params.format = PixelFormat.TRANSLUCENT;
+      params.windowAnimations = R.style.OneToastAnim;
       if (view.getParent() != null) {
-        mWdm.updateViewLayout(view, mParams);
+        mWdm.updateViewLayout(view, params);
       } else {
-        mWdm.addView(view, mParams);
+        mWdm.addView(view, params);
       }
       mRecords.add(view);
-      mCancleRunnale = new CancleRunnable();
-      mHandler.postDelayed(mCancleRunnale, mDuration == LENGTH_LONG ? LONG_DELAY : SHORT_DELAY);
-    } catch (Exception e) {
-      Logger.e("ldx", "e " + e);
-      // catch java.lang.RuntimeException: Adding window failed
+      mCancelRunnable = new CancleRunnable();
+      mHandler.postDelayed(mCancelRunnable, mDuration == LENGTH_LONG ? LONG_DELAY : SHORT_DELAY);
     }
-
   }
 
   private void handleHide(View view) {
@@ -169,6 +142,7 @@ public class OneBaseToast {
       if (view.getParent() != null) {
         try {
           mWdm.removeView(view);
+          mWdm = null;
         } catch (Exception e) {
           e.printStackTrace();
         }

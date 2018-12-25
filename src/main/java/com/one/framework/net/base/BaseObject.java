@@ -19,6 +19,7 @@ public class BaseObject implements Serializable, Cloneable {
   public String data;
   public int dataInt;
   public boolean dataBoolean;
+  public String dataString;
   public String object;
 
   public static boolean isAvailable(BaseObject obj) {
@@ -111,8 +112,11 @@ public class BaseObject implements Serializable, Cloneable {
           setParseData(((Boolean) object).booleanValue());
         } else {
           JSONObject dataObj = obj.optJSONObject(NetConstant.DATA);
-          if (dataObj != null) {
+          if (dataObj != null) { // 返回json string
             setParseData(dataObj.toString());
+          } else { // 返回字符串
+            String baseString = obj.optString(NetConstant.DATA);
+            setParseDataString(baseString);
           }
         }
       }
@@ -142,6 +146,10 @@ public class BaseObject implements Serializable, Cloneable {
     object = objectString;
   }
 
+  private void setParseDataString(String dataString) {
+    this.dataString = dataString;
+  }
+
   @Override
   public String toString() {
     return "BaseObject{" +
@@ -151,6 +159,7 @@ public class BaseObject implements Serializable, Cloneable {
         ", data='" + data + '\'' +
         ", dataInt=" + dataInt +
         ", dataBoolean=" + dataBoolean +
+        ", dataString='" + dataString + '\'' +
         ", object='" + object + '\'' +
         '}';
   }

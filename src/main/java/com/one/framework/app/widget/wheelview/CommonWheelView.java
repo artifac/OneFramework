@@ -79,7 +79,7 @@ public class CommonWheelView {
   }
 
   public static String showScore(float score) {
-    DecimalFormat df = new DecimalFormat("0.0");
+    DecimalFormat df = new DecimalFormat("#.#");
     return df.format(score);
   }
 
@@ -107,8 +107,7 @@ public class CommonWheelView {
       if (isInSameDay(timeRange.getStartTime(), date)) {
         daysList.add(TimeUtils.dateToString(date, context.getString(R.string.one_dialog_data_today_format)));
       } else {
-        daysList.add(
-            TimeUtils.dateToString(date, context.getString(R.string.one_dialog_data_day_format)));
+        daysList.add(TimeUtils.dateToString(date, context.getString(R.string.one_dialog_data_day_format)));
       }
       calendarStart.add(Calendar.DAY_OF_MONTH, 1);
     }

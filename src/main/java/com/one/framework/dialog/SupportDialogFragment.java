@@ -3,6 +3,7 @@ package com.one.framework.dialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,6 +12,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,14 +23,17 @@ import android.view.ViewParent;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 import com.one.framework.R;
+import com.one.framework.app.widget.ShapeImageView;
 import com.one.framework.log.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SupportDialogFragment extends DialogFragment implements OnClickListener {
 
+  private ShapeImageView dialogImage;
   private TextView dialogTitle;
   private TextView dialogMsg;
   private TextView dialogConfirm;
@@ -55,7 +60,8 @@ public class SupportDialogFragment extends DialogFragment implements OnClickList
 
   @Nullable
   @Override
-  public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+      @Nullable Bundle savedInstanceState) {
     Dialog dialog = getDialog();
     if (dialog == null) {
       return null;
@@ -84,15 +90,16 @@ public class SupportDialogFragment extends DialogFragment implements OnClickList
   }
 
   private void initView(View view) {
-    dialogTitle = (TextView) view.findViewById(R.id.one_support_dialog_title);
-    dialogMsg = (TextView) view.findViewById(R.id.one_support_dialog_message);
-    dialogConfirm = (TextView) view.findViewById(R.id.one_support_dialog_confirm);
-    dialogCancel = (TextView) view.findViewById(R.id.one_support_dialog_cancel);
+    dialogImage = view.findViewById(R.id.one_support_dialog_image);
+    dialogTitle = view.findViewById(R.id.one_support_dialog_title);
+    dialogMsg = view.findViewById(R.id.one_support_dialog_message);
+    dialogConfirm = view.findViewById(R.id.one_support_dialog_confirm);
+    dialogCancel = view.findViewById(R.id.one_support_dialog_cancel);
     lineView = view.findViewById(R.id.one_support_dialog_line);
-    confirmLinearLayout = (LinearLayout) view.findViewById(R.id.one_support_dialog_confirm_layout);
-    cancelLayout = (LinearLayout) view.findViewById(R.id.one_support_dialog_cancel_layout);
-    noTitleMsg = (TextView) view.findViewById(R.id.one_support_dialog_message_no_title);
-    mItemLayout = (LinearLayout) view.findViewById(R.id.one_support_dialog_item_layout);
+    confirmLinearLayout = view.findViewById(R.id.one_support_dialog_confirm_layout);
+    cancelLayout = view.findViewById(R.id.one_support_dialog_cancel_layout);
+    noTitleMsg = view.findViewById(R.id.one_support_dialog_message_no_title);
+    mItemLayout = view.findViewById(R.id.one_support_dialog_item_layout);
     mClose = view.findViewById(R.id.one_support_dialog_close);
     mClose.setOnClickListener(this);
   }
@@ -117,7 +124,7 @@ public class SupportDialogFragment extends DialogFragment implements OnClickList
     }
   }
 
-  public void setDialogMsg(String msg, String title) {
+  public void setDialogMsg(CharSequence msg, String title) {
     if (dialogMsg == null) {
       return;
     }
@@ -193,7 +200,8 @@ public class SupportDialogFragment extends DialogFragment implements OnClickList
           tv.setTextColor(context.getResources().getColor(R.color.one_support_dialog_bg_text));
           tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
           tv.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-              context.getResources().getDimensionPixelSize(R.dimen.one_support_dialog_sheet_item_height)));
+              context.getResources()
+                  .getDimensionPixelSize(R.dimen.one_support_dialog_sheet_item_height)));
           tv.setOnClickListener(
               new View.OnClickListener() {
                 @Override
@@ -208,7 +216,8 @@ public class SupportDialogFragment extends DialogFragment implements OnClickList
           mItemLayout.addView(tv);
           View view = new View(context);
           view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
-          view.setBackgroundColor(context.getResources().getColor(R.color.one_support_dialog_bg_div));
+          view.setBackgroundColor(
+              context.getResources().getColor(R.color.one_support_dialog_bg_div));
           mItemLayout.addView(view);
         }
       }
@@ -220,13 +229,13 @@ public class SupportDialogFragment extends DialogFragment implements OnClickList
   }
 
   public void setPositiveTextColor(int color) {
-    if (color != -1 && dialogConfirm != null) {
+    if (color != 0 && dialogConfirm != null) {
       dialogConfirm.setTextColor(color);
     }
   }
 
   public void setPositiveBackground(int bgRes) {
-    if (bgRes != -1) {
+    if (bgRes != 0) {
       confirmLinearLayout.setBackgroundResource(bgRes);
     }
   }
@@ -235,8 +244,37 @@ public class SupportDialogFragment extends DialogFragment implements OnClickList
     mClose.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
   }
 
+  public void setDialogImage(int drawableId) {
+    if (drawableId != 0) {
+      dialogImage.setVisibility(View.VISIBLE);
+      dialogImage.setImageResource(drawableId);
+    } else {
+      dialogImage.setVisibility(View.GONE);
+    }
+  }
+
+  public void setBtnBg(int cancelBg, int confirmBg, int lr, int gap, int bottom) {
+    if (cancelBg != 0 && confirmBg != 0) {
+      LinearLayout.LayoutParams cancelParams = (LayoutParams) cancelLayout.getLayoutParams();
+      cancelParams.leftMargin = lr;
+      cancelParams.rightMargin = gap;
+      cancelParams.bottomMargin = bottom;
+      cancelLayout.setLayoutParams(cancelParams);
+      cancelLayout.setBackgroundResource(cancelBg);
+
+      LinearLayout.LayoutParams confirmParams = (LayoutParams) confirmLinearLayout
+          .getLayoutParams();
+      confirmParams.rightMargin = lr;
+      confirmParams.leftMargin = gap;
+      confirmParams.bottomMargin = bottom;
+      confirmLinearLayout.setLayoutParams(confirmParams);
+      confirmLinearLayout.setBackgroundResource(confirmBg);
+    }
+  }
+
   public void setPositiveBgMargin(int left, int top, int right, int bottom) {
-    LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) confirmLinearLayout.getLayoutParams();
+    LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) confirmLinearLayout
+        .getLayoutParams();
     params.leftMargin = left;
     params.topMargin = top;
     params.rightMargin = right;
@@ -245,11 +283,9 @@ public class SupportDialogFragment extends DialogFragment implements OnClickList
   }
 
   public void setNegativeTextColor(int color) {
-
-    if (color != -1 && dialogCancel != null) {
+    if (color != 0 && dialogCancel != null) {
       dialogCancel.setTextColor(color);
     }
-
   }
 
   public void setPositiveClickListener(final View.OnClickListener listener) {
@@ -307,8 +343,13 @@ public class SupportDialogFragment extends DialogFragment implements OnClickList
       return this;
     }
 
-    public Builder setMessage(String message) {
+    public Builder setMessage(CharSequence message) {
       params.mMessage = message;
+      return this;
+    }
+
+    public Builder setDlgImage(int drawableId) {
+      params.mDlgDrawable = drawableId;
       return this;
     }
 
@@ -319,6 +360,23 @@ public class SupportDialogFragment extends DialogFragment implements OnClickList
 
     public Builder setOnCancelListener(OnCancelListener onCancelListener) {
       params.mOnCancelListener = onCancelListener;
+      return this;
+    }
+
+    /**
+     * 设置按钮的背景色
+     *
+     * @param lr 左右边距
+     * @param mid 按钮间隔
+     * @param bottom 底部边距
+     */
+    public Builder setBtnBg(int cancelBg, int confirmBg, int lr, int mid, int bottom) {
+      DisplayMetrics metrics = params.mContext.getResources().getDisplayMetrics();
+      params.LR = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, lr, metrics);
+      params.gap = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, mid, metrics);
+      params.bottom = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, bottom, metrics);
+      params.mCancelBg = cancelBg;
+      params.mConfirmBg = confirmBg;
       return this;
     }
 
@@ -502,13 +560,13 @@ public class SupportDialogFragment extends DialogFragment implements OnClickList
 
     public boolean cancelable;
     public String mTitle;
-    public String mMessage;
+    public CharSequence mMessage;
     public String mPositiveButtonText;
     public String mNegativeButtonText;
 
-    public int positiveButtonTextColor = -1;
-    public int negativeButtonTextColor = -1;
-    public int positiveButtonBackground = -1;
+    public int positiveButtonTextColor;
+    public int negativeButtonTextColor;
+    public int positiveButtonBackground;
 
     public boolean bottomCloseVisible = false;
 
@@ -517,8 +575,13 @@ public class SupportDialogFragment extends DialogFragment implements OnClickList
     public int positiveRightMargin;
     public int positiveBottomMargin;
 
+    public int mDlgDrawable;
+
     public OnDismissListener mOnDismissListener;
     public OnCancelListener mOnCancelListener;
+
+    public int mCancelBg, mConfirmBg;
+    private int LR, gap, bottom;
 
     public View.OnClickListener mPositiveButtonListener;
 
@@ -546,6 +609,8 @@ public class SupportDialogFragment extends DialogFragment implements OnClickList
       fragment.setPositiveBackground(positiveButtonBackground);
       fragment.setPositiveBgMargin(positiveLeftMargin, positiveTopMargin, positiveRightMargin, positiveBottomMargin);
       fragment.setBottomCloseVisible(bottomCloseVisible);
+      fragment.setDialogImage(mDlgDrawable);
+      fragment.setBtnBg(mCancelBg, mConfirmBg, LR, gap, bottom);
     }
 
   }

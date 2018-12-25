@@ -45,11 +45,13 @@ data class OrderDetail(
         @field:SerializedName("payType")
         val payType: Int,
         @field:SerializedName("type")
-        val type: Int,
+        val type: Int = 1, // 1 --> now 2 --> book
         @field:SerializedName("bizType")
         val bizType: Int,
         @field:SerializedName("orderCreateTime")
         val orderCreateTime: Long,
+        @field:SerializedName("bookTime")
+        val bookTime: Long,
         @field:SerializedName("waitConfigTime")
         val waitConfigTime: Int,
         @field:SerializedName("currentServerTime")
@@ -66,17 +68,17 @@ data class OrderDetail(
 
 data class OrderDriverInfo(
         @field:SerializedName("driverId")
-        val driverId: String,
+        val driverId: String? = null,
         @field:SerializedName("name")
-        val driverName: String,
+        val driverName: String? = null,
         @field:SerializedName("driverIcon")
-        val driverIcon: String,
+        val driverIcon: String? = null,
         @field:SerializedName("carpoolTimes") // 司机服务次数
         val driverReceiveOrderCount: Int? = 0,
         @field:SerializedName("driverRate")
         val driverStar: Float = 4f,
         @field:SerializedName("phoneNo")
-        val driverTel: String,
+        val driverTel: String? = null,
         @field:SerializedName("modelName")
         val driverCar: String? = null,
         @field:SerializedName("driverCarColor")
