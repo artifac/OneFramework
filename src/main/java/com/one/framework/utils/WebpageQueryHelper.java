@@ -14,7 +14,7 @@ public class WebpageQueryHelper {
     // taxi must be fix m  / o/ b
     return !TextUtils.isEmpty(uri.getHost()) &&
         (uri.getHost().endsWith("taxi.com") || uri.getHost().endsWith("taxi.io")
-            || uri.getHost().endsWith("mobike.com") || uri.getHost().endsWith("mobike.io"));
+            || uri.getHost().endsWith(".com") || uri.getHost().endsWith(".io"));
   }
 
 

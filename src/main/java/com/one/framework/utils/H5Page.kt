@@ -11,7 +11,7 @@ object H5Page {
 //    var TRIP_CANCEL = String.format(HOST + "/cancel", ENV)
 
 
-    private var host = "https://%staxi.mobike.com"
+    private var host = "https://%staxi.com"
     private var m2host = "https://%sm2.com"
     fun initEnv(env: String) {
         ENV = env + "-"

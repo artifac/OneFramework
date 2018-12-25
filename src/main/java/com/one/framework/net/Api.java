@@ -29,7 +29,7 @@ import java.util.HashMap;
 
 public class Api {
   public static String BASE_URL_HOST = "http://app.taxi.com";
-  public static String BASE_URL_HOSTS = "https://furion-app.mobike.com";
+  public static String BASE_URL_HOSTS = "https://furion-app.com";
   private static String LOGIN_SEND_SMS = "/api/user/usermgr/getverifycode.do";
   private static String LOGIN_DO_LOGIN = "/api/user/usermgr/login.do";
   private static String LOGIN_DO_LOGOUT = "/api/user/usermgr/logout.do";

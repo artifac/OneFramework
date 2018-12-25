@@ -9,7 +9,7 @@ public class StrategyManager {
   /**
    * 域名白名单
    */
-  private static final String[] HOST_WHITE_LIST = {"taxi.mobike.com"};
+  private static final String[] HOST_WHITE_LIST = {"taxi.com"};
   private volatile static StrategyManager sInstance;
 
   private StrategyManager() {

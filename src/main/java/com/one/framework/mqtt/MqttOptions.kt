@@ -1,4 +1,4 @@
-package com.mobike.mocha.base
+package com.one.framework.mqtt
 
 import android.content.Context
 import android.provider.Settings
@@ -29,7 +29,7 @@ class MqttOptions(var context: Context) : IMqttOptions {
     }
 
     override fun buildUrl(environment: String?): String {
-        return if (TextUtils.isEmpty(environment)) "tcp://mqtt.furion.mobike.io:1883" else "tcp://mqtt.$environment.mobike.io:1883"
+        return if (TextUtils.isEmpty(environment)) "tcp://mqtt.furion.io:1883" else "tcp://mqtt.$environment.io:1883"
     }
 
     override fun buildUserName(): String {
